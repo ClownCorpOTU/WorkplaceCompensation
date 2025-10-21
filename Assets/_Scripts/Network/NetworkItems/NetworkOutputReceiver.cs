@@ -1,0 +1,68 @@
+using System;
+using Fusion;
+using UnityEngine;
+
+public class NetworkOutputReceiver : NetworkBehaviour
+{
+    [SerializeField] private float flyDelay = 0.5f;
+    [SerializeField] private float flySpeed = 5f;
+    [SerializeField] private float despawnDelay = 3f;
+
+    [Networked] private TickTimer flyDelayTimer { get; set; }
+    [Networked] private TickTimer despawnTimer { get; set; }
+    [Networked] private NetworkObject vialToDespawn { get; set; }
+
+    private NetworkGameManager networkGameManager;
+    private bool hasFlown;
+    
+    
+    public override void Spawned()
+    {
+        networkGameManager = FindFirstObjectByType<NetworkGameManager>();
+    }
+    
+    private void OnTriggerEnter(Collider other)
+    {
+        if (!Object.HasStateAuthority) return;
+
+        if (other.TryGetComponent(out Vial vial) && vial.Type == VialType.OutputBox)
+        {
+            // Reset all states before starting new sequence
+            flyDelayTimer = TickTimer.None;
+            despawnTimer = TickTimer.None;
+            hasFlown = false;
+            
+            // Record the vial object and start the first timer
+            vialToDespawn = vial.Object;
+            flyDelayTimer = TickTimer.CreateFromSeconds(Runner, flyDelay);
+        }
+    }
+
+    public override void FixedUpdateNetwork()
+    {
+        if (!Object.HasStateAuthority) return;
+
+        // Handle flying after short delay
+        if (!hasFlown && flyDelayTimer.Expired(Runner) && vialToDespawn != null)
+        {
+            if (vialToDespawn.TryGetComponent(out Rigidbody rb))
+            {
+                AudioManager.instance.Play("Suction", transform.position);
+                rb.AddForce(Vector3.up * flySpeed, ForceMode.Impulse);
+            }
+
+            hasFlown = true;
+            despawnTimer = TickTimer.CreateFromSeconds(Runner, despawnDelay);
+        }
+
+        // Handle despawn after the second delay
+        if (despawnTimer.Expired(Runner) && vialToDespawn != null)
+        {
+            Vial v = vialToDespawn.gameObject.GetComponent<Vial>();
+            networkGameManager.AddScore(v.LastHeldBy, 2);
+            Runner.Despawn(vialToDespawn);
+            vialToDespawn = null;
+            v = null;
+        }
+    }
+}
