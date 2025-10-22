@@ -11,6 +11,7 @@ public class InputReader : MonoBehaviour
     public bool IsLeftGrabButtonPressed { get; private set; }
     public bool IsRightGrabButtonPressed { get; private set; }
     public bool IsPauseButtonPressed { get; private set; }
+    public bool IsLiftButtonPressed { get; private set; }
 
     private PlayerInput playerInput;
 
@@ -22,6 +23,7 @@ public class InputReader : MonoBehaviour
     private InputAction leftHandGrabAction;
     private InputAction rightHandGrabAction;
     private InputAction pauseAction;
+    private InputAction liftAction;
 
     private void Awake()
     {
@@ -36,6 +38,7 @@ public class InputReader : MonoBehaviour
         leftHandGrabAction = playerInput.actions["LeftHandInteract"];
         rightHandGrabAction = playerInput.actions["RightHandInteract"];
         pauseAction = playerInput.actions["Pause"];
+        liftAction = playerInput.actions["Lift"];
 
         // Subscribe to input events
         moveAction.performed += OnMove;
@@ -61,6 +64,9 @@ public class InputReader : MonoBehaviour
 
         pauseAction.performed += OnPause;
         pauseAction.canceled += OnPause;
+        
+        liftAction.performed += OnLift;
+        liftAction.canceled += OnLift;
     }
 
     private void OnEnable()
@@ -93,6 +99,9 @@ public class InputReader : MonoBehaviour
         
         pauseAction.performed -= OnPause;
         pauseAction.canceled -= OnPause;
+        
+        liftAction.performed -= OnLift;
+        liftAction.canceled -= OnLift;
 
         playerInput.actions.Disable();
     }
@@ -153,5 +162,13 @@ public class InputReader : MonoBehaviour
             IsPauseButtonPressed = true;
         else if (context.canceled)
             IsPauseButtonPressed = false;
+    }
+    
+    private void OnLift(InputAction.CallbackContext context)
+    {
+        if (context.performed)
+            IsLiftButtonPressed = true;
+        else if (context.canceled)
+            IsLiftButtonPressed = false;
     }
 }

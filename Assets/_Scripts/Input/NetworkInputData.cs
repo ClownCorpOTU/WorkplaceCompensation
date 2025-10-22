@@ -8,5 +8,5 @@ public struct NetworkInputData : INetworkInput
     
     public NetworkBool IsJumpPressed;
     public NetworkBool IsRevivePressed;
-    public NetworkBool IsGrabPressed, IsLeftGrabPressed, IsRightGrabPressed;
+    public NetworkBool IsGrabPressed, IsLeftGrabPressed, IsRightGrabPressed, IsLiftPressed;
 }

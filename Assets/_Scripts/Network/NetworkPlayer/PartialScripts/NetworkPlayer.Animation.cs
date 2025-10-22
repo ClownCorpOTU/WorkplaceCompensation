@@ -26,6 +26,6 @@ public partial class NetworkPlayer
         }
 
         // Updating hand grabbing handlers
-        playerGrab.AnimateHands();
+        playerGrab.AnimateHands(IsLiftingActive);
     }
 }

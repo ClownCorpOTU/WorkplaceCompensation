@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "name": "PlayerInput",
     "maps": [
         {
@@ -63,6 +64,15 @@
                     "name": "Grab",
                     "type": "Button",
                     "id": "852140f2-7766-474d-8707-702459ba45f3",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
+                },
+                {
+                    "name": "Lift",
+                    "type": "Button",
+                    "id": "292d12ec-8220-4621-b8bf-2433da85ab8d",
                     "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
@@ -455,7 +465,7 @@
                 {
                     "name": "",
                     "id": "c888000e-d042-4f29-87a4-bc785a6816c0",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
@@ -499,11 +509,33 @@
                 {
                     "name": "",
                     "id": "b3f66d0b-7751-423f-908b-a11c5bd95930",
-                    "path": "<Gamepad>/buttonNorth",
+                    "path": "<Gamepad>/buttonWest",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
                     "action": "Grab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "a7432c71-38a8-4c38-b497-d48ca29d41e8",
+                    "path": "<Keyboard>/e",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Keyboard&Mouse",
+                    "action": "Lift",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "b83d0299-2594-4922-ae3d-41f3f47d52be",
+                    "path": "<Gamepad>/buttonNorth",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "Gamepad",
+                    "action": "Lift",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

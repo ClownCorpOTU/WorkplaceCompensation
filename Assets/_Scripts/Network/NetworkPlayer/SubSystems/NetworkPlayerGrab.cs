@@ -8,6 +8,9 @@ using UnityEngine.Animations.Rigging;
 public class NetworkPlayerGrab : MonoBehaviour
 {
     [SerializeField] private TwoBoneIKConstraint leftHandGrabRig, rightHandGrabRig;
+    [SerializeField] private Transform leftHandTarget, rightHandTarget;
+    [SerializeField] private Transform leftHandGrabTargetPos, rightHandGrabTargetPos;
+    [SerializeField] private Transform leftHandLiftTargetPos, rightHandLiftTargetPos;
     [SerializeField] private float smoothTime = 0.15f; // Lower = snappier, higher = floatier
     
     private NetworkPlayer networkPlayer;
@@ -16,13 +19,27 @@ public class NetworkPlayerGrab : MonoBehaviour
     public void Initialize(NetworkPlayer player)
     {
         networkPlayer = player;
-
+        
         leftHandGrabRig.weight = 0f;
         rightHandGrabRig.weight = 0f;
     }
 
-    public void AnimateHands()
+    public void AnimateHands(bool isLifting=false)
     {
+        switch (isLifting)
+        {
+            case true:
+                leftHandTarget.position = leftHandLiftTargetPos.position;
+                rightHandTarget.position = rightHandLiftTargetPos.position;
+                print("Lifting");
+                break;
+            case false:
+                leftHandTarget.position = leftHandGrabTargetPos.position;
+                rightHandTarget.position = rightHandGrabTargetPos.position;
+                print("Not lifting");
+                break;
+        }
+        
         // Left hand
         float leftHand = (networkPlayer.IsLeftHandGrabbingActive || networkPlayer.IsGrabbingActive) ? 1f : 0f;
         leftHandGrabRig.weight = Mathf.SmoothDamp(leftHandGrabRig.weight, leftHand, ref leftVelocity, smoothTime);

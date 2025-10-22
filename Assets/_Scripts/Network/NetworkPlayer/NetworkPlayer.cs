@@ -44,7 +44,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     // Input
     private NetworkInputData networkInputData;
     private bool isReviveButtonPressed = false;
-    private bool isGrabButtonPressed, isLeftGrabButtonPressed, isRightGrabButtonPressed = false;
+    private bool isGrabButtonPressed, isLeftGrabButtonPressed, isRightGrabButtonPressed, isLiftButtonPressed = false;
     private bool isPauseButtonPressed, previousPausePressed = false;
     
     // States
@@ -56,6 +56,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     
     private bool isRightHandGrabbingActive = false;
     public bool IsRightHandGrabbingActive => isRightHandGrabbingActive;
+    private bool isLiftingActive = false;
+    public bool IsLiftingActive => isLiftingActive;
     
     #endregion
     
@@ -202,6 +204,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             isGrabButtonPressed = inputReader.IsGrabButtonPressed;
             isLeftGrabButtonPressed = inputReader.IsLeftGrabButtonPressed;
             isRightGrabButtonPressed = inputReader.IsRightGrabButtonPressed;
+            isLiftButtonPressed = inputReader.IsLiftButtonPressed;
         }
         else
         {
@@ -212,6 +215,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             isGrabButtonPressed = false;
             isLeftGrabButtonPressed = false;
             isRightGrabButtonPressed = false;
+            isLiftButtonPressed = false;
         }
     }
 
@@ -224,6 +228,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         isGrabbingActive = networkInputData.IsGrabPressed;
         isLeftHandGrabbingActive = networkInputData.IsLeftGrabPressed;
         isRightHandGrabbingActive = networkInputData.IsRightGrabPressed;
+        isLiftingActive = networkInputData.IsLiftPressed;
         
         // Pause game (Called from here because right now there's no other way to know player input)
         if (isPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
@@ -298,6 +303,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (isGrabButtonPressed) data.IsGrabPressed = true;
         if (isLeftGrabButtonPressed) data.IsLeftGrabPressed = true;
         if (isRightGrabButtonPressed) data.IsRightGrabPressed = true;
+        if (isLiftButtonPressed) data.IsLiftPressed = true;
         
         // Clear local flags since they've been sent to the host (We don't need to reset our grab buttons as they are a continuous press)
         isJumpButtonPressed = false;
