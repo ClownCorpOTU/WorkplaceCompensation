@@ -31,12 +31,10 @@ public class NetworkPlayerGrab : MonoBehaviour
             case true:
                 leftHandTarget.position = leftHandLiftTargetPos.position;
                 rightHandTarget.position = rightHandLiftTargetPos.position;
-                print("Lifting");
                 break;
             case false:
                 leftHandTarget.position = leftHandGrabTargetPos.position;
                 rightHandTarget.position = rightHandGrabTargetPos.position;
-                print("Not lifting");
                 break;
         }
         

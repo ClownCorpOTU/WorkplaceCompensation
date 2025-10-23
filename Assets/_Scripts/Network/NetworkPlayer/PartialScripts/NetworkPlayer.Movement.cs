@@ -27,7 +27,7 @@ public partial class NetworkPlayer
             // Apply movement (host handles physics)
             if (localForwardVelocity < maxSpeed)
             {
-                rb.AddForce(moveDir * (inputMagnitude * acceleration));
+                rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
                 audioManager.Play("Walk");
             }
         }
