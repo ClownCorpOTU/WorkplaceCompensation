@@ -50,6 +50,8 @@ public partial class NetworkPlayer
 
     private void HandleJump()
     {
+        if (Stamina < 5f) return;
+        
         if (networkInputData.IsJumpPressed)
             jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
 

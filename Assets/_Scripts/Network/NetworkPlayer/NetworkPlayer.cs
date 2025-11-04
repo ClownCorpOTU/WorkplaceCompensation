@@ -265,7 +265,14 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             playerRespawn.Respawn(false);
 
         // Active ragdoll
-        if (isActiveRagdoll) HandleMovement(localForwardVelocity);
+        if (isActiveRagdoll)
+        {
+            //HandleStamina();
+            HandleMovement(localForwardVelocity);
+            
+            print(Stamina);
+        }
+        
         SyncAnimations(localForwardVelocity);
     }
 
