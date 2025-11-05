@@ -695,7 +695,7 @@ Rigidbody:
   serializedVersion: 5
   m_Mass: 2
   m_LinearDamping: 2
-  m_AngularDamping: 0.05
+  m_AngularDamping: 0.1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -709,9 +709,9 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!153 &2731212095677926307
 ConfigurableJoint:
   m_ObjectHideFlags: 0
@@ -799,7 +799,7 @@ ConfigurableJoint:
     useAcceleration: 0
   m_SlerpDrive:
     serializedVersion: 4
-    positionSpring: 100
+    positionSpring: 300
     positionDamper: 2
     maximumForce: 3.4028233e+38
     useAcceleration: 0
@@ -1038,8 +1038,12 @@ MonoBehaviour:
   maxSpeed: 6
   acceleration: 50
   rotationAngle: 350
-  jumpForce: 7.5
+  jumpForce: 12
   ragdollTime: 3
+  _Stamina: 15
+  maxStamina: 15
+  regenDelay: 0.5
+  regenRate: 3
 --- !u!114 &-4559450326446808081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1077,6 +1081,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4dfefe569cb606c4cb538f0c179052f4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CurrentlyGrabbedRigidbody: {fileID: 0}
+  leftArmJoint: {fileID: 6181139273837666972}
+  rightArmJoint: {fileID: 3507784302039042539}
+  limpArmJointSpring: 2
+  limpArmJointDamper: 0.2
   leftHandGrabRig: {fileID: 7262244808424043688}
   rightHandGrabRig: {fileID: 2249455302773753068}
   leftHandTarget: {fileID: 5850274843344286610}
@@ -1085,7 +1094,7 @@ MonoBehaviour:
   rightHandGrabTargetPos: {fileID: 6551836173907905491}
   leftHandLiftTargetPos: {fileID: 7798979936211748830}
   rightHandLiftTargetPos: {fileID: 2338560347610750445}
-  smoothTime: 0.05
+  smoothTime: 0.15
 --- !u!136 &8497186059431564370
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1934,7 +1943,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6014503084441653313, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7135840613283751297, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       propertyPath: m_Layer
@@ -2788,8 +2797,8 @@ ConfigurableJoint:
     useAcceleration: 0
   m_SlerpDrive:
     serializedVersion: 4
-    positionSpring: 25
-    positionDamper: 1
+    positionSpring: 100
+    positionDamper: 2
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_ProjectionMode: 0
@@ -3686,8 +3695,8 @@ ConfigurableJoint:
     useAcceleration: 0
   m_SlerpDrive:
     serializedVersion: 4
-    positionSpring: 25
-    positionDamper: 1
+    positionSpring: 100
+    positionDamper: 2
     maximumForce: 3.4028233e+38
     useAcceleration: 0
   m_ProjectionMode: 0

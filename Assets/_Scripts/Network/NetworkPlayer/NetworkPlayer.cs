@@ -239,14 +239,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     private void HandlePlayer(float localForwardVelocity)
     {
-        /*
-        if (localPlayerUIManager.IsLocalGamePaused)
-        {
-            print("Not moving as paused");
-            return;
-        }
-        */
-        
         if (Object.HasStateAuthority)
         {
             GravityAndGrounding();
@@ -270,7 +262,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             HandleStamina();
             HandleMovement(localForwardVelocity);
             
-            print(Stamina);
+            //print(Stamina);
         }
         
         SyncAnimations(localForwardVelocity);

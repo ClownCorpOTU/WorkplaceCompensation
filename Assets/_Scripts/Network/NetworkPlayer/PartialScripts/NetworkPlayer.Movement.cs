@@ -73,6 +73,6 @@ public partial class NetworkPlayer
             rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
         }
         
-        print(jumpConsumed);
+        //print(jumpConsumed);
     }
 }
