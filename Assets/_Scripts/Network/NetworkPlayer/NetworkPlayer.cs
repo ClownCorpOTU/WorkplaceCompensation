@@ -267,7 +267,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         // Active ragdoll
         if (isActiveRagdoll)
         {
-            //HandleStamina();
+            HandleStamina();
             HandleMovement(localForwardVelocity);
             
             print(Stamina);

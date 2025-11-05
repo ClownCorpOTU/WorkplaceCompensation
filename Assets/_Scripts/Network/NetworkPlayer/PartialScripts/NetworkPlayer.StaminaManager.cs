@@ -9,7 +9,6 @@ public partial class NetworkPlayer
     [SerializeField] private float regenDelay = 1f; // seconds after activity stops
     [SerializeField, Tooltip("Stamina per second")] private float regenRate = 3f;
     
-    private float staminaDrainTimer = 0f;
     private float lastActivityTime = 0f;
 
     private void HandleStamina()
@@ -18,20 +17,13 @@ public partial class NetworkPlayer
 
         bool isUsingStamina = false;
 
-        // --- Jump Cost ---
-        if (networkInputData.IsJumpPressed && Stamina >= 5f)
-        {
-            Stamina -= 5f;
-            isUsingStamina = true;
-        }
-
         // --- Grabbing Cost ---
         if (IsGrabbingActive || IsLeftHandGrabbingActive || IsRightHandGrabbingActive)
         {
             // Example: heavier objects drain more
             float grabDrainRate = 1f;
             if (playerGrab.CurrentlyGrabbedRigidbody != null)
-                grabDrainRate = Mathf.Clamp(playerGrab.CurrentlyGrabbedRigidbody.mass * 0.2f, 0.5f, 5f);
+                grabDrainRate = Mathf.Clamp(playerGrab.CurrentlyGrabbedRigidbody.mass * 0.5f, 1f, 5f);
 
             Stamina -= grabDrainRate * Runner.DeltaTime;
             isUsingStamina = true;

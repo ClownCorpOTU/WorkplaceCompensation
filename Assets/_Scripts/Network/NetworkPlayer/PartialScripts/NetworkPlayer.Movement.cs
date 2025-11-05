@@ -13,7 +13,9 @@ public partial class NetworkPlayer
     public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
     private TickTimer jumpBuffer;
-    
+
+    // Flags to ensure stamina is only reduced once per jump
+    private bool jumpConsumed = false;
     
     private void HandleMovement(float localForwardVelocity)
     {
@@ -50,18 +52,27 @@ public partial class NetworkPlayer
 
     private void HandleJump()
     {
+        if (!Object.HasStateAuthority) return;
         if (Stamina < 5f) return;
-        
+
         if (networkInputData.IsJumpPressed)
             jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
 
-        if (isGrounded && jumpBuffer.IsRunning)
+        // Execute jump only once per liftoff
+        if (isGrounded && jumpBuffer.IsRunning && !jumpConsumed)
         {
             jumpBuffer = TickTimer.None;
-            
+            jumpConsumed = true;
+
+            //print("Removing 5 from stamina");
+            Stamina = Mathf.Max(0f, Stamina - 5f);
+
             animatedModel.Play("Isis_Jump");
+
             Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
             rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
         }
+        
+        print(jumpConsumed);
     }
 }
