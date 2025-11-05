@@ -1040,8 +1040,10 @@ MonoBehaviour:
   rotationAngle: 350
   jumpForce: 12
   ragdollTime: 3
-  _Stamina: 15
+  _CurrentStamina: 15
   maxStamina: 15
+  minStaminaDrainRate: 1
+  maxStaminaDrainRate: 3
   regenDelay: 0.5
   regenRate: 3
 --- !u!114 &-4559450326446808081

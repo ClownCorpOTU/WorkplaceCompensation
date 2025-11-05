@@ -78,8 +78,6 @@ public class NetworkPlayerGrab : MonoBehaviour
         leftDrive.positionDamper = targetDampingLeft;
         leftArmJoint.slerpDrive = leftDrive;
         
-        print("Left arm joint spring / damping: " + leftDrive.positionSpring + " / " + leftDrive.positionDamper);
-
         JointDrive rightDrive = rightArmJoint.slerpDrive;
         rightDrive.positionSpring = targetSpringRight;
         rightDrive.positionDamper = targetDampingRight;

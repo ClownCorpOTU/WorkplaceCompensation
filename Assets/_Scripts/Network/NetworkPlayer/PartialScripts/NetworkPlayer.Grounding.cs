@@ -28,7 +28,6 @@ public partial class NetworkPlayer
             if (raycastHits[i].transform.root == transform) continue; // Ignore self hits
             
             isGrounded = true;
-            jumpConsumed = false;
             break;
         }
         

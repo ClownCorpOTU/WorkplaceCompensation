@@ -261,8 +261,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             HandleStamina();
             HandleMovement(localForwardVelocity);
-            
-            //print(Stamina);
         }
         
         SyncAnimations(localForwardVelocity);
