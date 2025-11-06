@@ -12,14 +12,26 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private Transform vialSpawnPoint;
     [SerializeField] private float spawnDelay = 0.5f;
     
+    [Header("Lighting parameters")]
+    [SerializeField] private Renderer light1;
+    [SerializeField] private Renderer light2;
+    [SerializeField] private Material redMat, greenMat;
+    [SerializeField] private float greenDuration = 2f; // not used for now but kept for later
+    
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new(); // queue for multiple results
-    [Networked] private TickTimer spawnDelayTimer { get; set; }
+    private int vialCount;
 
+    // --- Network timers ---
+    [Networked] private TickTimer spawnDelayTimer { get; set; }
+    [Networked] private bool lightsAreGreen { get; set; } // track current light state
+
+    
     private void Start()
     {
         recipes = recipeContainerSO.Recipes;
+        ResetLights();
     }
 
     private void AddBox(Vial vial)
@@ -31,6 +43,9 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         Utils.DebugLog($"Added vial: {vial.Type}");
         Runner.Despawn(vial.Object);
 
+        OnBoxAdded();
+
+        // When both boxes are added → start mixing
         if (currentInputs.Count >= 2)
             Mix();
     }
@@ -60,6 +75,9 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         currentInputs.Clear();
 
+        // Keep both lights green while results are being processed
+        SetLightsGreen();
+
         // Start timer for the first result
         if (!spawnDelayTimer.IsRunning)
             spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
@@ -75,13 +93,27 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
             newVial = Runner.Spawn(vialPrefab, vialSpawnPoint.position, Quaternion.identity);
 
         newVial.Initialize(resultType);
+        vialCount++;
+    }
+
+    private void OnBoxAdded()
+    {
+        // --- Turn on correct light based on input count ---
+        if (currentInputs.Count == 1)
+        {
+            light1.material = greenMat;
+        }
+        else if (currentInputs.Count == 2)
+        {
+            light2.material = greenMat;
+        }
     }
 
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
 
-        // Spawn next vial when timer expires
+        // --- Handle vial spawning ---
         if (spawnDelayTimer.Expired(Runner) && pendingResults.Count > 0)
         {
             var nextResult = pendingResults.Dequeue();
@@ -89,8 +121,31 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
             // Restart timer if more results remain
             if (pendingResults.Count > 0)
+            {
                 spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
+            }
+            else
+            {
+                // --- All vials have spawned, reset lights and counters ---
+                ResetLights();
+            }
         }
+    }
+
+    // --- Light helpers ---
+    private void SetLightsGreen()
+    {
+        lightsAreGreen = true;
+        light1.material = greenMat;
+        light2.material = greenMat;
+    }
+
+    private void ResetLights()
+    {
+        lightsAreGreen = false;
+        light1.material = redMat;
+        light2.material = redMat;
+        vialCount = 0;
     }
 
     public void OnChildTriggerEnter(Collider other)
