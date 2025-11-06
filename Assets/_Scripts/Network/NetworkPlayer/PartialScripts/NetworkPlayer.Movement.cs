@@ -13,7 +13,7 @@ public partial class NetworkPlayer
     public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
     private TickTimer jumpBuffer;
-    
+    private bool jumpConsumed = false;
     
     private void HandleMovement(float localForwardVelocity)
     {
@@ -48,18 +48,66 @@ public partial class NetworkPlayer
             Quaternion.RotateTowards(mainJoint.targetRotation, desiredRotation, Runner.DeltaTime * rotationAngle);
     }
 
+    /*
     private void HandleJump()
     {
+        if (!Object.HasStateAuthority) return;
+
         if (networkInputData.IsJumpPressed)
             jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
 
+        // Execute jump only once per liftoff
         if (isGrounded && jumpBuffer.IsRunning)
         {
             jumpBuffer = TickTimer.None;
-            
-            animatedModel.Play("Isis_Jump");
+
+            //animatedModel.Play("Isis_Jump");
+            ReduceStamina(3f);
+
             Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
             rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
         }
+    }
+    */
+    
+    private void HandleJump()
+    {
+        if (!Object.HasStateAuthority) return;
+        
+        // Buffer jump input
+        if (networkInputData.IsJumpPressed)
+            jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
+
+        // Execute jump once per liftoff
+        if (isGrounded && jumpBuffer.IsRunning && !jumpConsumed)
+        {
+            jumpBuffer = TickTimer.None;
+            jumpConsumed = true;
+            
+            PerformJump(); // separate function for clarity
+        }
+
+        if (isGrounded && !jumpBuffer.IsRunning)
+        {
+            print("Jump consumed = false");
+            jumpConsumed = false;
+        }
+    }
+
+    private void PerformJump()
+    {
+        if (CurrentStamina < 3f) return; // not enough energy
+
+        print("Jumping!");
+        
+        // Drain once
+        //CurrentStamina = Mathf.Max(0f, CurrentStamina - 3f);
+
+        // Jump logic
+        Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
+        rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
+
+        // Reset regen timer
+        lastActivityTime = Runner.SimulationTime;
     }
 }
