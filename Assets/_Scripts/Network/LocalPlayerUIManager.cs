@@ -1,11 +1,11 @@
 ﻿using System;
 using UnityEngine;
-using TMPro;
+using UnityEngine.UI;
 
 public class LocalPlayerUIManager : MonoBehaviour
 {
     [SerializeField] private GameObject pausePanel;
-    [SerializeField] private TextMeshProUGUI staminaText;
+    [SerializeField] private Image staminaBarImage;
     public bool IsLocalGamePaused { get; private set; }
 
     
@@ -28,6 +28,6 @@ public class LocalPlayerUIManager : MonoBehaviour
     private void Update()
     {
         var normalizeStamina = NetworkPlayer.Local.NormalizeStamina();
-        staminaText.text = normalizeStamina.ToString();
+        staminaBarImage.fillAmount = normalizeStamina;
     }
 }
