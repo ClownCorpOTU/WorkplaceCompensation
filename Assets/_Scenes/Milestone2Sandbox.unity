@@ -49433,17 +49433,21 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4015027934767736072, guid: 960ac28023cbb4a4baed0766f5099513, type: 3}
+      propertyPath: Priority
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4015027934767736072, guid: 960ac28023cbb4a4baed0766f5099513, type: 3}
       propertyPath: m_Volume
-      value: 0.03
+      value: 0.08
       objectReference: {fileID: 0}
     - target: {fileID: 4015027934767736072, guid: 960ac28023cbb4a4baed0766f5099513, type: 3}
       propertyPath: m_Resource
       value: 
-      objectReference: {fileID: 8300000, guid: ce38e3e4520c7ee4e9222423e3bad095, type: 3}
+      objectReference: {fileID: 8300000, guid: 18c476a7297a1f6449cdbe6386681dcf, type: 3}
     - target: {fileID: 4015027934767736072, guid: 960ac28023cbb4a4baed0766f5099513, type: 3}
       propertyPath: m_audioClip
       value: 
-      objectReference: {fileID: 8300000, guid: ce38e3e4520c7ee4e9222423e3bad095, type: 3}
+      objectReference: {fileID: 0}
     - target: {fileID: 4620166800056190161, guid: 960ac28023cbb4a4baed0766f5099513, type: 3}
       propertyPath: m_LocalPosition.x
       value: 3.73207
