@@ -32,10 +32,13 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [Networked] private TickTimer spawnDelayTimer { get; set; }
     [Networked] private bool lightsAreGreen { get; set; } // track current light state
 
+    private AudioManager audioManager;
     
     private void Start()
     {
         recipes = recipeContainerSO.Recipes;
+        audioManager = FindFirstObjectByType<AudioManager>();
+
         ResetLights();
     }
 
@@ -163,6 +166,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         if (fireworksPrefab == null || fireworkSpawnPoint == null) return;
 
         GameObject fx = Instantiate(fireworksPrefab, fireworkSpawnPoint.position, Quaternion.Euler(-90f,0f,0f));
+        audioManager.Play("FireworksExplosion", transform.position);
+        audioManager.Play("FireworksHighPitch", transform.position);
         
         // Auto-destroy if vfx didn't destory itself
         if (fx != null) Destroy(fx, fxDespawnDelay);
