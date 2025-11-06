@@ -239,14 +239,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     private void HandlePlayer(float localForwardVelocity)
     {
-        /*
-        if (localPlayerUIManager.IsLocalGamePaused)
-        {
-            print("Not moving as paused");
-            return;
-        }
-        */
-        
         if (Object.HasStateAuthority)
         {
             GravityAndGrounding();
@@ -265,7 +257,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             playerRespawn.Respawn(false);
 
         // Active ragdoll
-        if (isActiveRagdoll) HandleMovement(localForwardVelocity);
+        if (isActiveRagdoll)
+        {
+            HandleStamina();
+            HandleMovement(localForwardVelocity);
+        }
+        
         SyncAnimations(localForwardVelocity);
     }
 
