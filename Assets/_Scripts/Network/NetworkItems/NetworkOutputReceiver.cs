@@ -4,9 +4,15 @@ using UnityEngine;
 
 public class NetworkOutputReceiver : NetworkBehaviour
 {
+    [Header("Parameters")]
     [SerializeField] private float flyDelay = 0.5f;
     [SerializeField] private float flySpeed = 5f;
     [SerializeField] private float despawnDelay = 3f;
+    
+    [Header("Juice")]
+    [SerializeField] private GameObject windPrefab;
+    [SerializeField] private Transform windSpawnPoint;
+    [SerializeField] private float fxDespawnDelay = 15;
 
     [Networked] private TickTimer flyDelayTimer { get; set; }
     [Networked] private TickTimer despawnTimer { get; set; }
@@ -31,6 +37,9 @@ public class NetworkOutputReceiver : NetworkBehaviour
             flyDelayTimer = TickTimer.None;
             despawnTimer = TickTimer.None;
             hasFlown = false;
+            
+            // Play juice
+            RPC_PlayWind();
             
             // Record the vial object and start the first timer
             vialToDespawn = vial.Object;
@@ -64,5 +73,16 @@ public class NetworkOutputReceiver : NetworkBehaviour
             vialToDespawn = null;
             v = null;
         }
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_PlayWind()
+    {
+        if (windPrefab == null || windSpawnPoint == null) return;
+
+        GameObject fx = Instantiate(windPrefab, windSpawnPoint.position, Quaternion.Euler(-90f,0f,0f));
+        
+        // Auto-destroy if vfx didn't destory itself
+        if (fx != null) Destroy(fx, fxDespawnDelay);
     }
 }
