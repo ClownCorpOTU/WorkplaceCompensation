@@ -18,6 +18,11 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private Material redMat, greenMat;
     [SerializeField] private float greenDuration = 2f; // not used for now but kept for later
     
+    [Header("Juice")]
+    [SerializeField] private GameObject fireworksPrefab;
+    [SerializeField] private Transform fireworkSpawnPoint;
+    [SerializeField] private float fxDespawnDelay = 15;
+    
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new(); // queue for multiple results
@@ -126,8 +131,11 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
             }
             else
             {
-                // --- All vials have spawned, reset lights and counters ---
+                // --- All vials have spawned ---
                 ResetLights();
+                
+                // Send an RPC so all players play fireworks
+                RPC_PlayFireworks();
             }
         }
     }
@@ -147,7 +155,20 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         light2.material = redMat;
         vialCount = 0;
     }
+    
+    // --- Firework RPCs ---
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_PlayFireworks()
+    {
+        if (fireworksPrefab == null || fireworkSpawnPoint == null) return;
 
+        GameObject fx = Instantiate(fireworksPrefab, fireworkSpawnPoint.position, Quaternion.Euler(-90f,0f,0f));
+        
+        // Auto-destroy if vfx didn't destory itself
+        if (fx != null) Destroy(fx, fxDespawnDelay);
+    }
+
+    // --- Trigger interface ---
     public void OnChildTriggerEnter(Collider other)
     {
         if (!Object.HasStateAuthority) return;
