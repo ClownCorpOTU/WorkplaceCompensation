@@ -295,6 +295,37 @@ Transform:
   m_Children: []
   m_Father: {fileID: 4751359835298145220}
   m_LocalEulerAnglesHint: {x: 13.992, y: -78.075, z: 274.97}
+--- !u!1 &1993944963889427250
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5458329399638187860}
+  m_Layer: 6
+  m_Name: GroundCheckPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &5458329399638187860
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1993944963889427250}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.118, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3763491314175374996}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2024927482495894378
 GameObject:
   m_ObjectHideFlags: 0
@@ -1035,17 +1066,21 @@ MonoBehaviour:
   playerNumberText: {fileID: 828541765834795369}
   animatedModel: {fileID: 5866156221909163747}
   _NetworkPhysicsSyncedRotations: []
+  groundCheckRadius: 0.25
+  groundCheckDistance: 0.3
+  groundedRememberTime: 0.1
+  groundCheckOrigin: {fileID: 5458329399638187860}
   maxSpeed: 6
   acceleration: 50
   rotationAngle: 350
   jumpForce: 12
   ragdollTime: 3
-  _CurrentStamina: 15
   maxStamina: 15
   minStaminaDrainRate: 1
   maxStaminaDrainRate: 3
   regenDelay: 0.5
   regenRate: 3
+  _CurrentStamina: 15
 --- !u!114 &-4559450326446808081
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2571,6 +2606,9 @@ PrefabInstance:
     - {fileID: 5866666021909216657, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5458329399638187860}
     - targetCorrespondingSourceObject: {fileID: -6188560499244134816, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1759348183198179072}

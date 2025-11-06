@@ -13,7 +13,7 @@ public partial class NetworkPlayer
 
     [Networked, HideInInspector] public float CurrentStamina { get; private set; } = 15f;
     
-    private float staminaDrainRate;
+    private float staminaDrainRate = 1f;
     private float lastActivityTime = 0f;
 
     

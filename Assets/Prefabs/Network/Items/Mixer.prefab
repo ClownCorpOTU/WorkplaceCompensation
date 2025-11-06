@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 6831616441651352888}
   - component: {fileID: 6900937023511167010}
   - component: {fileID: 6334322010747954846}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Trigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -185,7 +185,7 @@ GameObject:
   - component: {fileID: 314978415478427327}
   - component: {fileID: 9048038517323184320}
   - component: {fileID: 4000137715739761782}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Platform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -235,6 +235,8 @@ MeshRenderer:
   m_RayTracingAccelStructBuildFlagsOverride: 0
   m_RayTracingAccelStructBuildFlags: 1
   m_SmallMeshCulling: 1
+  m_ForceMeshLod: -1
+  m_MeshLodSelectionBias: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -256,6 +258,7 @@ MeshRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
+  m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
@@ -292,7 +295,7 @@ GameObject:
   - component: {fileID: 6594188278482408631}
   - component: {fileID: 6183653183060351977}
   - component: {fileID: 9177841669841540527}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Mixer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -331,6 +334,7 @@ MonoBehaviour:
   vialPrefab: {fileID: 5740931859412630769, guid: 4acf39da215b9294faf4b91fd9600048, type: 3}
   trashPrefab: {fileID: 9017009847148644083, guid: 0e14b055c1fd7364486021971562ef20, type: 3}
   vialSpawnPoint: {fileID: 357562264338226714}
+  spawnDelay: 0.5
 --- !u!114 &9177841669841540527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -465,7 +469,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 357562264338226714}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: SpawnPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -541,7 +545,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -3016839654814386563, guid: 89ef302326b8a2740a55c0751613cffa, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -1666157869975523977, guid: 89ef302326b8a2740a55c0751613cffa, type: 3}
       propertyPath: m_LocalPosition.y
@@ -553,7 +557,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 89ef302326b8a2740a55c0751613cffa, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1923155244799213703, guid: 89ef302326b8a2740a55c0751613cffa, type: 3}
       propertyPath: m_Layer
@@ -589,7 +593,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8113426461963079991, guid: 89ef302326b8a2740a55c0751613cffa, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8555673279768128846, guid: 89ef302326b8a2740a55c0751613cffa, type: 3}
       propertyPath: m_Name
