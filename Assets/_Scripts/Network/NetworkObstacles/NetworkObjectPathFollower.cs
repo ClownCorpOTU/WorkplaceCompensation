@@ -63,7 +63,7 @@ public class NetworkObjectPathFollower : NetworkBehaviour, ITriggerReceiver
         }
     }
 
-    public void OnChildTriggerEnter(Collider other)
+    public void OnChildTriggerEnter(Collider other, TriggerType tType=TriggerType.Left)
     {
         if (!other.CompareTag("Player")) return;
 
@@ -72,7 +72,7 @@ public class NetworkObjectPathFollower : NetworkBehaviour, ITriggerReceiver
             playersOnPlatform.Add(player);
     }
 
-    public void OnChildTriggerExit(Collider other)
+    public void OnChildTriggerExit(Collider other, TriggerType tType=TriggerType.Left)
     {
         if (!other.CompareTag("Player")) return;
 

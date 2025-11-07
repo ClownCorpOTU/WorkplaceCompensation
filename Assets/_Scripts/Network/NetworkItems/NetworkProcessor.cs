@@ -4,7 +4,7 @@ using System.Linq;
 using Fusion;
 using UnityEngine;
 
-public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
+public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 {
     [SerializeField] private MasterRecipeContainerSO recipeContainerSO;
     [SerializeField] private Vial vialPrefab;
@@ -22,10 +22,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [Header("Juice")] [SerializeField] private GameObject fireworksPrefab;
     [SerializeField] private Transform fireworkSpawnPoint;
     [SerializeField] private float fxDespawnDelay = 15;
-    
-    [Header("New Mixer")]
-    [SerializeField] private GameObject leftVial;
-    [SerializeField] private GameObject rightVial;
 
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
@@ -42,9 +38,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
-        
-        leftVial.SetActive(false);
-        rightVial.SetActive(false);
 
         ResetLights();
     }
@@ -56,6 +49,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         currentInputs.Add(vial.Type);
         Utils.DebugLog($"Added vial: {vial.Type}");
+
+        OnBoxAdded(vial.Type);
 
         Runner.Despawn(vial.Object);
 
@@ -125,16 +120,21 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         vialCount++;
     }
 
-    private void OnBoxAdded()
+    private void OnBoxAdded(VialType vialType)
     {
         // --- Turn on correct light based on input count ---
-        if (currentInputs.Count == 1)
+        if (vialType == VialType.VIPCrate) SetLightsGreen();
+        
+        else
         {
-            light1.material = greenMat;
-        }
-        else if (currentInputs.Count == 2)
-        {
-            light2.material = greenMat;
+            if (currentInputs.Count == 1)
+            {
+                light1.material = greenMat;
+            }
+            else if (currentInputs.Count == 2)
+            {
+                light2.material = greenMat;
+            }
         }
     }
 
@@ -177,10 +177,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         lightsAreGreen = false;
         light1.material = redMat;
         light2.material = redMat;
-        
-        leftVial.SetActive(false);
-        rightVial.SetActive(false);
-        
         vialCount = 0;
     }
 
@@ -202,33 +198,9 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     public void OnChildTriggerEnter(Collider other, TriggerType tType=TriggerType.Left)
     {
         if (!Object.HasStateAuthority) return;
-        if (!other.TryGetComponent(out Vial v)) return;
 
-        switch (tType)
-        {
-            case TriggerType.Left:
-                if (v != null)
-                {
-                    AddBox(v);
-                    Runner.Despawn(v.Object);
-                }
-                
-                leftVial.SetActive(true);
-                light1.material = greenMat;
-                
-                break;
-            case TriggerType.Right:
-                if (v != null)
-                {
-                    AddBox(v);
-                    Runner.Despawn(v.Object);
-                }
-                
-                rightVial.SetActive(true);
-                light2.material = greenMat;
-                
-                break;
-        }
+        if (other.TryGetComponent(out Vial vial))
+            AddBox(vial);
     }
 
     public void OnChildTriggerExit(Collider other, TriggerType tType=TriggerType.Left)
