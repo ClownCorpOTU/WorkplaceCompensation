@@ -34,12 +34,13 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
     private AudioManager audioManager;
 
-    private void Start()
+
+    public override void Spawned()
     {
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
 
-        ResetLights();
+        if (Object.HasStateAuthority) RPC_ResetLights();
     }
 
     private void AddBox(Vial vial)
@@ -100,7 +101,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         currentInputs.Clear();
 
         // Keep both lights green while results are being processed
-        SetLightsGreen();
+        if (Object.HasStateAuthority) RPC_SetLightsGreen();
 
         // Start timer for the first result
         if (!spawnDelayTimer.IsRunning)
@@ -122,18 +123,20 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
     private void OnBoxAdded(VialType vialType)
     {
+        if (!Object.HasStateAuthority) return;
+        
         // --- Turn on correct light based on input count ---
-        if (vialType == VialType.VIPCrate) SetLightsGreen();
+        if (vialType == VialType.VIPCrate) RPC_SetLightsGreen();
         
         else
         {
             if (currentInputs.Count == 1)
             {
-                light1.material = greenMat;
+                RPC_SetLightGreen(true, false);
             }
             else if (currentInputs.Count == 2)
             {
-                light2.material = greenMat;
+                RPC_SetLightGreen(true, true);
             }
         }
     }
@@ -156,7 +159,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
             else
             {
                 // --- All vials have spawned ---
-                ResetLights();
+                RPC_ResetLights();
 
                 // Send an RPC so all players play fireworks
                 RPC_PlayFireworks();
@@ -165,14 +168,24 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     }
 
     // --- Light helpers ---
-    private void SetLightsGreen()
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetLightGreen(bool light1Green=false, bool light2Green=false)
+    {
+        if (light1Green) light1.material = greenMat;
+        if (light2Green) light2.material = greenMat;
+    }
+    
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetLightsGreen()
     {
         lightsAreGreen = true;
         light1.material = greenMat;
         light2.material = greenMat;
     }
 
-    private void ResetLights()
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_ResetLights()
     {
         lightsAreGreen = false;
         light1.material = redMat;

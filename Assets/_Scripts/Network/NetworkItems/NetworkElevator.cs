@@ -18,7 +18,7 @@ public class NetworkElevator : NetworkBehaviour, ILever
     {
         rb = GetComponent<Rigidbody>();
         floorParent = transform.parent;
-        bottomY = transform.localPosition.y;
+        //bottomY = transform.localPosition.y;
 
         //lever.ToggleLeverOff();
     }

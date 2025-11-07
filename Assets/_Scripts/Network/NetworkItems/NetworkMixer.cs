@@ -46,7 +46,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         leftVial.SetActive(false);
         rightVial.SetActive(false);
 
-        ResetLights();
+        if (Object.HasStateAuthority) RPC_ResetLights();
     }
 
     private void AddBox(Vial vial)
@@ -105,7 +105,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         currentInputs.Clear();
 
         // Keep both lights green while results are being processed
-        SetLightsGreen();
+        if (Object.HasStateAuthority) RPC_SetLightsGreen();
 
         // Start timer for the first result
         if (!spawnDelayTimer.IsRunning)
@@ -156,7 +156,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
             else
             {
                 // --- All vials have spawned ---
-                ResetLights();
+                if (Object.HasStateAuthority) RPC_ResetLights();
 
                 // Send an RPC so all players play fireworks
                 RPC_PlayFireworks();
@@ -165,22 +165,22 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     }
 
     // --- Light helpers ---
-    private void SetLightsGreen()
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetLightsGreen()
     {
         lightsAreGreen = true;
         light1.material = greenMat;
         light2.material = greenMat;
     }
-
-    private void ResetLights()
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_ResetLights()
     {
         lightsAreGreen = false;
         light1.material = redMat;
         light2.material = redMat;
-        
         leftVial.SetActive(false);
         rightVial.SetActive(false);
-        
         vialCount = 0;
     }
 
@@ -212,9 +212,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
                     AddBox(v);
                     Runner.Despawn(v.Object);
                 }
-                
-                leftVial.SetActive(true);
-                light1.material = greenMat;
+
+                RPC_SetVialsActive(true, false);
                 
                 break;
             case TriggerType.Right:
@@ -223,12 +222,20 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
                     AddBox(v);
                     Runner.Despawn(v.Object);
                 }
-                
-                rightVial.SetActive(true);
-                light2.material = greenMat;
+
+                RPC_SetVialsActive(true, true);
                 
                 break;
         }
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetVialsActive(bool leftVialActive, bool rightVialActive)
+    {
+        leftVial.SetActive(leftVialActive);
+        light1.material = leftVialActive ? greenMat : redMat;
+        rightVial.SetActive(rightVialActive);
+        light2.material = rightVialActive ? greenMat : redMat;
     }
 
     public void OnChildTriggerExit(Collider other, TriggerType tType=TriggerType.Left)
