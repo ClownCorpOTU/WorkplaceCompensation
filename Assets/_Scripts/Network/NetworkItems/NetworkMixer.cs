@@ -12,16 +12,16 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private Transform vialSpawnPoint;
     [SerializeField] private float spawnDelay = 0.5f;
 
-    [Header("Lighting parameters")] [SerializeField]
-    private Renderer light1;
-
+    [Header("Lighting parameters")]
+    [SerializeField] private Renderer light1;
     [SerializeField] private Renderer light2;
     [SerializeField] private Material redMat, greenMat;
     [SerializeField] private float greenDuration = 2f; // not used for now but kept for later
 
-    [Header("Juice")] [SerializeField] private GameObject fireworksPrefab;
+    [Header("Juice")]
+    [SerializeField] private GameObject fireworksPrefab;
     [SerializeField] private Transform fireworkSpawnPoint;
-    [SerializeField] private float fxDespawnDelay = 15;
+    [SerializeField] private float fxDespawnDelay = 15f;
     
     [Header("New Mixer")]
     [SerializeField] private GameObject leftVial;
@@ -29,24 +29,22 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
-    private Queue<VialType> pendingResults = new(); // queue for multiple results
+    private Queue<VialType> pendingResults = new();
     private int vialCount;
 
     // --- Network timers ---
     [Networked] private TickTimer spawnDelayTimer { get; set; }
-    [Networked] private bool lightsAreGreen { get; set; } // track current light state
+    [Networked] private bool lightsAreGreen { get; set; }
 
     private AudioManager audioManager;
 
-    private void Start()
+    public override void Spawned()
     {
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
-        
-        leftVial.SetActive(false);
-        rightVial.SetActive(false);
 
-        if (Object.HasStateAuthority) RPC_ResetLights();
+        if (Object.HasStateAuthority)
+            RPC_ResetMixerVisuals();
     }
 
     private void AddBox(Vial vial)
@@ -59,13 +57,10 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         Runner.Despawn(vial.Object);
 
-        // --- Check if current inputs match any recipe exactly ---
         if (recipes == null || recipes.Count == 0) return;
 
-        // Sort the current inputs to make comparison order-independent
         var sortedInputs = currentInputs.OrderBy(x => x).ToList();
 
-        // Look for a recipe with the same ingredient count *and* same ingredients
         var matchingRecipe = recipes.FirstOrDefault(r =>
             r != null &&
             r.Ingredients != null &&
@@ -73,7 +68,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
             r.Ingredients.OrderBy(i => i).SequenceEqual(sortedInputs)
         );
 
-        // Only mix if a recipe fully matches
         if (matchingRecipe != null)
             Mix();
     }
@@ -82,15 +76,11 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         AudioManager.instance.Play("Processor", transform.position);
 
-        // Order inputs alphabetically
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
-
-        // Find matching recipe
         var matchingRecipe = recipes.FirstOrDefault(r =>
-            r.Ingredients.OrderBy(i => i).SequenceEqual(sortedInput));
-        
+            r.Ingredients.OrderBy(i => i).SequenceEqual(sortedInput)
+        );
 
-        // If we found a recipe, queue its results
         if (matchingRecipe != null)
         {
             foreach (var r in matchingRecipe.Results)
@@ -98,93 +88,90 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         }
         else
         {
-            // No recipe matched — spawn a trash bag instead
             pendingResults.Enqueue(VialType.TrashBag);
         }
 
         currentInputs.Clear();
+        if (Object.HasStateAuthority)
+            RPC_SetLightsGreen();
 
-        // Keep both lights green while results are being processed
-        if (Object.HasStateAuthority) RPC_SetLightsGreen();
-
-        // Start timer for the first result
         if (!spawnDelayTimer.IsRunning)
             spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
     }
 
     private void SpawnResult(VialType resultType)
     {
-        Vial newVial;
-
-        if (resultType == VialType.TrashBag)
-            newVial = Runner.Spawn(trashPrefab, vialSpawnPoint.position, Quaternion.identity);
-        else
-            newVial = Runner.Spawn(vialPrefab, vialSpawnPoint.position, Quaternion.identity);
+        Vial newVial = (resultType == VialType.TrashBag)
+            ? Runner.Spawn(trashPrefab, vialSpawnPoint.position, Quaternion.identity)
+            : Runner.Spawn(vialPrefab, vialSpawnPoint.position, Quaternion.identity);
 
         newVial.Initialize(resultType);
         vialCount++;
-    }
-
-    private void OnBoxAdded()
-    {
-        // --- Turn on correct light based on input count ---
-        if (currentInputs.Count == 1)
-        {
-            light1.material = greenMat;
-        }
-        else if (currentInputs.Count == 2)
-        {
-            light2.material = greenMat;
-        }
     }
 
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
 
-        // --- Handle vial spawning ---
         if (spawnDelayTimer.Expired(Runner) && pendingResults.Count > 0)
         {
             var nextResult = pendingResults.Dequeue();
             SpawnResult(nextResult);
 
-            // Restart timer if more results remain
             if (pendingResults.Count > 0)
             {
                 spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
             }
             else
             {
-                // --- All vials have spawned ---
-                if (Object.HasStateAuthority) RPC_ResetLights();
+                if (Object.HasStateAuthority)
+                    RPC_ResetMixerVisuals();
 
-                // Send an RPC so all players play fireworks
                 RPC_PlayFireworks();
             }
         }
     }
 
-    // --- Light helpers ---
+    // --- RPC Helpers ---
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_SetLightsGreen()
     {
         lightsAreGreen = true;
-        light1.material = greenMat;
-        light2.material = greenMat;
+        if (light1 != null) light1.material = greenMat;
+        if (light2 != null) light2.material = greenMat;
     }
-    
+
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_ResetLights()
+    private void RPC_SetSingleLightAndVial(bool leftSide, bool active)
+    {
+        // Update vial visibility
+        if (leftSide)
+        {
+            if (leftVial != null) leftVial.SetActive(active);
+            if (light1 != null) light1.material = active ? greenMat : redMat;
+        }
+        else
+        {
+            if (rightVial != null) rightVial.SetActive(active);
+            if (light2 != null) light2.material = active ? greenMat : redMat;
+        }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_ResetMixerVisuals()
     {
         lightsAreGreen = false;
-        light1.material = redMat;
-        light2.material = redMat;
-        leftVial.SetActive(false);
-        rightVial.SetActive(false);
+
+        if (light1 != null) light1.material = redMat;
+        if (light2 != null) light2.material = redMat;
+
+        if (leftVial != null) leftVial.SetActive(false);
+        if (rightVial != null) rightVial.SetActive(false);
+
         vialCount = 0;
     }
 
-    // --- Firework RPCs ---
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_PlayFireworks()
     {
@@ -194,52 +181,36 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         audioManager.Play("FireworksExplosion", transform.position);
         audioManager.Play("FireworksHighPitch", transform.position);
 
-        // Auto-destroy if vfx didn't destory itself
         if (fx != null) Destroy(fx, fxDespawnDelay);
     }
 
-    // --- Trigger interface ---
-    public void OnChildTriggerEnter(Collider other, TriggerType tType=TriggerType.Left)
+    // --- Trigger Interface ---
+    public void OnChildTriggerEnter(Collider other, TriggerType tType = TriggerType.Left)
     {
         if (!Object.HasStateAuthority) return;
-        if (!other.TryGetComponent(out Vial v)) return;
+        if (!other.TryGetComponent(out Vial vial)) return;
+
+        AddBox(vial);
+        Runner.Despawn(vial.Object);
 
         switch (tType)
         {
             case TriggerType.Left:
-                if (v != null)
-                {
-                    AddBox(v);
-                    Runner.Despawn(v.Object);
-                }
-
-                RPC_SetVialsActive(true, false);
-                
+                RPC_SetSingleLightAndVial(true, true);
                 break;
             case TriggerType.Right:
-                if (v != null)
-                {
-                    AddBox(v);
-                    Runner.Despawn(v.Object);
-                }
-
-                RPC_SetVialsActive(true, true);
-                
+                RPC_SetSingleLightAndVial(false, true);
                 break;
         }
     }
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_SetVialsActive(bool leftVialActive, bool rightVialActive)
-    {
-        leftVial.SetActive(leftVialActive);
-        light1.material = leftVialActive ? greenMat : redMat;
-        rightVial.SetActive(rightVialActive);
-        light2.material = rightVialActive ? greenMat : redMat;
-    }
 
-    public void OnChildTriggerExit(Collider other, TriggerType tType=TriggerType.Left)
+    public void OnChildTriggerExit(Collider other, TriggerType tType = TriggerType.Left)
     {
-        // Not needed right now
+        // Optional: turn off side when vial leaves
+        // if (Object.HasStateAuthority)
+        // {
+        //     bool left = (tType == TriggerType.Left);
+        //     RPC_SetSingleLightAndVial(left, false);
+        // }
     }
 }
