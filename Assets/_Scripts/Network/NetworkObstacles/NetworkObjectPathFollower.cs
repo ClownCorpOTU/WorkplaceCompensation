@@ -2,7 +2,7 @@ using System;
 using Fusion;
 using UnityEngine;
 
-public class NetworkObjectPathFollower : NetworkBehaviour
+public class NetworkObjectPathFollower : NetworkBehaviour, ICollisionReceiver
 {
     [SerializeField] private Rigidbody movingRB;
     
@@ -32,5 +32,17 @@ public class NetworkObjectPathFollower : NetworkBehaviour
         {
             currentWaypointIndex = (currentWaypointIndex + 1) % waypoints.Length;
         }
+    }
+
+    public void OnChildCollisionEnter(Collision collision)
+    {
+        // Make the collided object a child of this object
+        collision.gameObject.transform.SetParent(transform);
+    }
+
+    public void OnChildCollisionExit(Collision collision)
+    {
+        // Unparent the collided object
+        collision.gameObject.transform.SetParent(null);
     }
 }
