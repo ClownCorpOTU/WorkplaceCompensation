@@ -4,5 +4,6 @@ public enum VialType
     OutputVial,
     OutputBox,
     TrashBag,
+    VIPCrate,
     None
 }
