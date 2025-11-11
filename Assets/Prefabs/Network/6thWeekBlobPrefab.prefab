@@ -1180,6 +1180,7 @@ GameObject:
   - component: {fileID: 6684367574873010999}
   - component: {fileID: 8862086684754836719}
   - component: {fileID: 8497186059431564370}
+  - component: {fileID: 7092101385330938258}
   m_Layer: 6
   m_Name: 6thWeekBlobPrefab
   m_TagString: Player
@@ -1552,22 +1553,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   spawnPoint: {x: 0, y: 0, z: 0}
   playerNumberText: {fileID: 828541765834795369}
-  dustFXPrefab: {fileID: 11381190903868661}
   animatedModel: {fileID: 5866156221909163747}
+  dustFXParticles: {fileID: 805137322846962325}
+  rateOverDistanceRange: {x: 2, y: 15}
+  startSizeRange: {x: 0.2, y: 1}
+  startSpeedRange: {x: 0, y: 0}
   _NetworkPhysicsSyncedRotations: []
   groundCheckRadius: 0.25
   groundCheckDistance: 0.3
   groundCheckOrigin: {fileID: 5458329399638187860}
-  maxSpeed: 6
-  acceleration: 50
-  rotationAngle: 350
+  maxSpeed: 7.5
+  acceleration: 55
+  rotationAngle: 360
   jumpForce: 12
   ragdollTime: 3
   maxStamina: 15
-  minStaminaDrainRate: 1
+  minStaminaDrainRate: 0.2
   maxStaminaDrainRate: 3
   regenDelay: 0.5
-  regenRate: 3
+  regenRate: 4
   _CurrentStamina: 15
 --- !u!114 &-4559450326446808081
 MonoBehaviour:
@@ -1643,6 +1647,14 @@ CapsuleCollider:
   m_Height: 0.7
   m_Direction: 1
   m_Center: {x: 0, y: 0.4, z: 0}
+--- !u!81 &7092101385330938258
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5245577787463167790}
+  m_Enabled: 1
 --- !u!1 &5823897310761265724
 GameObject:
   m_ObjectHideFlags: 0
@@ -4744,9 +4756,9 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7abd3835f5c902141a0231649edaed0b, type: 3}
---- !u!1 &11381190903868661 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 5767971240947483305, guid: 7abd3835f5c902141a0231649edaed0b, type: 3}
+--- !u!198 &805137322846962325 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 6561727389164498121, guid: 7abd3835f5c902141a0231649edaed0b, type: 3}
   m_PrefabInstance: {fileID: 5774631128911195740}
   m_PrefabAsset: {fileID: 0}
 --- !u!4 &8321584867032430190 stripped

@@ -22,7 +22,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private TextMeshProUGUI playerNumberText;
-    [SerializeField] private GameObject dustFXPrefab;
+    [SerializeField] private Animator animatedModel;
+    
+    [Header("Juice - Dust Trail")]
+    [SerializeField] private ParticleSystem dustFXParticles;
+    [SerializeField] private Vector2 rateOverDistanceRange = new Vector2(3f, 15f);
+    [SerializeField] private Vector2 startSizeRange = new Vector2(0.1f, 0.4f);
+    [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -265,6 +271,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         }
         
         SyncAnimations(localForwardVelocity);
+        UpdateDustFX(localForwardVelocity);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
