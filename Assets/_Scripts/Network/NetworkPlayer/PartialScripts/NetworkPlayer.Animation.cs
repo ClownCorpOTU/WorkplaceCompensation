@@ -10,7 +10,9 @@ public partial class NetworkPlayer
     private void SyncAnimations(float localForwardVelocity)
     {
         if (!Object.HasStateAuthority) return;
-        
+
+        dustFXPrefab.SetActive(isGrounded);
+
         animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
         {
