@@ -9,16 +9,21 @@ public class NetworkDoor : NetworkBehaviour, ILever
     [SerializeField] private float speed = 2f;
     [SerializeField] private float doorLockTime = 5f;
     [SerializeField] private float openPositionY, closedPositionY;
+    [SerializeField] private bool shouldLockRot = false;
+    [SerializeField] private Vector3 lockedRot = new Vector3(-90f, 0f, 0f); 
 
     private float targetY;
     private bool hasAutoUnlocked; // one time flag
     [Networked] private TickTimer doorLockTimer { get; set; }
+    
     
     private void Start()
     {
         targetY = openPositionY;
         lever.ToggleLeverOff();
         hasAutoUnlocked = false;
+        
+        if (shouldLockRot) transform.localRotation = Quaternion.Euler(lockedRot);
     }
 
     public void OnLeverToggled(bool state)
@@ -45,7 +50,8 @@ public class NetworkDoor : NetworkBehaviour, ILever
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
-
+        if (shouldLockRot) transform.localRotation = Quaternion.Euler(lockedRot); // Bad fix, figure out actual problem later
+        
         if (Mathf.Abs(transform.position.y - targetY) > 0.01f)
         {
             Vector3 pos = transform.position;

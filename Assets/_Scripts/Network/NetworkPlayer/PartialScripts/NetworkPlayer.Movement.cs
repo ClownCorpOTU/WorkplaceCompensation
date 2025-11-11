@@ -89,7 +89,7 @@ public partial class NetworkPlayer
 
         if (isGrounded && !jumpBuffer.IsRunning)
         {
-            print("Jump consumed = false");
+            //print("Jump consumed = false");
             jumpConsumed = false;
         }
     }
@@ -98,7 +98,7 @@ public partial class NetworkPlayer
     {
         if (CurrentStamina < 3f) return; // not enough energy
 
-        print("Jumping!");
+        //print("Jumping!");
         
         // Drain once
         //CurrentStamina = Mathf.Max(0f, CurrentStamina - 3f);

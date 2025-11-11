@@ -2,6 +2,6 @@
 
 public interface ITriggerReceiver
 {
-    void OnChildTriggerEnter(Collider other);
-    void OnChildTriggerExit(Collider other);
+    void OnChildTriggerEnter(Collider other, TriggerType tType = TriggerType.Left);
+    void OnChildTriggerExit(Collider other, TriggerType tType = TriggerType.Left);
 }
