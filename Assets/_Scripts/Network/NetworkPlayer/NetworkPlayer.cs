@@ -254,6 +254,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             Vector3 localVelocityVsForward = transform.forward * Vector3.Dot(transform.forward, rb.linearVelocity);
             localForwardVelocity = localVelocityVsForward.magnitude;
         }
+        else if (Object.HasInputAuthority)
+        {
+            // Do a lightweight local estimate for visuals
+            localForwardVelocity = rb.linearVelocity.magnitude;
+            isGrounded = Physics.CheckSphere(transform.position, 0.25f);
+        }
         
         // Respawn in place
         if (networkInputData.IsRevivePressed)
