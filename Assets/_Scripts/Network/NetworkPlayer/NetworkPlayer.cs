@@ -22,6 +22,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private TextMeshProUGUI playerNumberText;
+    [SerializeField] private GameObject dustFXPrefab;
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
