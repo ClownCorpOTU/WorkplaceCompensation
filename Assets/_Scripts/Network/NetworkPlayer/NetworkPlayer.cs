@@ -278,6 +278,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         SyncAnimations(localForwardVelocity);
         UpdateDustFX(localForwardVelocity);
+        UpdateSpineLean(localForwardVelocity);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]

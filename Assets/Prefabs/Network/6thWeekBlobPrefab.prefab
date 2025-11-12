@@ -1199,14 +1199,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5069347131274998283}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: -0.008150933, z: 0}
+  m_LocalScale: {x: 0.01, y: 0.010000002, z: 0.010000001}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5939755554126486447}
   - {fileID: 8225096180506141590}
-  m_Father: {fileID: 117553298914410575}
+  m_Father: {fileID: 4143426786206766337}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &5245577787463167790
 GameObject:
@@ -1615,6 +1615,13 @@ MonoBehaviour:
   rotationAngle: 360
   jumpForce: 12
   ragdollTime: 3
+  spineTarget: {fileID: 4488006285845976720}
+  maxLeanAngle: 18
+  forwardSnapAngle: 25
+  leanLerpSpeed: 30
+  snapSpeed: 40
+  recoverSpeed: 30
+  speedThreshold: 0.25
   maxStamina: 15
   minStaminaDrainRate: 0.2
   maxStaminaDrainRate: 3
@@ -2195,7 +2202,6 @@ Transform:
   m_Children:
   - {fileID: 3763491314175374996}
   - {fileID: 542941953208747161}
-  - {fileID: 5553537539496405169}
   m_Father: {fileID: 6463810950186570800}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8125612297643472289
@@ -2637,12 +2643,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8976321092953120173}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.70710695, y: -0, z: -0, w: 0.7071067}
-  m_LocalPosition: {x: 0, y: -0.008150933, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.707107, y: -0, z: -0, w: 0.7071067}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 100, y: 99.99998, z: 99.99998}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 4143426786206766337}
+  m_Father: {fileID: 3763491314175374996}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!137 &793402512017090098
 SkinnedMeshRenderer:
@@ -3067,7 +3073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6014503084441653313, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7135840613283751297, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       propertyPath: m_Layer
@@ -3709,9 +3715,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8321584867032430190}
-    - targetCorrespondingSourceObject: {fileID: 734168798885364862, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2419737699117980278}
+    - targetCorrespondingSourceObject: {fileID: 734168798885364862, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5553537539496405169}
     - targetCorrespondingSourceObject: {fileID: -6188560499244134816, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1759348183198179072}
@@ -4319,8 +4328,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5db074c9d6de8c04ba4716bee87d42da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatedRB: {fileID: 0}
-  syncAnimation: 0
+  animatedRB: {fileID: 8827158260782474173}
+  syncAnimation: 1
 --- !u!114 &4537131748690662793
 MonoBehaviour:
   m_ObjectHideFlags: 0
