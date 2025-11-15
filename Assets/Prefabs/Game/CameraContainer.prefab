@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1700418173866769912}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: CameraContainer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -47,8 +47,7 @@ GameObject:
   - component: {fileID: 5769165743428124009}
   - component: {fileID: 8279661968285641152}
   - component: {fileID: 2958391748032804899}
-  - component: {fileID: 5267105066152010619}
-  m_Layer: 7
+  m_Layer: 0
   m_Name: ThirdPersonCam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -96,7 +95,7 @@ MonoBehaviour:
   Lens:
     FieldOfView: 75
     OrthographicSize: 5
-    NearClipPlane: 0.01
+    NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
     ModeOverride: 0
@@ -147,7 +146,7 @@ MonoBehaviour:
     SplineCurvature: 0.5
   RecenteringTarget: 2
   HorizontalAxis:
-    Value: 95.40334
+    Value: 2.7748764
     Center: 0
     Range: {x: -180, y: 180}
     Wrap: 1
@@ -157,7 +156,7 @@ MonoBehaviour:
       Time: 2
     Restrictions: 0
   VerticalAxis:
-    Value: 15.497339
+    Value: 45
     Center: 25
     Range: {x: 10, y: 80}
     Wrap: 0
@@ -212,14 +211,14 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4180325159804098998}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbe43d662878a7c43bcd44d43c9e2094, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   CollideAgainst:
     serializedVersion: 2
-    m_Bits: 81
+    m_Bits: 4294967295
   IgnoreTag: Player
   TransparentLayers:
     serializedVersion: 2
@@ -229,19 +228,19 @@ MonoBehaviour:
     Enabled: 1
     DistanceLimit: 0
     MinimumOcclusionTime: 0
-    CameraRadius: 0.01
+    CameraRadius: 0.6
     UseFollowTarget:
       Enabled: 1
       YOffset: 0
-    Strategy: 1
+    Strategy: 0
     MaximumEffort: 4
     SmoothingTime: 0.3
     Damping: 0.4
     DampingWhenOccluded: 0
   ShotQualityEvaluation:
-    Enabled: 1
-    OptimalDistance: 0.65
-    NearLimit: 0.1
+    Enabled: 0
+    OptimalDistance: 10
+    NearLimit: 5
     FarLimit: 30
     MaxQualityBoost: 0.2
 --- !u!114 &2958391748032804899
@@ -296,36 +295,6 @@ MonoBehaviour:
         DecelTime: 0
   PlayerIndex: -1
   AutoEnableInputs: 1
---- !u!114 &5267105066152010619
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4180325159804098998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ca7de3aefa901374ba29464584a3109a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineDecollider
-  CameraRadius: 0.01
-  Decollision:
-    Enabled: 1
-    ObstacleLayers:
-      serializedVersion: 2
-      m_Bits: 1
-    UseFollowTarget:
-      Enabled: 1
-      YOffset: 0
-    Damping: 0.4
-    SmoothingTime: 0.3
-  TerrainResolution:
-    Enabled: 1
-    TerrainLayers:
-      serializedVersion: 2
-      m_Bits: 256
-    MaximumRaycast: 10
-    Damping: 0.4
 --- !u!1 &6893673794969708384
 GameObject:
   m_ObjectHideFlags: 0
@@ -339,7 +308,7 @@ GameObject:
   - component: {fileID: 3176923056604252648}
   - component: {fileID: 3675482010203630472}
   - component: {fileID: 3826968529757125272}
-  m_Layer: 3
+  m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -392,7 +361,7 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.01
+  near clip plane: 0.3
   far clip plane: 350
   field of view: 60
   orthographic: 0
