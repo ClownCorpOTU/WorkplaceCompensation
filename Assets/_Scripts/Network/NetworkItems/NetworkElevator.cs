@@ -18,15 +18,27 @@ public class NetworkElevator : NetworkBehaviour, ILever
     {
         rb = GetComponent<Rigidbody>();
         floorParent = transform.parent;
-        bottomY = transform.localPosition.y;
+        //bottomY = transform.localPosition.y;
+
+        //lever.ToggleLeverOff();
+    }
+    
+    public override void Spawned()
+    {
+        targetY = bottomY;
+        MoveFloor();
     }
 
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
-        
         if (overrideButton.IsButtonPressed) lever.ToggleLeverOff();
 
+        MoveFloor();
+    }
+
+    private void MoveFloor()
+    {
         // Work in local space
         Vector3 localPos = floorParent.InverseTransformPoint(rb.position);
         localPos.y = Mathf.MoveTowards(localPos.y, targetY, speed * Runner.DeltaTime);

@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 /// <summary>
@@ -15,10 +17,12 @@ public class HandGrabHandler : MonoBehaviour
     private Rigidbody rb;
     private FixedJoint fixedJoint; // Created dynamically
     private NetworkPlayer networkPlayer;
+    private NetworkPlayerGrab playerGrab;
     
     private void Awake()
     {
         networkPlayer = transform.root.GetComponent<NetworkPlayer>();
+        playerGrab = networkPlayer.GetComponent<NetworkPlayerGrab>();
         rb = GetComponent<Rigidbody>();
 
         // Change solver iterations to prevent joint from flexing too much
@@ -65,13 +69,15 @@ public class HandGrabHandler : MonoBehaviour
         // Transform collision point from world to local space
         fixedJoint.connectedAnchor = other.transform.InverseTransformPoint(other.GetContact(0).point);
 
+        playerGrab.CurrentlyGrabbedRigidbody = otherRB;
+            
         if (other.gameObject.TryGetComponent(out Vial v))
             v.OnGrabbedBy(networkPlayer);
         
         return true;
     }
 
-    private void ReleaseJoint()
+    public void ReleaseJoint()
     {
         if (fixedJoint == null) return;
         
@@ -94,5 +100,7 @@ public class HandGrabHandler : MonoBehaviour
         // Destroy joint
         Destroy(fixedJoint);
         fixedJoint = null;
+
+        playerGrab.CurrentlyGrabbedRigidbody = null;
     }
 }
