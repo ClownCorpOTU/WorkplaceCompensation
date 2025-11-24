@@ -25,13 +25,15 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private void Start()
     {
+        string sessionName = "";
         if (networkRunner == null)
         {
             networkRunner = Instantiate(networkRunnerPrefab);
             networkRunner.name = "NetworkRunner";
+            sessionName = "TestSession";
         }
         
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.AutoHostOrClient, "TestSession", 
+        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.AutoHostOrClient, sessionName, 
             NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
     }
 
@@ -57,7 +59,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             Address = address,
             Scene = scene,
             SessionName = sessionName,
-            CustomLobbyName = "TestLobbyID",
+            CustomLobbyName = runner.name,
             SceneManager = sceneManager
         });
     }
