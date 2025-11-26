@@ -186,7 +186,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerNumberText.color = color;
         
         // Update player body color to be the same as their name
-        bodyMeshRenderer.material.SetColor("_BaseColor", color);;
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);;
         print("Updating body color to " + color);
     }
 
