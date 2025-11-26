@@ -119,6 +119,8 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
         newVial.Initialize(resultType);
         vialCount++;
+        
+        RPC_PlayFireworks();
     }
 
     private void OnBoxAdded(VialType vialType)

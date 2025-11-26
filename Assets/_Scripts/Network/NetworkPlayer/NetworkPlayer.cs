@@ -23,6 +23,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private TextMeshProUGUI playerNumberText;
     [SerializeField] private Animator animatedModel;
+    [SerializeField] private SkinnedMeshRenderer bodyMeshRenderer;
     
     [Header("Juice - Dust Trail")]
     [SerializeField] private ParticleSystem dustFXParticles;
@@ -176,12 +177,17 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         // Make a readable number based on PlayerRef
         int playerNumber = PlayerRefValue.RawEncoded % 1000;
+        playerNumber--; // Right now players start at 2, this is a hack to make it start at 1
         playerNumberText.text = $"Player {playerNumber}";
         
         // Give each player a distinct color based on their ID
         float hue = (playerNumber * 137.508f) % 360f;
         Color color = Color.HSVToRGB(hue / 360f, 0.8f, 0.9f);
         playerNumberText.color = color;
+        
+        // Update player body color to be the same as their name
+        bodyMeshRenderer.material.SetColor("_BaseColor", color);;
+        print("Updating body color to " + color);
     }
 
     public void RemovePlayerInputAuthority()
