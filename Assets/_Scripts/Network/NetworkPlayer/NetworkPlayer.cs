@@ -182,16 +182,17 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         // Give each player a distinct color based on their ID
         float hue = (playerNumber * 137.508f) % 360f;
-        Color color = Color.HSVToRGB(hue / 360f, 0.8f, 0.9f);
+        Color color = Color.HSVToRGB(hue / 360f, 0.65f, 0.9f);
         playerNumberText.color = color;
         
         // Update player body color to be the same as their name
         bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);;
         
         // Update rim color to complement their body color
-        float rimHue = (hue + 180f) % 360f;
-        Color rimColor = Color.HSVToRGB(rimHue / 360f, 0.5f, 1f);
-
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+        float rimV = Mathf.Clamp01(1.2f - v); // brighter rims on darker colors
+        Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
+        
         bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);;
     }
 
