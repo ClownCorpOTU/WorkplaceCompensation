@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: b83665e6e51ed734a92d0cf0c502714a
+guid: de66c1df79518ac4ea02bd0c52a775ae
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -45,7 +45,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 1
+  spriteMeshType: 0
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -95,12 +95,100 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites: []
+    sprites:
+    - serializedVersion: 2
+      name: Asbestos_Sprite_Atlas_0
+      rect:
+        serializedVersion: 2
+        x: 128
+        y: 111
+        width: 782
+        height: 754
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 47975d4b0dc6dd2438943afb62a678e0
+      internalID: -2088026275
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Asbestos_Sprite_Atlas_1
+      rect:
+        serializedVersion: 2
+        x: 1041
+        y: 84
+        width: 779
+        height: 757
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 24212c3bf826c5b408611f82eb5661b0
+      internalID: -1767015517
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Asbestos_Sprite_Atlas_2
+      rect:
+        serializedVersion: 2
+        x: 1993
+        y: 64
+        width: 808
+        height: 773
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 79ec4a9b1283741459241ac1f0db559b
+      internalID: 1793202596
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Asbestos_Sprite_Atlas_3
+      rect:
+        serializedVersion: 2
+        x: 2921
+        y: 80
+        width: 812
+        height: 774
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3fdc54fbc8402754fbe2124dbb4a534b
+      internalID: -1719968613
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
     outline: []
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: fff5649a05b48744c9e6c0d9ea09e179
     internalID: 0
     vertices: []
     indices: 
@@ -109,7 +197,11 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      Asbestos_Sprite_Atlas_0: -2088026275
+      Asbestos_Sprite_Atlas_1: -1767015517
+      Asbestos_Sprite_Atlas_2: 1793202596
+      Asbestos_Sprite_Atlas_3: -1719968613
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
