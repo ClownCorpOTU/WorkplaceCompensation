@@ -187,7 +187,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         // Update player body color to be the same as their name
         bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);;
-        print("Updating body color to " + color);
+        
+        // Update rim color to complement their body color
+        float rimHue = (hue + 180f) % 360f;
+        Color rimColor = Color.HSVToRGB(rimHue / 360f, 0.5f, 1f);
+
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);;
     }
 
     public void RemovePlayerInputAuthority()
