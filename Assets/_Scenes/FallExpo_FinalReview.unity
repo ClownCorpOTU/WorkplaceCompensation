@@ -24952,15 +24952,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2995014788769614660, guid: 24ba3b1439b10864fbee036544fd2102, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.765594
+      value: -9.753821
       objectReference: {fileID: 0}
     - target: {fileID: 2995014788769614660, guid: 24ba3b1439b10864fbee036544fd2102, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.517246
+      value: 1.5424248
       objectReference: {fileID: 0}
     - target: {fileID: 2995014788769614660, guid: 24ba3b1439b10864fbee036544fd2102, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 11.210313
+      value: 10.711086
       objectReference: {fileID: 0}
     - target: {fileID: 2995014788769614660, guid: 24ba3b1439b10864fbee036544fd2102, type: 3}
       propertyPath: m_LocalRotation.w
@@ -25024,7 +25024,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7411148242314855074, guid: 24ba3b1439b10864fbee036544fd2102, type: 3}
       propertyPath: topY
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 7411148242314855074, guid: 24ba3b1439b10864fbee036544fd2102, type: 3}
       propertyPath: bottomY
@@ -32864,7 +32864,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2004815210636326976, guid: 6b069d85028efef43a27bcb639d3db36, type: 3}
       propertyPath: sounds.Array.data[2].volume
-      value: 0.05
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2004815210636326976, guid: 6b069d85028efef43a27bcb639d3db36, type: 3}
       propertyPath: sounds.Array.data[3].volume
@@ -70724,6 +70724,22 @@ PrefabInstance:
     - target: {fileID: 683865324148331649, guid: f2e4c0d5b30c5fe42b8f56feeedf9b5b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4821949538967956692, guid: f2e4c0d5b30c5fe42b8f56feeedf9b5b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314151818016084099, guid: f2e4c0d5b30c5fe42b8f56feeedf9b5b, type: 3}
+      propertyPath: m_Color.b
+      value: 0.2687344
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314151818016084099, guid: f2e4c0d5b30c5fe42b8f56feeedf9b5b, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6303883
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314151818016084099, guid: f2e4c0d5b30c5fe42b8f56feeedf9b5b, type: 3}
+      propertyPath: m_Color.r
+      value: 0.9339623
       objectReference: {fileID: 0}
     - target: {fileID: 5363493580799707144, guid: f2e4c0d5b30c5fe42b8f56feeedf9b5b, type: 3}
       propertyPath: SortKey
