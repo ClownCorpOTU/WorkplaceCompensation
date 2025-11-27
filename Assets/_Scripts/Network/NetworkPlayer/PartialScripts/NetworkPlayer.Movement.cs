@@ -29,7 +29,7 @@ public partial class NetworkPlayer
             if (localForwardVelocity < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
-                audioManager.Play("Walk");
+                audioManager.Play("Walk", transform.position);
             }
         }
         
@@ -78,6 +78,7 @@ public partial class NetworkPlayer
         if (CurrentStamina < 3f) return; // not enough energy
 
         //print("Jumping!");
+        audioManager.Play("Jump", transform.position);
         
         // Drain once
         //CurrentStamina = Mathf.Max(0f, CurrentStamina - 3f);

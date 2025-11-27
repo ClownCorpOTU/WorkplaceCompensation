@@ -20,7 +20,7 @@ public partial class NetworkPlayer
         // Reset position if we fall off
         if (transform.position.y < -75f)
         {
-            audioManager.Play("Death");
+            audioManager.Play("Death", transform.position);
             playerRespawn.Respawn(false);
         }
 

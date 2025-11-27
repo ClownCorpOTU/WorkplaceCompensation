@@ -3795,6 +3795,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8165783766487979752, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8111735949186412625}
+    - targetCorrespondingSourceObject: {fileID: 8165783766487979752, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1933797716863666851}
     - targetCorrespondingSourceObject: {fileID: -5935491662994302024, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7144493912681192771}
@@ -4728,6 +4731,14 @@ MonoBehaviour:
   knockoutThreshold: 15
   knockbackForceMultiplier: 5
   maxKnockbackForce: 30
+--- !u!81 &1933797716863666851
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4819576205825492887}
+  m_Enabled: 0
 --- !u!1 &5432665043220083553 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8706748934994600478, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}

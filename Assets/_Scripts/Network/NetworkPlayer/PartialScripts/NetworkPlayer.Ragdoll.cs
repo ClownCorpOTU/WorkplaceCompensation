@@ -33,7 +33,7 @@ public partial class NetworkPlayer
         }
         
         // Play sound
-        audioManager.Play("Ragdoll");
+        audioManager.Play("Ragdoll", transform.position);
         
         // Make sure we're not carrying anything
         isGrabbingActive = false;
