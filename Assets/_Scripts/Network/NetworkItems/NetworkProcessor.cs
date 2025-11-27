@@ -46,7 +46,12 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     private void AddBox(Vial vial)
     {
         if (!Object.HasStateAuthority) return;
-        if (vial.Type == VialType.OutputBox || vial.Type == VialType.TrashBag) return;
+
+        if (vial.Type is not (VialType.InputCrate or VialType.VIPCrate))
+        {
+            Utils.DebugLog($"Invalid vial type: {vial.Type}");
+            return;
+        }
 
         currentInputs.Add(vial.Type);
         Utils.DebugLog($"Added vial: {vial.Type}");
