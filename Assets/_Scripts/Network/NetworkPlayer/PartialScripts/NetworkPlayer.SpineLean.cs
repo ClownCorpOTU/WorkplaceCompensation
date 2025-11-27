@@ -49,26 +49,22 @@ public partial class NetworkPlayer
                 if (snapTimer < SNAP_DURATION * 0.5f)
                 {
                     // First half: snap forward quickly
-                    print("Snap forward");
                     currentLeanZ = Mathf.Lerp(currentLeanZ, forwardSnapAngle, Time.deltaTime * snapSpeed);
                 }
                 else
                 {
                     // Second half: return to neutral smoothly
                     currentLeanZ = Mathf.Lerp(currentLeanZ, 0f, Time.deltaTime * recoverSpeed);
-                    print("Snap back");
                     
                     // Reset once close enough to 0
                     if (Mathf.Abs(currentLeanZ) < 0.5f)
                         isSnappingForward = false;
-                    print("Reset");
                 }
             }
             else
             {
                 // Fully stopped and neutral
                 currentLeanZ = Mathf.Lerp(currentLeanZ, 0f, Time.deltaTime * recoverSpeed);
-                print("Fully stopped");
             }
         }
 

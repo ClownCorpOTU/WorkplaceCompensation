@@ -20,6 +20,9 @@ public class NetworkGameManager : NetworkBehaviour
 
     private Dictionary<PlayerRef, int> playerScores = new();
     
+    
+    #region Spawning and Setup
+    
     public override void Spawned()
     {
         gameOverPanel.SetActive(false);
@@ -31,7 +34,31 @@ public class NetworkGameManager : NetworkBehaviour
             GameTimer = TickTimer.CreateFromSeconds(Runner, gameTime);
         }
     }
-
+    
+    private NetworkPlayer FindPlayerByRef(PlayerRef playerRef)
+    {
+        foreach (var player in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
+        {
+            if (player.Object.InputAuthority == playerRef)
+                return player;
+        }
+        return null;
+    }
+    
+    #endregion
+    
+    #region Updates
+    
+    private void Update()
+    {
+        // UI updates are client-only (not networked)
+        if (GameTimer.IsRunning)
+        {
+            float remainingTime = GameTimer.RemainingTime(Runner).GetValueOrDefault();
+            UpdateTimerUI(remainingTime);
+        }
+    }
+    
     public override void FixedUpdateNetwork()
     {
         if (!GameTimer.IsRunning || IsGameOver) return;
@@ -40,26 +67,6 @@ public class NetworkGameManager : NetworkBehaviour
         {
             IsGameOver = true;
             RPC_OnGameOver();
-        }
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_OnGameOver()
-    {
-        gameOverPanel.SetActive(true);
-        ShowPlayerScores();
-        NetworkPlayer.Local.RemovePlayerInputAuthority();
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-    }
-
-    private void Update()
-    {
-        // UI updates are client-only (not networked)
-        if (GameTimer.IsRunning)
-        {
-            float remainingTime = GameTimer.RemainingTime(Runner).GetValueOrDefault();
-            UpdateTimerUI(remainingTime);
         }
     }
 
@@ -72,7 +79,11 @@ public class NetworkGameManager : NetworkBehaviour
         timerClockFill.fillAmount = remainingTime / (gameRuntime*60f);
         timerClockHand.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Lerp(360, 0, remainingTime / (gameRuntime*60f)));
     }
+    
+    #endregion
 
+    #region Scoring
+    
     public void AddScore(PlayerRef playerRef, int amount)
     {
         if (!Object.HasStateAuthority) return;
@@ -87,16 +98,6 @@ public class NetworkGameManager : NetworkBehaviour
 
         if (player != null)
             player.RPC_UpdateScoreUI(playerScores[playerRef]);
-    }
-    
-    private NetworkPlayer FindPlayerByRef(PlayerRef playerRef)
-    {
-        foreach (var player in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
-        {
-            if (player.Object.InputAuthority == playerRef)
-                return player;
-        }
-        return null;
     }
     
     private void ShowPlayerScores()
@@ -140,13 +141,29 @@ public class NetworkGameManager : NetworkBehaviour
         RPC_DisplayFinalScore(finalLeaderboard);
     }
 
+    #endregion
+
+    #region RPCs
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_OnGameOver()
+    {
+        gameOverPanel.SetActive(true);
+        ShowPlayerScores();
+        NetworkPlayer.Local.RemovePlayerInputAuthority();
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+    }
+    
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_DisplayFinalScore(string scoresText)
     {
         // This runs on all clients (and host)
         finalScoreText.text = scoresText;
     }
-
+    
+    #endregion
+    
     #region Menu Functions
     
     public void QuitGame()
