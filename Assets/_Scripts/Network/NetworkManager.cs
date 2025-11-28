@@ -16,7 +16,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public Transform lobbyEntryContentParent;
     public GameObject lobbyEntryPrefab;
-    public SceneAsset gameplayScene;
+    public string gameplayScene = "FallExpo_FinalReview";
     
     public Dictionary<string, GameObject> lobbyEntriesDictionary = new Dictionary<string, GameObject>(); 
 
@@ -142,7 +142,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         GameObject.Find("LobbyUI").SetActive(false);
         DontDestroyOnLoad(_runnerInstance.gameObject);
-        SceneManager.LoadScene(gameplayScene.name);
+        SceneManager.LoadScene(gameplayScene);
     }
 
     public void OnConnectedToServer(NetworkRunner runner)

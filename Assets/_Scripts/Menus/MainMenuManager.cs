@@ -5,8 +5,8 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
-    [SerializeField] SceneAsset gameplayScene;
-    [SerializeField] SceneAsset lobbyScene;
+    [SerializeField] string gameplayScene = "FallExpo_FinalReview";
+    [SerializeField] string lobbyScene = "Lobby";
     [SerializeField] GameObject notesMenu;
 
     
@@ -24,13 +24,13 @@ public class MainMenuManager : MonoBehaviour
     public void JustPlay()
     {
         DisableUI();
-        SceneManager.LoadScene(gameplayScene.name);
+        SceneManager.LoadScene(gameplayScene);
     }
 
     public void GoToLobbyMenu()
     {
         DisableUI();
-        SceneManager.LoadScene(lobbyScene.name);
+        SceneManager.LoadScene(lobbyScene);
     }
 
     public void OpenNotesMenu()
