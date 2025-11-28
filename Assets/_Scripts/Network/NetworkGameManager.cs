@@ -132,7 +132,7 @@ public class NetworkGameManager : NetworkBehaviour
                 _ => "#FFFFFF"  // White for others
             };
 
-            sb.AppendLine($"<color={colorTag}>Player {playerNumber}: {score}</color>");
+            sb.AppendLine($"<color={colorTag}>Player {playerNumber-1}: {score}</color>");
             rank++;
         }
 
