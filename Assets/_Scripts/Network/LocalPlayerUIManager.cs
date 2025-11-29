@@ -6,9 +6,15 @@ public class LocalPlayerUIManager : MonoBehaviour
 {
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private Image staminaBarImage;
+    [SerializeField] private GameObject fakeLoadingScreen;
     public bool IsLocalGamePaused { get; private set; }
 
-    
+
+    private void Start()
+    {
+        fakeLoadingScreen.SetActive(false);
+    }
+
     public void TogglePause()
     {
         IsLocalGamePaused = !IsLocalGamePaused;
