@@ -191,7 +191,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         if (!Object.HasStateAuthority) return;
         if (!other.TryGetComponent(out Vial vial)) return;
-
+        if (vial.Type != VialType.OutputVial) return;
+        
         AddBox(vial);
         Runner.Despawn(vial.Object);
 

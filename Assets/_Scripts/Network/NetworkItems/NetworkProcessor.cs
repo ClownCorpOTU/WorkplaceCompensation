@@ -219,7 +219,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     {
         if (!Object.HasStateAuthority) return;
 
-        if (other.TryGetComponent(out Vial vial))
+        if (other.TryGetComponent(out Vial vial) && vial.Type is (VialType.InputCrate or VialType.VIPCrate))
             AddBox(vial);
     }
 
