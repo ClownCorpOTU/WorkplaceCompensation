@@ -50,7 +50,7 @@ MonoBehaviour:
   interestGroup: 0
   useTargetPlayers: 0
   targetPlayers: 
-  debugEchoMode: 1
+  debugEchoMode: 0
   reliableMode: 0
   encrypt: 0
   transmitEnabled: 1
@@ -71,7 +71,7 @@ MonoBehaviour:
     EnableAEC: 1
     EnableAGC: 1
     EnableNS: 1
-  stopRecordingWhenPaused: 1
+  stopRecordingWhenPaused: 0
   useOnAudioFilterRead: 0
   useMicrophoneTypeFallback: 1
   recordWhenJoined: 1
