@@ -1,4 +1,5 @@
 ﻿using System;
+using Photon.Voice.Unity;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,6 +8,8 @@ public class LocalPlayerUIManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private Image staminaBarImage;
     [SerializeField] private GameObject fakeLoadingScreen;
+
+    private Recorder recorder;
     public bool IsLocalGamePaused { get; private set; }
 
 
@@ -35,5 +38,15 @@ public class LocalPlayerUIManager : MonoBehaviour
     {
         var normalizeStamina = NetworkPlayer.Local.NormalizeStamina();
         staminaBarImage.fillAmount = normalizeStamina;
+    }
+
+    public void MuteLocalPlayer(bool mute)
+    {
+        if (recorder == null)
+        {
+            recorder = FindFirstObjectByType<Recorder>();
+        }
+        
+        recorder.RecordingEnabled = !mute;
     }
 }
