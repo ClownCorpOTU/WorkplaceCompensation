@@ -903,10 +903,10 @@ AudioSource:
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 128
+  Priority: 0
   DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
+  MinDistance: 7
+  MaxDistance: 40
   Pan2D: 0
   rolloffMode: 0
   BypassEffects: 0
@@ -941,7 +941,7 @@ AudioSource:
     m_Curve:
     - serializedVersion: 3
       time: 0
-      value: 0
+      value: 1
       inSlope: 0
       outSlope: 0
       tangentMode: 0
@@ -1927,6 +1927,46 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5009933231103935888}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &6041949829162536842
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6452943187794712133}
+  - component: {fileID: 2126840160007673943}
+  m_Layer: 6
+  m_Name: AudioListener
+  m_TagString: Untagged
+  m_Icon: {fileID: -5397416234189338067, guid: 0000000000000000d000000000000000, type: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6452943187794712133
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6041949829162536842}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -0.7071068, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 2, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3763491314175374996}
+  m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!81 &2126840160007673943
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6041949829162536842}
+  m_Enabled: 0
 --- !u!1 &6465935427748462657
 GameObject:
   m_ObjectHideFlags: 0
@@ -3896,6 +3936,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7090737013167690912}
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6452943187794712133}
     - targetCorrespondingSourceObject: {fileID: 734168798885364862, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5553537539496405169}
@@ -3960,9 +4003,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 8165783766487979752, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8111735949186412625}
-    - targetCorrespondingSourceObject: {fileID: 8165783766487979752, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1933797716863666851}
     - targetCorrespondingSourceObject: {fileID: -5935491662994302024, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7144493912681192771}
@@ -4896,14 +4936,6 @@ MonoBehaviour:
   knockoutThreshold: 15
   knockbackForceMultiplier: 5
   maxKnockbackForce: 30
---- !u!81 &1933797716863666851
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4819576205825492887}
-  m_Enabled: 0
 --- !u!1 &5432665043220083553 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 8706748934994600478, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
