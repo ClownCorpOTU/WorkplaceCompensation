@@ -1829,12 +1829,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CurrentlyGrabbedRigidbody: {fileID: 0}
+  CurrentlyGrabbedHandSide: 0
   leftArmJoint: {fileID: 6181139273837666972}
   rightArmJoint: {fileID: 3507784302039042539}
   limpArmJointSpring: 2
   limpArmJointDamper: 0.2
   leftHandGrabRig: {fileID: 7262244808424043688}
   rightHandGrabRig: {fileID: 2249455302773753068}
+  leftHand: {fileID: 1759348183198179072}
+  rightHand: {fileID: 4279405631949773251}
   leftHandTarget: {fileID: 5850274843344286610}
   rightHandTarget: {fileID: 7791134077412051317}
   leftHandGrabTargetPos: {fileID: 2276171767374054646}
@@ -1842,6 +1845,11 @@ MonoBehaviour:
   leftHandLiftTargetPos: {fileID: 7798979936211748830}
   rightHandLiftTargetPos: {fileID: 2338560347610750445}
   smoothTime: 0.15
+  grabRadius: 0.8
+  magnetForce: 1.25
+  grabbableLayer:
+    serializedVersion: 2
+    m_Bits: 520
 --- !u!136 &8497186059431564370
 CapsuleCollider:
   m_ObjectHideFlags: 0
