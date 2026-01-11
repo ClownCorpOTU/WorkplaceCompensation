@@ -48,7 +48,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private ThemeSong themeSong;
     private NetworkGameManager networkGameManager;
     private LocalPlayerUIManager localPlayerUIManager;
-    private AudioListener audioListener; // This is on the head of the player
+    private AudioListener audioListener; // This is on the main camera
     
     // Input
     private NetworkInputData networkInputData;
@@ -87,7 +87,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         inputReader = GetComponent<InputReader>();
         audioManager = FindFirstObjectByType<AudioManager>();
         themeSong = FindFirstObjectByType<ThemeSong>();
-        audioListener = GetComponentInChildren<AudioListener>();
         
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
     }
@@ -129,8 +128,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
         transform.name = $"Player_{Object.Id}";
         
+        // Audio listener is on the main camera
+        audioListener = Camera.main.GetComponent<AudioListener>();
+        
         // Enable listener for the local player
-        audioListener.enabled = Object.HasInputAuthority;
+        if (audioListener != null) audioListener.enabled = Object.HasInputAuthority;
 
         if (Object.HasInputAuthority)
         {
