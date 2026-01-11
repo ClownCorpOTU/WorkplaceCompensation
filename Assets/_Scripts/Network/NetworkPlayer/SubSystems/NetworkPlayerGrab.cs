@@ -73,7 +73,6 @@ public class NetworkPlayerGrab : MonoBehaviour
         UpdateArmJointDrive(rightArmJoint, rightIntent);
         
         // 5. Create an invisible sphere around the hand that's trying to grab an item
-        print(CurrentlyGrabbedHandSide);
         if (CurrentlyGrabbedHandSide != HandSide.Left) ApplyGrabMagnetism(leftHand, leftIntent, 0);
         if (CurrentlyGrabbedHandSide != HandSide.Right) ApplyGrabMagnetism(rightHand, rightIntent, 1);
     }
@@ -90,8 +89,6 @@ public class NetworkPlayerGrab : MonoBehaviour
     {
         if (intent < 0.5f) return;
         
-        print("Applying grab magnetism");
-
         // This grabs your own body parts (if Player is selected in the layer mask), but it's filtered out later
         int count = Physics.OverlapSphereNonAlloc(
             handTransform.position, 
