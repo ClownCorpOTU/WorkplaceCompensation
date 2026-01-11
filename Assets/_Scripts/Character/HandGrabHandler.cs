@@ -8,7 +8,7 @@ using UnityEngine;
 /// When it stops grabbing something, it throws it away from the player.
 /// </summary>
 
-public enum HandSide { Left, Right }
+public enum HandSide { Left, Right, None }
 
 public class HandGrabHandler : MonoBehaviour
 {
@@ -70,6 +70,7 @@ public class HandGrabHandler : MonoBehaviour
         fixedJoint.connectedAnchor = other.transform.InverseTransformPoint(other.GetContact(0).point);
 
         playerGrab.CurrentlyGrabbedRigidbody = otherRB;
+        playerGrab.CurrentlyGrabbedHandSide = handSide;
             
         if (other.gameObject.TryGetComponent(out Vial v))
             v.OnGrabbedBy(networkPlayer);
@@ -102,5 +103,6 @@ public class HandGrabHandler : MonoBehaviour
         fixedJoint = null;
 
         playerGrab.CurrentlyGrabbedRigidbody = null;
+        playerGrab.CurrentlyGrabbedHandSide = HandSide.None;
     }
 }
