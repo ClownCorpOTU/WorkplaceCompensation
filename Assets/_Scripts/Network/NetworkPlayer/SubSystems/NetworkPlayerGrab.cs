@@ -49,53 +49,9 @@ public class NetworkPlayerGrab : MonoBehaviour
         // Both arm joints have the same strengths, so we'll just save one
         originalArmJointValue = leftArmJoint.slerpDrive.positionSpring;
         originalArmDampingValue = leftArmJoint.slerpDrive.positionDamper;
+        
+        CurrentlyGrabbedHandSide = HandSide.None;
     }
-
-    /*
-    public void AnimateHands(bool isLifting = false)
-    {
-        // Update IK targets
-        if (isLifting)
-        {
-            leftHandTarget.position = leftHandLiftTargetPos.position;
-            rightHandTarget.position = rightHandLiftTargetPos.position;
-        }
-        else
-        {
-            leftHandTarget.position = leftHandGrabTargetPos.position;
-            rightHandTarget.position = rightHandGrabTargetPos.position;
-        }
-
-        // Compute hand intent
-        float leftHandIntent = (networkPlayer.IsLeftHandGrabbingActive || networkPlayer.IsGrabbingActive) ? 1f : 0f;
-        float rightHandIntent = (networkPlayer.IsRightHandGrabbingActive || networkPlayer.IsGrabbingActive) ? 1f : 0f;
-
-        // Smoothly blend IK weights
-        leftHandGrabRig.weight = Mathf.SmoothDamp(leftHandGrabRig.weight, leftHandIntent, ref leftVelocity, smoothTime);
-        rightHandGrabRig.weight = Mathf.SmoothDamp(rightHandGrabRig.weight, rightHandIntent, ref rightVelocity, smoothTime);
-
-        // Smoothly lerp arm joint stiffness and damping instead of snapping
-        float targetSpringLeft = Mathf.Lerp(limpArmJointSpring, originalArmJointValue, leftHandIntent);
-        float targetSpringRight = Mathf.Lerp(limpArmJointSpring, originalArmJointValue, rightHandIntent);
-        
-        float targetDampingLeft = Mathf.Lerp(limpArmJointDamper, originalArmDampingValue, leftHandIntent);
-        float targetDampingRight = Mathf.Lerp(limpArmJointDamper, originalArmDampingValue, rightHandIntent);
-        
-        // Apply drive updates safely (copy → modify → assign)
-        JointDrive leftDrive = leftArmJoint.slerpDrive;
-        leftDrive.positionSpring = targetSpringLeft;
-        leftDrive.positionDamper = targetDampingLeft;
-        leftArmJoint.slerpDrive = leftDrive;
-        
-        JointDrive rightDrive = rightArmJoint.slerpDrive;
-        rightDrive.positionSpring = targetSpringRight;
-        rightDrive.positionDamper = targetDampingRight;
-        rightArmJoint.slerpDrive = rightDrive;
-        
-        // Create an invisible sphere around the hand that's trying to grab an item
-        // If any rigidbodies are in the area, the closest one will be "magnetized" towards the player's hand
-    }
-    */
     
     public void AnimateHands(bool isLifting = false)
     {
@@ -117,6 +73,7 @@ public class NetworkPlayerGrab : MonoBehaviour
         UpdateArmJointDrive(rightArmJoint, rightIntent);
         
         // 5. Create an invisible sphere around the hand that's trying to grab an item
+        print(CurrentlyGrabbedHandSide);
         if (CurrentlyGrabbedHandSide != HandSide.Left) ApplyGrabMagnetism(leftHand, leftIntent, 0);
         if (CurrentlyGrabbedHandSide != HandSide.Right) ApplyGrabMagnetism(rightHand, rightIntent, 1);
     }
@@ -132,6 +89,8 @@ public class NetworkPlayerGrab : MonoBehaviour
     private void ApplyGrabMagnetism(Transform handTransform, float intent, int leftOrRight = 0)
     {
         if (intent < 0.5f) return;
+        
+        print("Applying grab magnetism");
 
         // This grabs your own body parts (if Player is selected in the layer mask), but it's filtered out later
         int count = Physics.OverlapSphereNonAlloc(
