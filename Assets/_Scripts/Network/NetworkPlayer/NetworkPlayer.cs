@@ -127,17 +127,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
         transform.name = $"Player_{Object.Id}";
-        
-        // Audio listener is on the main camera
-        audioListener = Camera.main.GetComponent<AudioListener>();
-        
-        // Enable listener for the local player
-        if (audioListener != null) audioListener.enabled = Object.HasInputAuthority;
 
         if (Object.HasInputAuthority)
         {
             Local = this;
-            playerCamera.SetupCamera();
+            playerCamera.SetupCamera(Object.HasInputAuthority);
             networkGameManager.ScoreText.text = 0.ToString();
             
             // Ensure PlayerInput is enabled for the local player only
