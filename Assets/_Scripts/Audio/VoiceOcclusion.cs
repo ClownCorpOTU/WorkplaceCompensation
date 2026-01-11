@@ -9,19 +9,21 @@ public class VoiceOcclusion : MonoBehaviour
     [SerializeField] private float clearFrequency = 22000f;
     [SerializeField] private float fadeSpeed = 10f;
     [SerializeField] private LayerMask occlusionMask;
+    [SerializeField] private float occlusionCheckInterval = 0.1f;
     
-    private Transform localCamTransform;
+    private Transform listener;
     private float targetFrequency;
+    private float occlusionTimer;
 
     private static VoiceOcclusion instance;
 
-    private Transform listener;
     private readonly List<SpeakerEntry> speakers = new();
 
     private struct SpeakerEntry
     {
         public Transform transform;
         public AudioLowPassFilter lowPass;
+        public bool occluded;
     }
     
     
@@ -56,6 +58,12 @@ public class VoiceOcclusion : MonoBehaviour
     private void Update()
     {
         if (listener == null) return;
+
+        occlusionTimer -= Time.deltaTime;
+        
+        bool shouldSample = occlusionTimer <= 0f;
+        if (shouldSample)
+            occlusionTimer = occlusionCheckInterval;
         
         for (int i = speakers.Count - 1; i >= 0; i--)
         {
@@ -67,11 +75,16 @@ public class VoiceOcclusion : MonoBehaviour
                 continue;
             }
 
-            ApplyOcclusion(entry);
+            if (shouldSample)
+                SampleOcclusion(ref entry);
+
+            ApplyOcclusion(ref entry);
+
+            speakers[i] = entry; // Update entry struct
         }
     }
 
-    private void ApplyOcclusion(SpeakerEntry entry)
+    private void SampleOcclusion(ref SpeakerEntry entry)
     {
         Vector3 origin = listener.position;
         Vector3 target = entry.transform.position;
@@ -79,7 +92,7 @@ public class VoiceOcclusion : MonoBehaviour
         Vector3 direction = target - origin;
         float distance = direction.magnitude;
 
-        bool occluded = false;
+        bool blocked = false;
 
         if (Physics.Raycast(
                 origin,
@@ -92,23 +105,30 @@ public class VoiceOcclusion : MonoBehaviour
         {
             // Only occluded if something blocks BEFORE the speaker
             if (hit.transform != entry.transform && !hit.transform.IsChildOf(entry.transform))
-                occluded = true;
+                blocked = true;
         }
         
-        // Debug
-        if (occluded)
+        entry.occluded = blocked;
+        
+        DebugRaycast(entry, origin, target, hit);
+    }
+
+    private void ApplyOcclusion(ref SpeakerEntry entry)
+    {
+        float targetFrequency = entry.occluded ? muffledFrequency : clearFrequency;
+        entry.lowPass.cutoffFrequency = Mathf.Lerp(entry.lowPass.cutoffFrequency, targetFrequency, fadeSpeed * Time.deltaTime);
+    }
+
+    private void DebugRaycast(SpeakerEntry entry, Vector3 origin, Vector3 target, RaycastHit hit)
+    {
+        if (entry.occluded)
         {
-            Debug.DrawLine(origin, hit.point, Color.red);
-            Debug.DrawLine(hit.point, target, Color.gray); // optional
+            Debug.DrawLine(origin, hit.point, Color.red, occlusionCheckInterval);
         }
         else
         {
-            Debug.DrawLine(origin, target, Color.green);
+            Debug.DrawLine(origin, target, Color.green, occlusionCheckInterval);
         }
-
-        
-        float desiredFrequency = occluded ? muffledFrequency : clearFrequency;
-        entry.lowPass.cutoffFrequency = Mathf.Lerp(entry.lowPass.cutoffFrequency, desiredFrequency, fadeSpeed * Time.deltaTime);
     }
     
     
