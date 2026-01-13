@@ -13,6 +13,7 @@ using UnityEngine.SceneManagement;
 public class NetworkRunnerHandler : MonoBehaviour
 {
     [SerializeField] private NetworkRunner networkRunnerPrefab;
+    [SerializeField] private bool shouldStartInSinglePlayer = false;
     private NetworkRunner networkRunner;
 
     private void Awake()
@@ -33,7 +34,9 @@ public class NetworkRunnerHandler : MonoBehaviour
             sessionName = "TestSession";
         }
         
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.AutoHostOrClient, sessionName, 
+        GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
+        
+        var clientTask = InitializeNetworkRunner(networkRunner, mode, sessionName, 
             NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
     }
 
