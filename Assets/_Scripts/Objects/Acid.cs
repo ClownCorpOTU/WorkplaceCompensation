@@ -5,6 +5,8 @@ using UnityEngine;
 public class Acid : NetworkBehaviour
 {
     [SerializeField] private float acidKillDelay = 5f;
+    [SerializeField] private int scoreToAdd = 1;
+    
     private NetworkGameManager networkGameManager;
     private Vial vialToDespawn;
     
@@ -26,7 +28,7 @@ public class Acid : NetworkBehaviour
 
         if (other.TryGetComponent(out Vial vial) && vial.Type == VialType.TrashBag)
         {
-            networkGameManager.AddScore(vial.LastHeldBy, 1);
+            networkGameManager.AddScore(vial.LastHeldBy, scoreToAdd);
 
             // Start timer
             vialToDespawn = vial;

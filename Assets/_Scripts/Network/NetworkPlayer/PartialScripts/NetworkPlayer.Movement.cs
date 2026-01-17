@@ -8,11 +8,12 @@ public partial class NetworkPlayer
     [SerializeField] private float acceleration = 30f;
     [SerializeField] private float rotationAngle = 300f;
     [SerializeField] private float jumpForce = 20f;
-    
+
     private Vector2 moveInputVector = Vector2.zero;
     public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
     private TickTimer jumpBuffer;
+    private bool jumpConsumed = false;
     
     
     private void HandleMovement(float localForwardVelocity)
@@ -28,7 +29,7 @@ public partial class NetworkPlayer
             if (localForwardVelocity < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
-                audioManager.Play("Walk");
+                audioManager.Play("Walk", transform.position);
             }
         }
         
@@ -47,19 +48,46 @@ public partial class NetworkPlayer
         mainJoint.targetRotation =
             Quaternion.RotateTowards(mainJoint.targetRotation, desiredRotation, Runner.DeltaTime * rotationAngle);
     }
-
+    
     private void HandleJump()
     {
+        if (!Object.HasStateAuthority) return;
+        
+        // Buffer jump input
         if (networkInputData.IsJumpPressed)
             jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
 
-        if (isGrounded && jumpBuffer.IsRunning)
+        // Execute jump once per liftoff
+        if (isGrounded && jumpBuffer.IsRunning && !jumpConsumed)
         {
             jumpBuffer = TickTimer.None;
+            jumpConsumed = true;
             
-            animatedModel.Play("Isis_Jump");
-            Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
-            rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
+            PerformJump(); // separate function for clarity
         }
+
+        if (isGrounded && !jumpBuffer.IsRunning)
+        {
+            //print("Jump consumed = false");
+            jumpConsumed = false;
+        }
+    }
+
+    private void PerformJump()
+    {
+        if (CurrentStamina < 3f) return; // not enough energy
+
+        //print("Jumping!");
+        audioManager.Play("Jump", transform.position);
+        
+        // Drain once
+        //CurrentStamina = Mathf.Max(0f, CurrentStamina - 3f);
+
+        // Jump logic
+        Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
+        rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
+
+        // Reset regen timer
+        lastActivityTime = Runner.SimulationTime;
     }
 }

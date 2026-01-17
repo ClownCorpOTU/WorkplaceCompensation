@@ -11,27 +11,64 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private Vial trashPrefab;
     [SerializeField] private Transform vialSpawnPoint;
     [SerializeField] private float spawnDelay = 0.5f;
+
+    [Header("Lighting parameters")]
+    [SerializeField] private Renderer light1;
+    [SerializeField] private Renderer light2;
+    [SerializeField] private Material redMat, greenMat;
+    [SerializeField] private float greenDuration = 2f; // not used for now but kept for later
+
+    [Header("Juice")]
+    [SerializeField] private GameObject fireworksPrefab;
+    [SerializeField] private Transform fireworkSpawnPoint;
+    [SerializeField] private float fxDespawnDelay = 15f;
     
+    [Header("New Mixer")]
+    [SerializeField] private GameObject leftVial;
+    [SerializeField] private GameObject rightVial;
+
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
-    private Queue<VialType> pendingResults = new(); // queue for multiple results
-    [Networked] private TickTimer spawnDelayTimer { get; set; }
+    private Queue<VialType> pendingResults = new();
+    private int vialCount;
 
-    private void Start()
+    // --- Network timers ---
+    [Networked] private TickTimer spawnDelayTimer { get; set; }
+    [Networked] private bool lightsAreGreen { get; set; }
+
+    private AudioManager audioManager;
+
+    public override void Spawned()
     {
         recipes = recipeContainerSO.Recipes;
+        audioManager = FindFirstObjectByType<AudioManager>();
+
+        if (Object.HasStateAuthority)
+            RPC_ResetMixerVisuals();
     }
 
     private void AddBox(Vial vial)
     {
         if (!Object.HasStateAuthority) return;
-        if (vial.Type == VialType.OutputBox || vial.Type == VialType.TrashBag) return;
+        if (vial.Type != VialType.OutputVial) return;
 
         currentInputs.Add(vial.Type);
         Utils.DebugLog($"Added vial: {vial.Type}");
+
         Runner.Despawn(vial.Object);
 
-        if (currentInputs.Count >= 2)
+        if (recipes == null || recipes.Count == 0) return;
+
+        var sortedInputs = currentInputs.OrderBy(x => x).ToList();
+
+        var matchingRecipe = recipes.FirstOrDefault(r =>
+            r != null &&
+            r.Ingredients != null &&
+            r.Ingredients.Count == sortedInputs.Count &&
+            r.Ingredients.OrderBy(i => i).SequenceEqual(sortedInputs)
+        );
+
+        if (matchingRecipe != null)
             Mix();
     }
 
@@ -39,14 +76,11 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         AudioManager.instance.Play("Processor", transform.position);
 
-        // Order inputs alphabetically
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
-
-        // Find matching recipe
         var matchingRecipe = recipes.FirstOrDefault(r =>
-            r.Ingredients.OrderBy(i => i).SequenceEqual(sortedInput));
+            r.Ingredients.OrderBy(i => i).SequenceEqual(sortedInput)
+        );
 
-        // If we found a recipe, queue its results
         if (matchingRecipe != null)
         {
             foreach (var r in matchingRecipe.Results)
@@ -54,55 +88,132 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         }
         else
         {
-            // No recipe matched — spawn a trash bag instead
             pendingResults.Enqueue(VialType.TrashBag);
         }
 
         currentInputs.Clear();
+        if (Object.HasStateAuthority)
+            RPC_SetLightsGreen();
 
-        // Start timer for the first result
         if (!spawnDelayTimer.IsRunning)
             spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
     }
 
     private void SpawnResult(VialType resultType)
     {
-        Vial newVial;
-
-        if (resultType == VialType.TrashBag)
-            newVial = Runner.Spawn(trashPrefab, vialSpawnPoint.position, Quaternion.identity);
-        else
-            newVial = Runner.Spawn(vialPrefab, vialSpawnPoint.position, Quaternion.identity);
+        Vial newVial = (resultType == VialType.TrashBag)
+            ? Runner.Spawn(trashPrefab, vialSpawnPoint.position, Quaternion.identity)
+            : Runner.Spawn(vialPrefab, vialSpawnPoint.position, Quaternion.identity);
 
         newVial.Initialize(resultType);
+        vialCount++;
+        
+        RPC_PlayFireworks();
     }
 
     public override void FixedUpdateNetwork()
     {
         if (!Object.HasStateAuthority) return;
 
-        // Spawn next vial when timer expires
         if (spawnDelayTimer.Expired(Runner) && pendingResults.Count > 0)
         {
             var nextResult = pendingResults.Dequeue();
             SpawnResult(nextResult);
 
-            // Restart timer if more results remain
             if (pendingResults.Count > 0)
+            {
                 spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
+            }
+            else
+            {
+                if (Object.HasStateAuthority)
+                    RPC_ResetMixerVisuals();
+
+                RPC_PlayFireworks();
+            }
         }
     }
 
-    public void OnChildTriggerEnter(Collider other)
-    {
-        if (!Object.HasStateAuthority) return;
+    // --- RPC Helpers ---
 
-        if (other.TryGetComponent(out Vial vial))
-            AddBox(vial);
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetLightsGreen()
+    {
+        lightsAreGreen = true;
+        if (light1 != null) light1.material = greenMat;
+        if (light2 != null) light2.material = greenMat;
     }
 
-    public void OnChildTriggerExit(Collider other)
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_SetSingleLightAndVial(bool leftSide, bool active)
     {
-        // Not needed right now
+        // Update vial visibility
+        if (leftSide)
+        {
+            if (leftVial != null) leftVial.SetActive(active);
+            if (light1 != null) light1.material = active ? greenMat : redMat;
+        }
+        else
+        {
+            if (rightVial != null) rightVial.SetActive(active);
+            if (light2 != null) light2.material = active ? greenMat : redMat;
+        }
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_ResetMixerVisuals()
+    {
+        lightsAreGreen = false;
+
+        if (light1 != null) light1.material = redMat;
+        if (light2 != null) light2.material = redMat;
+
+        if (leftVial != null) leftVial.SetActive(false);
+        if (rightVial != null) rightVial.SetActive(false);
+
+        vialCount = 0;
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_PlayFireworks()
+    {
+        if (fireworksPrefab == null || fireworkSpawnPoint == null) return;
+
+        GameObject fx = Instantiate(fireworksPrefab, fireworkSpawnPoint.position, Quaternion.Euler(-90f, 0f, 0f));
+        audioManager.Play("FireworksExplosion", transform.position);
+        audioManager.Play("FireworksHighPitch", transform.position);
+
+        if (fx != null) Destroy(fx, fxDespawnDelay);
+    }
+
+    // --- Trigger Interface ---
+    public void OnChildTriggerEnter(Collider other, TriggerType tType = TriggerType.Left)
+    {
+        if (!Object.HasStateAuthority) return;
+        if (!other.TryGetComponent(out Vial vial)) return;
+        if (vial.Type != VialType.OutputVial) return;
+        
+        AddBox(vial);
+        Runner.Despawn(vial.Object);
+
+        switch (tType)
+        {
+            case TriggerType.Left:
+                RPC_SetSingleLightAndVial(true, true);
+                break;
+            case TriggerType.Right:
+                RPC_SetSingleLightAndVial(false, true);
+                break;
+        }
+    }
+
+    public void OnChildTriggerExit(Collider other, TriggerType tType = TriggerType.Left)
+    {
+        // Optional: turn off side when vial leaves
+        // if (Object.HasStateAuthority)
+        // {
+        //     bool left = (tType == TriggerType.Left);
+        //     RPC_SetSingleLightAndVial(left, false);
+        // }
     }
 }

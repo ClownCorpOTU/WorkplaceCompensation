@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
 
@@ -6,7 +7,10 @@ public class AudioManager : MonoBehaviour
 {
     public Sound[] sounds;
     public static AudioManager instance;
+    
+    private HashSet<string> active3DSounds = new HashSet<string>(); // Ensures we don't play the same sound at the same time in 3D
 
+    
     private void Awake() {
         if (instance == null) {
             instance = this;
@@ -31,17 +35,30 @@ public class AudioManager : MonoBehaviour
     public void Play(string name, Vector3? position = null) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
         if (s == null) {
-            Debug.LogWarning("Sound: " + name + "not found!");
+            Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
 
+        // ================================
+        // 2D SOUND — avoid double play
+        // ================================
         if (!s.is3D)
         {
+            if (s.source.isPlaying)
+                return; // prevent double-trigger
+
             s.source.Play();
             return;
         }
-        
-        // Otherwise, create a temporary 3D AudioSource at the given position
+
+        // ================================
+        // 3D SOUND — avoid double spawning
+        // ================================
+        if (active3DSounds.Contains(s.name))
+            return; // already playing in 3D
+
+        active3DSounds.Add(s.name);
+
         Vector3 soundPosition = position ?? Vector3.zero;
 
         GameObject tempGO = new GameObject("3D Sound: " + s.name);
@@ -51,10 +68,19 @@ public class AudioManager : MonoBehaviour
         tempSource.clip = s.clip;
         tempSource.volume = s.volume;
         tempSource.pitch = s.pitch;
-        tempSource.loop = false; // Usually 3D sounds aren't looping (unless you want ambience)
-        tempSource.spatialBlend = 1f; // Fully 3D
+        tempSource.loop = false;
+        tempSource.spatialBlend = 1f;
 
         tempSource.Play();
-        Destroy(tempGO, s.clip.length); // Destroy after playback
+
+        // Remove from active set when done
+        Destroy(tempGO, s.clip.length);
+        StartCoroutine(RemoveAfterDelay(s.name, s.clip.length));
+    }
+
+    private System.Collections.IEnumerator RemoveAfterDelay(string name, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        active3DSounds.Remove(name);
     }
 }
