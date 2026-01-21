@@ -3,7 +3,22 @@ guid: 8538882e4cd6f6b4d8fdc705c04d46a1
 ModelImporter:
   serializedVersion: 24200
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: canyon_mtl
+    second: {fileID: 2100000, guid: 6eb516e63c43f654493b17c94db79d01, type: 2}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: canyon_Normal
+    second: {fileID: 2800000, guid: 4b91b2fca7499dc42b6692238056d01e, type: 3}
+  - first:
+      type: UnityEngine:Texture2D
+      assembly: UnityEngine.CoreModule
+      name: canyon_Roughness
+    second: {fileID: 2800000, guid: 63a80d7ca6c42cf41829e222be71b0be, type: 3}
   materials:
     materialImportMode: 2
     materialName: 0
