@@ -112,6 +112,7 @@ Material:
     - _BumpScale: 1
     - _CastShadows: 1
     - _ChromaKey: 0
+    - _CircleDensity: 25
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -121,10 +122,12 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FalloffThreshold: 6
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _LIGHTMAP_SHADOW_MIXING: 0
+    - _LitThreshold: 0.6
     - _Metallic: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
@@ -132,13 +135,17 @@ Material:
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RimLightPower: 10
+    - _Rotation: 0
     - _SPECULAR: 1
+    - _ShadingMultiplier: 0.5
     - _Smoothness: 0.8
     - _SmoothnessTextureChannel: 0
+    - _Softness: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _UseScreenSpace: 1
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
     - _ZTest: 4
