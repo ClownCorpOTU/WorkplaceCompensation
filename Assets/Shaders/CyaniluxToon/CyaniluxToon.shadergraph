@@ -2007,7 +2007,7 @@
     "m_ObjectId": "097f9f8a1b984454978b5bbc64570946",
     "m_Title": "Ramp Texture",
     "m_Position": {
-        "x": -671.9999389648438,
+        "x": -672.0,
         "y": 461.0
     }
 }
@@ -2633,7 +2633,7 @@
     "m_ObjectId": "19f30dbdbc684771a63b9422924274a0",
     "m_Title": "Apply Albedo (ambient)",
     "m_Position": {
-        "x": 570.0000610351563,
+        "x": 570.0,
         "y": -554.0
     }
 }
@@ -3196,7 +3196,7 @@
     "m_Title": "Combine Diffuse + Specular",
     "m_Position": {
         "x": 991.0,
-        "y": 135.99996948242188
+        "y": 136.0
     }
 }
 
@@ -3206,8 +3206,8 @@
     "m_ObjectId": "27eb79f253824734a480830016679092",
     "m_Title": "Rim lighting",
     "m_Position": {
-        "x": 2011.0001220703125,
-        "y": -129.00006103515626
+        "x": 2011.0,
+        "y": -129.0
     }
 }
 
@@ -4257,7 +4257,7 @@
     "m_Title": "Ramp Texture",
     "m_Position": {
         "x": -2147.0,
-        "y": -37.99999237060547
+        "y": -38.0
     }
 }
 
@@ -4576,11 +4576,11 @@
     "m_Guid": {
         "m_GuidSerialized": "ecacb1d5-d27d-42f0-a0ea-0f35c5baecb2"
     },
-    "m_Name": "Diffuse Colour",
+    "m_Name": "BaseColor",
     "m_DefaultRefNameVersion": 0,
     "m_RefNameGeneratedByDisplayName": "",
     "m_DefaultReferenceName": "Color_400DECBE",
-    "m_OverrideReferenceName": "_DiffuseColor",
+    "m_OverrideReferenceName": "_BaseColor",
     "m_GeneratePropertyBlock": true,
     "m_UseCustomSlotLabel": false,
     "m_CustomSlotLabel": "",
@@ -5468,7 +5468,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "6cbb57f6fe6646e0ae6320abb632f649",
     "m_Id": 0,
-    "m_DisplayName": "Diffuse Colour",
+    "m_DisplayName": "BaseColor",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -5672,7 +5672,7 @@
     "m_Title": "Ambient + Main Light",
     "m_Position": {
         "x": 1536.0,
-        "y": -361.0000305175781
+        "y": -361.0
     }
 }
 
@@ -5791,7 +5791,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "756ed93262f94a0d99f1c40e617a0872",
     "m_Id": 0,
-    "m_DisplayName": "Diffuse Colour",
+    "m_DisplayName": "BaseColor",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -6093,7 +6093,7 @@
     "m_Title": "Albedo",
     "m_Position": {
         "x": -200.0,
-        "y": -2515.000244140625
+        "y": -2515.0
     }
 }
 
@@ -6521,7 +6521,7 @@
     "m_Title": "Apply Albedo (diffuse)",
     "m_Position": {
         "x": 577.0,
-        "y": 135.99996948242188
+        "y": 136.0
     }
 }
 
@@ -7678,8 +7678,8 @@
     "m_ObjectId": "a3e656127c1049da9890a8b3220c7032",
     "m_Title": "Apply Light Color & Shadows",
     "m_Position": {
-        "x": -228.9998779296875,
-        "y": 368.9999694824219
+        "x": -229.0,
+        "y": 369.0
     }
 }
 
@@ -8118,7 +8118,7 @@
     "m_ObjectId": "aea121920567437b89dee070c1b3dc0a",
     "m_Title": "Ambient / Baked",
     "m_Position": {
-        "x": -516.0000610351563,
+        "x": -516.0,
         "y": -552.0
     }
 }
@@ -8250,7 +8250,7 @@
     "m_ObjectId": "b2ddc7d723094dfaa5e2ef29e6d66388",
     "m_Title": "Diffuse, N Dot L",
     "m_Position": {
-        "x": -2687.999755859375,
+        "x": -2688.0,
         "y": -312.0
     }
 }
@@ -9402,7 +9402,7 @@
     "m_Type": "UnityEditor.ShaderGraph.Vector4MaterialSlot",
     "m_ObjectId": "c3ae5d138596f78db10432d7d0e733a7",
     "m_Id": 0,
-    "m_DisplayName": "Diffuse Colour",
+    "m_DisplayName": "BaseColor",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -10015,8 +10015,8 @@
     "m_ObjectId": "d05ee2f3810f446fbabf30a5e25a65d5",
     "m_Title": "Additional Lights (Toon)",
     "m_Position": {
-        "x": -57.999900817871097,
-        "y": 814.0000610351563
+        "x": -58.0,
+        "y": 814.0
     }
 }
 
@@ -10866,8 +10866,8 @@
     "m_ObjectId": "e55cb56e639245c4b510115fc4273ac8",
     "m_Title": "Specular Colour",
     "m_Position": {
-        "x": 144.00009155273438,
-        "y": 368.9999694824219
+        "x": 144.0,
+        "y": 369.0
     }
 }
 
@@ -11264,7 +11264,7 @@
     "m_ObjectId": "f8709b9010d045249e88f5948d9a686e",
     "m_Title": "Apply Fog",
     "m_Position": {
-        "x": 3186.000244140625,
+        "x": 3186.0,
         "y": -82.0
     }
 }
