@@ -16,7 +16,7 @@ public class NetworkPlayerCamera : MonoBehaviour
     private GameObject localCameraInstance;
     
 
-    public void SetupCamera()
+    public void SetupCamera(bool hasInputAuthority)
     {
         // Spawn camera
         localCameraInstance = Instantiate(cameraContainerPrefab, Vector3.zero, Quaternion.identity);
@@ -27,6 +27,12 @@ public class NetworkPlayerCamera : MonoBehaviour
 
         cinemachineCamera.Follow = transform;
         cinemachineCamera.LookAt = transform;
+        
+        // Enable audio listener
+        var audioListener = cam.GetComponent<AudioListener>();
+        
+        // Enable listener for the local player
+        if (audioListener != null) audioListener.enabled = hasInputAuthority;
     }
 
     public void ComputeCameraRelativeWorldDirection(bool hasInputAuthority, ref NetworkInputData data)

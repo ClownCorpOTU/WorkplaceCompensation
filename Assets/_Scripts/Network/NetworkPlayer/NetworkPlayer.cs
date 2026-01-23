@@ -22,7 +22,14 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private TextMeshProUGUI playerNumberText;
-    [SerializeField] private GameObject dustFXPrefab;
+    [SerializeField] private Animator animatedModel;
+    [SerializeField] private SkinnedMeshRenderer bodyMeshRenderer;
+    
+    [Header("Juice - Dust Trail")]
+    [SerializeField] private ParticleSystem dustFXParticles;
+    [SerializeField] private Vector2 rateOverDistanceRange = new Vector2(3f, 15f);
+    [SerializeField] private Vector2 startSizeRange = new Vector2(0.1f, 0.4f);
+    [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -41,6 +48,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private ThemeSong themeSong;
     private NetworkGameManager networkGameManager;
     private LocalPlayerUIManager localPlayerUIManager;
+    private AudioListener audioListener; // This is on the main camera
     
     // Input
     private NetworkInputData networkInputData;
@@ -123,7 +131,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (Object.HasInputAuthority)
         {
             Local = this;
-            playerCamera.SetupCamera();
+            playerCamera.SetupCamera(Object.HasInputAuthority);
             networkGameManager.ScoreText.text = 0.ToString();
             
             // Ensure PlayerInput is enabled for the local player only
@@ -170,12 +178,23 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         // Make a readable number based on PlayerRef
         int playerNumber = PlayerRefValue.RawEncoded % 1000;
+        playerNumber--; // Right now players start at 2, this is a hack to make it start at 1
         playerNumberText.text = $"Player {playerNumber}";
         
         // Give each player a distinct color based on their ID
         float hue = (playerNumber * 137.508f) % 360f;
-        Color color = Color.HSVToRGB(hue / 360f, 0.8f, 0.9f);
+        Color color = Color.HSVToRGB(hue / 360f, 0.65f, 0.9f);
         playerNumberText.color = color;
+        
+        // Update player body color to be the same as their name
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);;
+        
+        // Update rim color to complement their body color
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+        float rimV = Mathf.Clamp01(1.2f - v); // brighter rims on darker colors
+        Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
+        
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);;
     }
 
     public void RemovePlayerInputAuthority()
@@ -248,6 +267,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             Vector3 localVelocityVsForward = transform.forward * Vector3.Dot(transform.forward, rb.linearVelocity);
             localForwardVelocity = localVelocityVsForward.magnitude;
         }
+        else if (Object.HasInputAuthority)
+        {
+            // Do a lightweight local estimate for visuals
+            localForwardVelocity = rb.linearVelocity.magnitude;
+            isGrounded = Physics.CheckSphere(transform.position, 0.25f);
+        }
         
         // Respawn in place
         if (networkInputData.IsRevivePressed)
@@ -265,6 +290,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         }
         
         SyncAnimations(localForwardVelocity);
+        UpdateDustFX(localForwardVelocity);
+        UpdateSpineLean(localForwardVelocity);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
