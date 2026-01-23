@@ -11790,7 +11790,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1246443650092041065, guid: e8bae1190ba2be9459264de94bd1b7c6, type: 3}
       propertyPath: m_LocalScale.y
-      value: 200
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1246443650092041065, guid: e8bae1190ba2be9459264de94bd1b7c6, type: 3}
       propertyPath: m_LocalScale.z
@@ -11802,7 +11802,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1246443650092041065, guid: e8bae1190ba2be9459264de94bd1b7c6, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -101
+      value: -1.44
       objectReference: {fileID: 0}
     - target: {fileID: 1246443650092041065, guid: e8bae1190ba2be9459264de94bd1b7c6, type: 3}
       propertyPath: m_LocalPosition.z
@@ -41473,7 +41473,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1849676128
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50591,7 +50591,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 363396081196652639, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.82
+      value: -0.59
       objectReference: {fileID: 0}
     - target: {fileID: 363396081196652639, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -50628,6 +50628,46 @@ PrefabInstance:
     - target: {fileID: 412071406695523255, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
       propertyPath: m_Name
       value: Acid Bubble Pop
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: autoRandomSeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: ShapeModule.type
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: moveWithTransform
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: SizeModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: ShapeModule.m_Scale.z
+      value: 0.05
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: ShapeModule.alignToDirection
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: InitialModule.startLifetime.scalar
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: InitialModule.startSpeed.minMaxState
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5095065390852701824, guid: 18d9cbe500da9ec448d35c1b393075f0, type: 3}
+      propertyPath: InitialModule.startLifetime.minMaxState
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
