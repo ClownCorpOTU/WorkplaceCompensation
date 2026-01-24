@@ -1588,7 +1588,7 @@
     "m_SlotType": 0,
     "m_Hidden": false,
     "m_ShaderOutputName": "_ShadedModel",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
@@ -2105,6 +2105,21 @@
     "m_CustomColors": {
         "m_SerializableColors": []
     }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
+    "m_ObjectId": "21e8804ef6a3463ca56d8fecab68169d",
+    "m_Id": -108774985,
+    "m_DisplayName": "Rotation2",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "_Rotation2",
+    "m_StageCapability": 2,
+    "m_Value": 0.0,
+    "m_DefaultValue": 0.0,
+    "m_Labels": []
 }
 
 {
@@ -3994,7 +4009,7 @@
     "m_SlotType": 0,
     "m_Hidden": false,
     "m_ShaderOutputName": "_Softness",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
@@ -4150,7 +4165,7 @@
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "HalftoneShadows",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
@@ -4260,7 +4275,7 @@
     "m_SlotType": 0,
     "m_Hidden": false,
     "m_ShaderOutputName": "_Rotation",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": 0.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
@@ -4693,7 +4708,7 @@
     "m_SlotType": 0,
     "m_Hidden": false,
     "m_ShaderOutputName": "_LitThreshold",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": 1.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
@@ -5394,7 +5409,7 @@
     "m_SlotType": 0,
     "m_Hidden": false,
     "m_ShaderOutputName": "_FalloffThreshold",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": 2.5,
     "m_DefaultValue": 0.0,
     "m_Labels": []
@@ -6081,7 +6096,7 @@
     "m_SlotType": 0,
     "m_Hidden": false,
     "m_ShaderOutputName": "_UseScreenSpace",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": false,
     "m_DefaultValue": false
 }
@@ -6145,6 +6160,9 @@
             "m_Id": "811c99edadd14f2897ad94e36c87971a"
         },
         {
+            "m_Id": "21e8804ef6a3463ca56d8fecab68169d"
+        },
+        {
             "m_Id": "8e7c5eca704d4e6aa234270293be849b"
         },
         {
@@ -6174,7 +6192,8 @@
         "cc92ca00-9014-45b6-8441-5ac289516e00",
         "1db461cf-4644-45b1-98a9-69c2f48b0275",
         "507131cc-7818-4252-abbd-958757705b8b",
-        "c3149e26-c5d7-4b5f-8807-37c56d565728"
+        "c3149e26-c5d7-4b5f-8807-37c56d565728",
+        "828d170a-26eb-4c58-953a-d3aec3328299"
     ],
     "m_PropertyIds": [
         -1522702727,
@@ -6184,7 +6203,8 @@
         1259358745,
         -278002201,
         518882344,
-        1697319444
+        1697319444,
+        -108774985
     ],
     "m_Dropdowns": [],
     "m_DropdownSelectedEntries": []
@@ -6489,7 +6509,7 @@
     "m_SlotType": 0,
     "m_Hidden": false,
     "m_ShaderOutputName": "_CircleDensity",
-    "m_StageCapability": 3,
+    "m_StageCapability": 2,
     "m_Value": 5.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
