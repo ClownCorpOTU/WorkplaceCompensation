@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 {
@@ -11,6 +13,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private Vial trashPrefab;
     [SerializeField] private Transform vialSpawnPoint;
     [SerializeField] private float spawnDelay = 0.5f;
+    [SerializeField] private GameObject model;
 
     [Header("Lighting parameters")]
     [SerializeField] private Renderer light1;
@@ -31,6 +34,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new();
     private int vialCount;
+    private Vector3 originalPos;
 
     // --- Network timers ---
     [Networked] private TickTimer spawnDelayTimer { get; set; }

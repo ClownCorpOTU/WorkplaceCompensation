@@ -340,6 +340,7 @@ MonoBehaviour:
   trashPrefab: {fileID: 9017009847148644083, guid: 0e14b055c1fd7364486021971562ef20, type: 3}
   vialSpawnPoint: {fileID: 8524091277765371778}
   spawnDelay: 0.5
+  model: {fileID: 218204406516520368}
   light1: {fileID: 3054068924213290391}
   light2: {fileID: 8952024387517904820}
   redMat: {fileID: 2100000, guid: 13fcda2ba703ed349a30a5cd11374d93, type: 2}
@@ -815,6 +816,11 @@ PrefabInstance:
       insertIndex: -1
       addedObject: {fileID: 7361915024725053084}
   m_SourcePrefab: {fileID: 100100000, guid: a72014d5bcc7fe24c9a11bf9c0d71d0a, type: 3}
+--- !u!1 &218204406516520368 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: a72014d5bcc7fe24c9a11bf9c0d71d0a, type: 3}
+  m_PrefabInstance: {fileID: 1136699385461778657}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &361973219476016273 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -8447729632978394000, guid: a72014d5bcc7fe24c9a11bf9c0d71d0a, type: 3}
