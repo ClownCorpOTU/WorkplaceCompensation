@@ -22,7 +22,7 @@ Material:
     RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
-  m_LockedProperties: 
+  m_LockedProperties: _RimLightColor
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
@@ -56,7 +56,7 @@ Material:
     - _Blend: 0
     - _CastShadows: 1
     - _ChromaKey: 1
-    - _CircleDensity: 25
+    - _CircleDensity: 15.3
     - _Cull: 2
     - _DstBlend: 0
     - _DstBlendAlpha: 0
@@ -68,7 +68,7 @@ Material:
     - _RimLightPower: 10
     - _Rotation: 0
     - _SPECULAR: 1
-    - _ShadingMultiplier: 1
+    - _ShadingMultiplier: 0.5
     - _Smoothness: 1
     - _Softness: 0
     - _SrcBlend: 1
