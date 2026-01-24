@@ -56,13 +56,13 @@ Material:
     - _Blend: 0
     - _CastShadows: 1
     - _ChromaKey: 1
-    - _CircleDensity: 15.3
+    - _CircleDensity: 50
     - _Cull: 2
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _FalloffThreshold: 6
+    - _FalloffThreshold: 2.5
     - _LIGHTMAP_SHADOW_MIXING: 0
-    - _LitThreshold: 0.6
+    - _LitThreshold: 0.8
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RimLightPower: 10
@@ -79,7 +79,7 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _BaseColor: {r: 0.26274508, g: 0.8862745, b: 0.8155137, a: 0}
+    - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
     - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
     - _DiffuseColor: {r: 0.26274508, g: 0.8862745, b: 0.8155137, a: 0}

@@ -121,7 +121,7 @@ Material:
     - _BumpScale: 1
     - _CastShadows: 1
     - _ChromaKey: 0
-    - _CircleDensity: 25
+    - _CircleDensity: 50
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -131,13 +131,13 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FalloffThreshold: 6
+    - _FalloffThreshold: 3
     - _GlossMapScale: 1
     - _Glossiness: 0.1987952
     - _GlossyReflections: 1
     - _HeightMapStrength: 1
     - _LIGHTMAP_SHADOW_MIXING: 0
-    - _LitThreshold: 0.6
+    - _LitThreshold: 0.5
     - _Metallic: 0
     - _Mode: 0
     - _NormalMapStrength: 0
@@ -149,8 +149,8 @@ Material:
     - _RimLightPower: 10
     - _Rotation: 0
     - _SPECULAR: 1
-    - _ShadingMultiplier: 1
-    - _Smoothness: 0.9
+    - _ShadingMultiplier: 0.5
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _Softness: 0
     - _SpecularHighlights: 1
