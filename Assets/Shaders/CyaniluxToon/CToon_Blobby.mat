@@ -30,15 +30,27 @@ Material:
         m_Texture: {fileID: 2800000, guid: f977146a184b46f448c5bc95ec3c6d10, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _HalftonePattern_285a619c53aa4df7a71e968c38756a11_ShadowTexture_3553634879_Texture2D:
+        m_Texture: {fileID: 2800000, guid: a7094d3f4d49d8f4ca68b765e3f1c424, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _RampTexture:
         m_Texture: {fileID: 2800000, guid: a1a4108227a8a8b4f9067f80f37c33ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_37b0f26b23a442479443b8b1ddb96bbf_Texture_1_Texture2D:
-        m_Texture: {fileID: 2800000, guid: a7094d3f4d49d8f4ca68b765e3f1c424, type: 3}
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_a790875aa8764e949e611796b223eb78_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ShadowTexture:
+        m_Texture: {fileID: 2800000, guid: 8e344bdab0bde93489947fbc0dc38db2, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _Texture2DAsset_1b6b72b5ed08472892ae6cd7838165cc_Out_0_Texture2D:
         m_Texture: {fileID: 2800000, guid: a7094d3f4d49d8f4ca68b765e3f1c424, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -64,13 +76,17 @@ Material:
     - _Blend: 0
     - _CastShadows: 1
     - _ChromaKey: 1
-    - _CircleDensity: 17
+    - _CircleDensity: 13
+    - _CrossHatchIntensity: 1
     - _Cull: 2
     - _DstBlend: 0
     - _DstBlendAlpha: 0
-    - _FalloffThreshold: 6
+    - _FalloffThreshold: 2
     - _LIGHTMAP_SHADOW_MIXING: 0
+    - _LightPosterizationSteps: 4
     - _LitThreshold: 0.6
+    - _PatternDensity: 13
+    - _PatternDensityFar: 10
     - _QueueControl: 0
     - _QueueOffset: 0
     - _RimLightPower: 10
@@ -83,7 +99,9 @@ Material:
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _TimePosterization: 3
     - _UseScreenSpace: 1
+    - _WorldSpaceHalfstoneScale: 1
     - _ZTest: 4
     - _ZWrite: 1
     - _ZWriteControl: 0
@@ -91,8 +109,11 @@ Material:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
     - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
+    - _CrossHatchFade: {r: 10, g: 30, b: 0, a: 0}
     - _DiffuseColor: {r: 0.26274508, g: 0.8862745, b: 0.8155137, a: 0}
+    - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}
     - _RimLightColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RotationJitterRange: {r: -5, g: 5, b: 0, a: 0}
     - _SpecularColour: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
