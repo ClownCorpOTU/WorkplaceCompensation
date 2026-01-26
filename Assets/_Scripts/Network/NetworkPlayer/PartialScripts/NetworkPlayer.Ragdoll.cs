@@ -12,7 +12,12 @@ public partial class NetworkPlayer
     private float lastTimeBecameRagdoll;
     
     [Networked] private TickTimer waitBeforeRespawn { get; set; }
-    
+
+    public void CreateRespawnTimer()
+    {
+        // I don't want to add this directly to MakeRagdoll() in case it breaks something
+        waitBeforeRespawn = TickTimer.CreateFromSeconds(Runner, ragdollTime);
+    }
     
     public void MakeRagdoll()
     {
