@@ -8,6 +8,10 @@ Shader "Hidden/Edge Detection"
         // Added for camera depth
         _DepthFallOff ("Depth Falloff", Float) = 0.1
         _MinThickness ("Minimum Thickness", Float) = 0.5
+        
+        // Making it look more hand-drawn
+        _WobbleStrength ("Wobble Strength", Float) = 0.002
+        _WobbleFrequency ("Wobble Frequency", Float) = 10.0
     }
 
     SubShader
@@ -39,6 +43,10 @@ Shader "Hidden/Edge Detection"
             // Camera depth
             float _DepthFalloff;
             float _MinThickness;
+
+            // Hand-drawn
+            float _WobbleStrength;
+            float _WobbleFrequency;
 
             #pragma vertex Vert // vertex shader is provided by the Blit.hlsl include
             #pragma fragment frag
@@ -72,6 +80,19 @@ Shader "Hidden/Edge Detection"
                 return color.r * 0.3 + color.g * 0.59 + color.b * 0.11;
             }
 
+            // Smooth, wavy distortion
+            float2 ApplyWobble(float2 uv)
+            {
+                // We use sin and cos to create a circular "swirl" or wave effect.
+                // Using uv.y to influence x, and uv.x to influence y ensures the lines 
+                // don't just shift in one direction.
+                float2 wobble;
+                wobble.x = sin(uv.y * _WobbleFrequency) * _WobbleStrength;
+                wobble.y = cos(uv.x * _WobbleFrequency) * _WobbleStrength;
+                
+                return uv + wobble;
+            }
+
             half4 frag(Varyings IN) : SV_TARGET
             {
                 // Screen-space coordinates which we will use to sample.
@@ -79,6 +100,7 @@ Shader "Hidden/Edge Detection"
                 float2 texel_size = float2(1.0 / _ScreenParams.x, 1.0 / _ScreenParams.y);
 
                 // 1. Get linear depth
+                uv = ApplyWobble(uv);
                 float rawDepth = SampleSceneDepth(uv);
                 float linear01Depth = Linear01Depth(rawDepth, _ZBufferParams);
 

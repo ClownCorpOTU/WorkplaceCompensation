@@ -33,6 +33,10 @@ public class EdgeDetection : ScriptableRendererFeature
             // Camera depth
             material.SetFloat(DepthFalloffProperty, settings.depthFalloff);
             material.SetFloat(MinThicknessProperty, settings.minThickness);
+            
+            // Hand-drawn
+            material.SetFloat("_WobbleStrength", settings.wobbleStrength);
+            material.SetFloat("_WobbleFrequency", settings.wobbleFrequency);
         }
 
         private class PassData
@@ -62,6 +66,10 @@ public class EdgeDetection : ScriptableRendererFeature
         // Camera depth
         [Range(0.01f, 1.0f)] public float depthFalloff = 0.1f;
         [Range(0.0f, 5.0f)] public float minThickness = 0.5f;
+        
+        // Hand-drawn
+        [Range(0f, 0.05f)] public float wobbleStrength = 0.002f;
+        [Range(1f, 100f)] public float wobbleFrequency = 10.0f;
     }
 
     [SerializeField] private EdgeDetectionSettings settings;
