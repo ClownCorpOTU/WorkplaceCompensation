@@ -149,13 +149,14 @@ Material:
     - _GlossyReflections: 0
     - _HeightMapStrength: 1
     - _LIGHTMAP_SHADOW_MIXING: 0
-    - _LitThreshold: 1
+    - _LitThreshold: 0.2
     - _Metallic: 0
     - _NormalMapStrength: 0
     - _NormalStrength: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
     - _PatternDensity: 13
+    - _PatternDensityFar: 10
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
@@ -188,6 +189,7 @@ Material:
     - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
     - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
     - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _CrossHatchFade: {r: 5, g: 20, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}
