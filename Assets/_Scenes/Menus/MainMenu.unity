@@ -1682,13 +1682,14 @@ MonoBehaviour:
     2) The audio doesn''t work for the clients.
 
     3) Respawn doesn''t
-    properly fix player rotation
+    properly fix player rotation.
 
-    4) A better tutorialization is needed.
+    4) Radiation full screen effect does not work
+    for clients (You will be killed though).
 
 
-    If
-    you have any other feedback apart from this, please check out our Itch.io page!'
+    If you have any other feedback
+    apart from this, please check out our Itch.io page!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
   m_sharedMaterial: {fileID: -9091359613071364474, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
@@ -1715,7 +1716,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 32
+  m_fontSize: 30.4
   m_fontSizeBase: 36
   m_fontWeight: 400
   m_enableAutoSizing: 1
