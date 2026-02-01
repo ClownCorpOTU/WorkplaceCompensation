@@ -756,6 +756,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   handSide: 1
+--- !u!1 &2387788294097961454
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2090697343683143217}
+  m_Layer: 6
+  m_Name: CamFollow
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2090697343683143217
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2387788294097961454}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 1.9, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 117553298914410575}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2625571972922045485
 GameObject:
   m_ObjectHideFlags: 0
@@ -1855,6 +1886,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cameraContainerPrefab: {fileID: 3018086410685179632, guid: 5c538f7e14bbfb14285e53508c092074, type: 3}
+  camFollow: {fileID: 2090697343683143217}
 --- !u!114 &8862086684754836719
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2450,6 +2482,7 @@ Transform:
   m_Children:
   - {fileID: 3763491314175374996}
   - {fileID: 542941953208747161}
+  - {fileID: 2090697343683143217}
   m_Father: {fileID: 6463810950186570800}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &8125612297643472289
@@ -3882,13 +3915,17 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 231210048726488771, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
+      propertyPath: m_RenderingLayerMask
+      value: 129
+      objectReference: {fileID: 0}
+    - target: {fileID: 231210048726488771, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       propertyPath: m_Materials.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 231210048726488771, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
-      objectReference: {fileID: 2100000, guid: 7c809e29a4b5b6842b0a938e6659d16b, type: 2}
+      objectReference: {fileID: 2100000, guid: 572e4dbdb642f844da3721d81896d8d8, type: 2}
     - target: {fileID: 231210048726488771, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -4962,7 +4999,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   animatedRB: {fileID: 9148638528303676446}
-  syncAnimation: 0
+  syncAnimation: 1
 --- !u!114 &8111735949186412625
 MonoBehaviour:
   m_ObjectHideFlags: 0

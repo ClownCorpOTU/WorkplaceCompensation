@@ -29,6 +29,8 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
         {
             var spawnedPlayer = runner.Spawn(networkPlayerPrefab.gameObject, spawnPoint, Quaternion.Euler(spawnRotation), player);
             spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
+            
+            spawnedPlayer.gameObject.transform.rotation = Quaternion.Euler(spawnRotation);
         }
     }
 

@@ -4,11 +4,22 @@ using Fusion;
 public partial class NetworkPlayer
 {
     [Networked, Capacity(10), HideInInspector] public NetworkArray<Quaternion> NetworkPhysicsSyncedRotations { get; }
-
+    //[SerializeField] private SyncPhysicsObject headObject;
     
     private void SyncAnimations(float localForwardVelocity)
     {
         if (!Object.HasStateAuthority) return;
+
+        /* Looks like it's better to always sync the head
+        if (localForwardVelocity < 0.1f)
+        {
+            headObject.UpdateSyncing(true);
+        }
+        else
+        {
+            headObject.UpdateSyncing(false);
+        }
+        */
 
         animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
         for (int i = 0; i < syncPhysicsObjects.Length; i++)

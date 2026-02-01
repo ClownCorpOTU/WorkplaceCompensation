@@ -1147,7 +1147,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a035b7f40ffd5b042895ce80e910bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuManager
-  gameplayScene: FallExpo_FinalReview
+  gameplayScene: WinterWeek2_ShaderTests
   lobbyScene: Lobby
   notesMenu: {fileID: 1937974652}
   fakeLoadingScreen: {fileID: 1502703211}
@@ -1265,6 +1265,10 @@ PrefabInstance:
     - target: {fileID: 2757955328004716661, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: SortKey
       value: 3662862873
+      objectReference: {fileID: 0}
+    - target: {fileID: 2790770515454959788, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_Enabled
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3128168157933984564, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_IsActive
@@ -1672,20 +1676,20 @@ MonoBehaviour:
     hard on fixing:
 
 
-    1) When joining the game, a default Unity scene appears
-    where a loading scene should be.
+    1) When joining the game, the main screen and loading screen
+    flicker.
 
     2) The audio doesn''t work for the clients.
 
-    3)
-    Multiplayer lag sometimes causes held items to fall.
+    3) Respawn doesn''t
+    properly fix player rotation.
 
-    4) A better tutorialization
-    is needed.
+    4) Radiation full screen effect does not work
+    for clients (You will be killed though).
 
 
-    If you have any other feedback apart from this, please check
-    out our Itch.io page!'
+    If you have any other feedback
+    apart from this, please check out our Itch.io page!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
   m_sharedMaterial: {fileID: -9091359613071364474, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
