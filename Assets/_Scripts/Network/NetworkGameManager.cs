@@ -168,7 +168,15 @@ public class NetworkGameManager : NetworkBehaviour
     
     public void QuitGame()
     {
-        Application.Quit();
+        #if UNITY_EDITOR
+        {
+            UnityEditor.EditorApplication.ExitPlaymode();
+        }
+        #else
+        {
+            Application.Quit();
+        }
+        #endif 
     }
     
     #endregion
