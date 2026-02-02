@@ -50,7 +50,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     private void AddBox(Vial vial)
     {
         if (!Object.HasStateAuthority) return;
-        if (vial.Type == VialType.OutputBox || vial.Type == VialType.TrashBag) return;
+        if (vial.Type != VialType.OutputVial) return;
 
         currentInputs.Add(vial.Type);
         Utils.DebugLog($"Added vial: {vial.Type}");
@@ -107,6 +107,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         newVial.Initialize(resultType);
         vialCount++;
+        
+        RPC_PlayFireworks();
     }
 
     public override void FixedUpdateNetwork()
@@ -189,7 +191,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         if (!Object.HasStateAuthority) return;
         if (!other.TryGetComponent(out Vial vial)) return;
-
+        if (vial.Type != VialType.OutputVial) return;
+        
         AddBox(vial);
         Runner.Despawn(vial.Object);
 

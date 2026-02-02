@@ -31,7 +31,7 @@ public class NetworkLever : NetworkBehaviour
 
         if (state != IsLeverOn)
         {
-            AudioManager.instance.Play("FlickLever");
+            AudioManager.instance.Play("FlickLever", transform.position);
             IsLeverOn = state;
             iLever?.OnLeverToggled(IsLeverOn);
         }
@@ -42,6 +42,6 @@ public class NetworkLever : NetworkBehaviour
         lever.transform.localRotation = Quaternion.Euler(-45f, 0f, 0f);
         IsLeverOn = false;
         iLever?.OnLeverToggled(false);
-        AudioManager.instance.Play("FlickLever");
+        AudioManager.instance.Play("FlickLever", transform.position);
     }
 }

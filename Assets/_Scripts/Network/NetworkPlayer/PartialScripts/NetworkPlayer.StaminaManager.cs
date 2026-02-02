@@ -24,7 +24,7 @@ public partial class NetworkPlayer
         bool isUsingStamina = false;
 
         // Reduce stamina while grabbing
-        if (IsGrabbingActive || IsLeftHandGrabbingActive || IsRightHandGrabbingActive)
+        if ((IsGrabbingActive || IsLeftHandGrabbingActive || IsRightHandGrabbingActive) && playerGrab.CurrentlyGrabbedRigidbody != null)
         {
             // Heavier objects drain more
             if (playerGrab.CurrentlyGrabbedRigidbody != null)
