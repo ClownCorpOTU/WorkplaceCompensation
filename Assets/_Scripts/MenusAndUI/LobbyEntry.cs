@@ -1,12 +1,17 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using Fusion;
+using System;
 
 public class LobbyEntry : MonoBehaviour
 {
     public TextMeshProUGUI lobbyName, playerCount;
     public Button joinButton;
-    [Range(0, 10)] public int currentPlayerCount = 0, maxPlayerCount = 0;
+    public int currentPlayerCount = 0, maxPlayerCount = 0;
+
+    SessionInfo sessionInfo;
+    public event Action<SessionInfo> OnJoinSession;
 
     /// <summary>
     /// Update the player count text to match the current player count.
@@ -14,6 +19,13 @@ public class LobbyEntry : MonoBehaviour
     public void UpdatePlayerCount()
     {
         playerCount.text = $"{currentPlayerCount}/{maxPlayerCount}";
+    }
+
+        public void SessionInformation(SessionInfo info)
+    {
+        sessionInfo = info;
+
+        
     }
 
     public void JoinRoom()
