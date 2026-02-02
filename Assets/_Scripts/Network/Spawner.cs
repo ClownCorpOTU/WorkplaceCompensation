@@ -10,8 +10,13 @@ using UnityEngine;
 public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPlayer networkPlayerPrefab;
-    [SerializeField] private Vector3 spawnPoint;
-    [SerializeField] private Vector3 spawnRotation;
+    
+    private Vector3 spawnPoint;
+
+    public void Initialize(Vector3 pos)
+    {
+        spawnPoint = pos;
+    }
     
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
@@ -27,10 +32,8 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
     {
         if (runner.IsServer)
         {
-            var spawnedPlayer = runner.Spawn(networkPlayerPrefab.gameObject, spawnPoint, Quaternion.Euler(spawnRotation), player);
+            var spawnedPlayer = runner.Spawn(networkPlayerPrefab.gameObject, spawnPoint, Quaternion.identity, player);
             spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
-            
-            spawnedPlayer.gameObject.transform.rotation = Quaternion.Euler(spawnRotation);
         }
     }
 
