@@ -34,8 +34,10 @@ public class NetworkBoulderGenerator : NetworkBehaviour
         int rand = Random.Range(0, spawnPosMaxSize);
         var thisPos = spawnPos[rand].position;
 
+        // Spawn boulder
         var spawnedBoulder = Runner.Spawn(boulderPrefab, thisPos, Quaternion.Euler(thisPos.x, thisPos.y, thisPos.z));
 
+        // Scale boulder
         var spawnedBoulderObj = spawnedBoulder.gameObject.transform;
         var boulderOriginalScale = spawnedBoulderObj.localScale;
         var scaleMultiplier = Random.Range(boulderSizeMultiplierRange.x, boulderSizeMultiplierRange.y);
@@ -52,6 +54,11 @@ public class NetworkBoulderGenerator : NetworkBehaviour
             boulderOriginalScale.z * scaleMultiplier
             );
         
+        // Change weight according to scale
+        var boulderRB = spawnedBoulderObj.GetComponent<Rigidbody>();
+        boulderRB.mass *= scaleMultiplier;
+
+        // Reset timer
         spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, Random.Range(timeBetweenSpawns.x, timeBetweenSpawns.y));
     }
 }
