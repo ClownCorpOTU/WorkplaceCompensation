@@ -22,7 +22,7 @@ public class NetworkBoulderGenerator : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         
-        print(spawnDelayTimer.RemainingTime(Runner));
+        //print(spawnDelayTimer.RemainingTime(Runner));
         if (spawnDelayTimer.ExpiredOrNotRunning(Runner))
         {
             SpawnBoulder();
@@ -55,8 +55,8 @@ public class NetworkBoulderGenerator : NetworkBehaviour
             );
         
         // Change weight according to scale
-        var boulderRB = spawnedBoulderObj.GetComponent<Rigidbody>();
-        boulderRB.mass *= scaleMultiplier;
+        //var boulderRB = spawnedBoulderObj.GetComponent<Rigidbody>();
+        //boulderRB.mass *= scaleMultiplier;
 
         // Reset timer
         spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, Random.Range(timeBetweenSpawns.x, timeBetweenSpawns.y));

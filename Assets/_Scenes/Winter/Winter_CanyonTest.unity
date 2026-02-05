@@ -976,7 +976,7 @@ MonoBehaviour:
   - {fileID: 138174799}
   - {fileID: 1829845526}
   boulderPrefab: {fileID: 8194112378920432843, guid: 583415ac313536546aedbc4dd4ab461c, type: 3}
-  timeBetweenSpawns: {x: 1, y: 10}
+  timeBetweenSpawns: {x: 1, y: 5}
   boulderSizeMultiplierRange: {x: 0.8, y: 1.2}
 --- !u!4 &363410815
 Transform:
@@ -2024,6 +2024,10 @@ PrefabInstance:
     - target: {fileID: 5921923037992159683, guid: 8787e67fe77f7e84b9feb3389685601c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: -0.40015826
+      objectReference: {fileID: 0}
+    - target: {fileID: 6463810950186570800, guid: 8787e67fe77f7e84b9feb3389685601c, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6463810950186570800, guid: 8787e67fe77f7e84b9feb3389685601c, type: 3}
       propertyPath: m_LocalPosition.x

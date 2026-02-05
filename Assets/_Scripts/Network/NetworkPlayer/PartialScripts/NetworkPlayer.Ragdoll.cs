@@ -18,6 +18,19 @@ public partial class NetworkPlayer
         // I don't want to add this directly to MakeRagdoll() in case it breaks something
         waitBeforeRespawn = TickTimer.CreateFromSeconds(Runner, ragdollTime);
     }
+
+    public void FlattenAndMakeRagdoll()
+    {
+        var blobbyOriginalScale = transform.localScale;
+            
+        transform.localScale = new Vector3(
+            blobbyOriginalScale.x,
+            blobbyOriginalScale.y,
+            0.1f
+        );
+            
+        MakeRagdoll();
+    }
     
     public void MakeRagdoll()
     {
@@ -55,6 +68,9 @@ public partial class NetworkPlayer
     public void MakeActiveRagdoll()
     {
         if (!Object.HasStateAuthority) return;
+        
+        // Ensure scale is set to 1 on the Z-axis
+        transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1f);
         
         // Enable collider
         mainCollider.enabled = true;
