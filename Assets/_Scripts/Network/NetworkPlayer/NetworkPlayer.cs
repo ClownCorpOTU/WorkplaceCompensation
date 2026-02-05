@@ -97,7 +97,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerRespawn = GetComponent<NetworkPlayerRespawn>();
         if (playerRespawn == null)
             playerRespawn = gameObject.AddComponent<NetworkPlayerRespawn>();
-        playerRespawn.Initialize(this, networkRB, spawnPoint);
+        playerRespawn.Initialize(this, networkRB);
         
         // SubSystem Setup: Player Camera
         playerCamera = GetComponent<NetworkPlayerCamera>();

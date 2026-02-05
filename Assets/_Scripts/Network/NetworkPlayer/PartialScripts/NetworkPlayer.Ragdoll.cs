@@ -46,6 +46,10 @@ public partial class NetworkPlayer
         themeSong.EnableLowPassFilter(true);
         lastTimeBecameRagdoll = Runner.SimulationTime;
         isActiveRagdoll = false;
+        
+        // Idk man maybe this will break something because I've been creating timers in other places like a doofus
+        if (waitBeforeRespawn.ExpiredOrNotRunning(Runner))
+            waitBeforeRespawn = TickTimer.CreateFromSeconds(Runner, ragdollTime);
     }
     
     public void MakeActiveRagdoll()

@@ -16,6 +16,8 @@ public class NetworkRunnerHandler : MonoBehaviour
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private bool shouldStartInSinglePlayer = false;
     private NetworkRunner networkRunner;
+    
+    public Vector3 SpawnPoint => spawnPoint;
 
     private void Awake()
     {
