@@ -208,6 +208,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #region Update
     private void Update()
     {
+        if (!Object || !Object.IsValid) return;
+        
         // TODO: This architecture is terrible. I'm checking for escape input outside of the loop so players can unpause
         isPauseButtonPressed = Object.HasInputAuthority && inputReader.IsPauseButtonPressed;
 
@@ -282,11 +284,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         print(waitBeforeRespawn.RemainingTime(Runner));
         
         // Respawn if timer expired
-        if (!isActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))
+        //if (!IsActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))
+            //playerRespawn.Respawn(false);
+        // Only respawn if the timer was actually set and has now finished
+        if (!IsActiveRagdoll && waitBeforeRespawn.IsRunning && waitBeforeRespawn.Expired(Runner))
+        {
             playerRespawn.Respawn(false);
+        }
 
         // Active ragdoll
-        if (isActiveRagdoll)
+        if (IsActiveRagdoll)
         {
             HandleStamina();
             HandleMovement(localForwardVelocity);
