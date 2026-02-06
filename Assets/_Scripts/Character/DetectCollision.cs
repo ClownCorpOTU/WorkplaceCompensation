@@ -35,6 +35,7 @@ public class DetectCollision : MonoBehaviour
             
             // Get the contact impulse
             Vector3 contactImpulse = contactPoint.impulse / Time.fixedDeltaTime;
+            print(contactImpulse.magnitude);
             if (contactImpulse.magnitude < knockoutThreshold) continue;
             
             // Player knockout (Ragdoll)

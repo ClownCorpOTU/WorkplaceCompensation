@@ -19,6 +19,10 @@ public class NetworkFlattenBlobby : NetworkBehaviour
             {
                 rootPlayer.FlattenAndMakeRagdoll();
             }
+            else
+            {
+                Utils.DebugLogError("Cannot find player network component on " + other.gameObject.name + " or " + other.transform.root.name);
+            }
         }
     }
 }
