@@ -516,6 +516,92 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 91898765}
   m_CullTransparentMesh: 1
+--- !u!1001 &119284736
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1152916932}
+    m_Modifications:
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 2.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -25.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_Name
+      value: RadioactiveBarrel (5)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: radiationDeathDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: radiationStartDistance
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4192690556837454815, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: SortKey
+      value: 164924090
+      objectReference: {fileID: 0}
+    - target: {fileID: 6566715914913342347, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: SortKey
+      value: 4212288005
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094376793656729642, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_Radius
+      value: 15
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+--- !u!4 &119284737 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+  m_PrefabInstance: {fileID: 119284736}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &138174798
 GameObject:
   m_ObjectHideFlags: 0
@@ -1644,11 +1730,6 @@ MonoBehaviour:
   backgroundColorOn: {r: 1, g: 1, b: 1, a: 1}
   handleColorOff: {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
   handleColorOn: {r: 1, g: 1, b: 1, a: 1}
---- !u!4 &658209454 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-  m_PrefabInstance: {fileID: 2581864529843861306}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &715777765
 GameObject:
   m_ObjectHideFlags: 0
@@ -2927,6 +3008,92 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 957805824}
   m_CullTransparentMesh: 1
+--- !u!1001 &960063221
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 1152916932}
+    m_Modifications:
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 5.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 7.959999
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: -90
+      objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_Name
+      value: RadioactiveBarrel (4)
+      objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: radiationDeathDistance
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: radiationStartDistance
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4192690556837454815, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: SortKey
+      value: 164924090
+      objectReference: {fileID: 0}
+    - target: {fileID: 6566715914913342347, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: SortKey
+      value: 1026212711
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094376793656729642, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_Radius
+      value: 15
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+--- !u!4 &960063222 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+  m_PrefabInstance: {fileID: 960063221}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1009032806
 GameObject:
   m_ObjectHideFlags: 0
@@ -3285,7 +3452,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &1152916932
 Transform:
   m_ObjectHideFlags: 0
@@ -3299,9 +3466,10 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 658209454}
   - {fileID: 2006694011}
   - {fileID: 2121143060}
+  - {fileID: 960063222}
+  - {fileID: 119284737}
   - {fileID: 1350863981}
   - {fileID: 6647755944353753686}
   - {fileID: 1928182460}
@@ -3735,6 +3903,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RadioactiveBarrel (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: radiationDeathDistance
       value: 5
@@ -3746,6 +3918,10 @@ PrefabInstance:
     - target: {fileID: 4192690556837454815, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: SortKey
       value: 1257343606
+      objectReference: {fileID: 0}
+    - target: {fileID: 6566715914913342347, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: SortKey
+      value: 18226914
       objectReference: {fileID: 0}
     - target: {fileID: 8094376793656729642, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_Radius
@@ -4776,6 +4952,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterBarrel (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 5644857997081743569, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5730963733787780593, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
       propertyPath: SortKey
       value: 2030644378
@@ -5652,6 +5832,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: WaterBarrel (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 5644857997081743569, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5730963733787780593, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
       propertyPath: SortKey
       value: 4151629885
@@ -5859,6 +6043,10 @@ PrefabInstance:
     - target: {fileID: 5644857997081743569, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
       propertyPath: m_Name
       value: WaterBarrel (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 5644857997081743569, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5730963733787780593, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
       propertyPath: SortKey
@@ -6436,6 +6624,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RadioactiveBarrel (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: radiationDeathDistance
       value: 5
@@ -6447,6 +6639,10 @@ PrefabInstance:
     - target: {fileID: 4192690556837454815, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: SortKey
       value: 976828612
+      objectReference: {fileID: 0}
+    - target: {fileID: 6566715914913342347, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: SortKey
+      value: 4032679216
       objectReference: {fileID: 0}
     - target: {fileID: 8094376793656729642, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_Radius
@@ -6494,6 +6690,7 @@ MonoBehaviour:
   pausePanel: {fileID: 1741025106}
   staminaBarImage: {fileID: 1993208451}
   fakeLoadingScreen: {fileID: 1282885767}
+  radiationScreenMat: {fileID: 2100000, guid: 8ae2625dae06a0346aab1d5a30ae1da8, type: 2}
 --- !u!4 &2035403211
 Transform:
   m_ObjectHideFlags: 0
@@ -7070,15 +7267,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 13
+      value: -1.5
       objectReference: {fileID: 0}
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 23
+      value: 7.959999
       objectReference: {fileID: 0}
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalRotation.w
@@ -7112,6 +7309,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RadioactiveBarrel (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: radiationDeathDistance
       value: 5
@@ -7123,6 +7324,10 @@ PrefabInstance:
     - target: {fileID: 4192690556837454815, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: SortKey
       value: 164924090
+      objectReference: {fileID: 0}
+    - target: {fileID: 6566715914913342347, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: SortKey
+      value: 3220774694
       objectReference: {fileID: 0}
     - target: {fileID: 8094376793656729642, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_Radius
@@ -7483,79 +7688,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 8385f3c967b0821419d565271bbbcf39, type: 3}
---- !u!1001 &2581864529843861306
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1152916932}
-    m_Modifications:
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -8
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: -90
-      objectReference: {fileID: 0}
-    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_Name
-      value: RadioactiveBarrel
-      objectReference: {fileID: 0}
-    - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: radiationDeathDistance
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: radiationStartDistance
-      value: 15
-      objectReference: {fileID: 0}
-    - target: {fileID: 4192690556837454815, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: SortKey
-      value: 1945100515
-      objectReference: {fileID: 0}
-    - target: {fileID: 8094376793656729642, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
-      propertyPath: m_Radius
-      value: 15
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
 --- !u!1001 &4406203880533889240
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -7704,6 +7836,10 @@ PrefabInstance:
     - target: {fileID: 5644857997081743569, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
       propertyPath: m_Name
       value: WaterBarrel
+      objectReference: {fileID: 0}
+    - target: {fileID: 5644857997081743569, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5730963733787780593, guid: 74d54730e05d5274cba5c025fe4f41fe, type: 3}
       propertyPath: SortKey

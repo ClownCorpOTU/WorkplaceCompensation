@@ -8,6 +8,7 @@ public class LocalPlayerUIManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private Image staminaBarImage;
     [SerializeField] private GameObject fakeLoadingScreen;
+    [SerializeField] private Material radiationScreenMat;
 
     private Recorder recorder;
     public bool IsLocalGamePaused { get; private set; }
@@ -48,5 +49,10 @@ public class LocalPlayerUIManager : MonoBehaviour
         }
         
         recorder.RecordingEnabled = !mute;
+    }
+
+    public void UpdateRadiationFullScreenEffect(float intensity)
+    {
+        radiationScreenMat.SetFloat("_RadiationIntensity", intensity);
     }
 }

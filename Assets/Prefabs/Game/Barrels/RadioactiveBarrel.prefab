@@ -52,6 +52,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: RadioactiveBarrel
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 238ada23e55dde348b32fcdae86101c1, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -59,9 +63,6 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 238ada23e55dde348b32fcdae86101c1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 2332126263980823323}
-    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 238ada23e55dde348b32fcdae86101c1, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 4192690556837454815}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 238ada23e55dde348b32fcdae86101c1, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3925901588764274734}
@@ -79,7 +80,10 @@ PrefabInstance:
       addedObject: {fileID: 8777950054800615025}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 238ada23e55dde348b32fcdae86101c1, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2491678737957789398}
+      addedObject: {fileID: 6566715914913342347}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 238ada23e55dde348b32fcdae86101c1, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1469627320898427987}
   m_SourcePrefab: {fileID: 100100000, guid: 238ada23e55dde348b32fcdae86101c1, type: 3}
 --- !u!1 &3450874274107189285 stripped
 GameObject:
@@ -107,26 +111,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1.4762193, y: 1.4762192, z: 1.8709222}
   m_Center: {x: 0, y: -0.06708962, z: 0.9277652}
---- !u!114 &4192690556837454815
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3450874274107189285}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
-  SortKey: 3009063468
-  ObjectInterest: 1
-  Flags: 262145
-  NestedObjects: []
-  NetworkedBehaviours:
-  - {fileID: 3937717450943675524}
-  - {fileID: 2491678737957789398}
-  ForceRemoteRenderTimeframe: 0
 --- !u!82 &3925901588764274734
 AudioSource:
   m_ObjectHideFlags: 0
@@ -285,7 +269,6 @@ MonoBehaviour:
   radiationStartDistance: 9
   radiationDeathDistance: 4
   radiationDeathDelay: 3
-  radiationScreenMat: {fileID: 2100000, guid: 8ae2625dae06a0346aab1d5a30ae1da8, type: 2}
   tickPitchRange: {x: 1, y: 1.2}
   tickDelayRange: {x: 0.8, y: 0.01}
   nextTickDelay: {x: 0.1, y: 0.6}
@@ -316,7 +299,27 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &2491678737957789398
+--- !u!114 &6566715914913342347
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3450874274107189285}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 1769946776
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 3937717450943675524}
+  - {fileID: 1469627320898427987}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &1469627320898427987
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
