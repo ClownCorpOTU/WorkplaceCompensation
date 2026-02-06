@@ -36,6 +36,13 @@ public partial class NetworkPlayer
     {
         if (!Object.HasStateAuthority) return;
         
+        // Set state
+        isActiveRagdoll = false;
+        
+        // Idk man maybe this will break something because I've been creating timers in other places like a doofus
+        if (waitBeforeRespawn.ExpiredOrNotRunning(Runner))
+            waitBeforeRespawn = TickTimer.CreateFromSeconds(Runner, ragdollTime);
+        
         // Disable collider
         mainCollider.enabled = false;
         
@@ -58,16 +65,14 @@ public partial class NetworkPlayer
 
         themeSong.EnableLowPassFilter(true);
         lastTimeBecameRagdoll = Runner.SimulationTime;
-        isActiveRagdoll = false;
-        
-        // Idk man maybe this will break something because I've been creating timers in other places like a doofus
-        if (waitBeforeRespawn.ExpiredOrNotRunning(Runner))
-            waitBeforeRespawn = TickTimer.CreateFromSeconds(Runner, ragdollTime);
     }
     
     public void MakeActiveRagdoll()
     {
         if (!Object.HasStateAuthority) return;
+        
+        isActiveRagdoll = true;
+        waitBeforeRespawn = TickTimer.None;
         
         // Ensure scale is set to 1 on the Z-axis
         transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1f);
@@ -90,7 +95,6 @@ public partial class NetworkPlayer
         isGrabbingActive = false;
         
         themeSong.EnableLowPassFilter(false);
-        isActiveRagdoll = true;
     }
 
     public void OnPlayerBodyPartHit()
@@ -105,7 +109,7 @@ public partial class NetworkPlayer
         if (other.gameObject.CompareTag("MakeRagdoll"))
         {
             MakeRagdoll();
-            waitBeforeRespawn = TickTimer.CreateFromSeconds(Runner, ragdollTime);
+            //waitBeforeRespawn = TickTimer.CreateFromSeconds(Runner, ragdollTime);
             
             // Checking if the timer has expired in the main script since it derives from NetworkBehaviour
         }

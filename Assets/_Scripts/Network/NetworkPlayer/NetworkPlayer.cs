@@ -127,7 +127,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
-        transform.name = $"Player_{Object.Id}";
+        transform.name = $"Player_{(PlayerRefValue.RawEncoded % 1000) - 1}";
 
         if (Object.HasInputAuthority)
         {
@@ -278,6 +278,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         // Respawn in place
         if (networkInputData.IsRevivePressed)
             playerRespawn.Respawn(false);
+        
+        print(waitBeforeRespawn.RemainingTime(Runner));
         
         // Respawn if timer expired
         if (!isActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))

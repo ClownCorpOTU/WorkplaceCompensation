@@ -27,7 +27,7 @@ public class NetworkPlayerRespawn : MonoBehaviour
     {
         networkRB.Rigidbody.linearVelocity = Vector3.zero;
         networkRB.Rigidbody.angularVelocity = Vector3.zero;
-
+        
         if (!inPlace)
         {
             networkRB.Teleport(spawnPoint, Quaternion.Euler(0f, 0f, 0f));
