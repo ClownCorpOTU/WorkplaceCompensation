@@ -51,6 +51,8 @@ public class NetworkGameManager : NetworkBehaviour
     
     private void Update()
     {
+        if (!Object || !Object.IsValid) return;
+        
         // UI updates are client-only (not networked)
         if (GameTimer.IsRunning)
         {

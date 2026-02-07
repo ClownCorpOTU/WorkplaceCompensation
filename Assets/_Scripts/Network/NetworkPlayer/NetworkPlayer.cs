@@ -1,3 +1,4 @@
+using System;
 using Fusion;
 using Fusion.Addons.Physics;
 using TMPro;
@@ -97,7 +98,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerRespawn = GetComponent<NetworkPlayerRespawn>();
         if (playerRespawn == null)
             playerRespawn = gameObject.AddComponent<NetworkPlayerRespawn>();
-        playerRespawn.Initialize(this, networkRB, spawnPoint);
+        playerRespawn.Initialize(this, networkRB);
         
         // SubSystem Setup: Player Camera
         playerCamera = GetComponent<NetworkPlayerCamera>();
@@ -126,7 +127,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
-        transform.name = $"Player_{Object.Id}";
+        transform.name = $"Player_{(PlayerRefValue.RawEncoded % 1000) - 1}";
 
         if (Object.HasInputAuthority)
         {
@@ -207,6 +208,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #region Update
     private void Update()
     {
+        if (!Object || !Object.IsValid) return;
+        
         // TODO: This architecture is terrible. I'm checking for escape input outside of the loop so players can unpause
         isPauseButtonPressed = Object.HasInputAuthority && inputReader.IsPauseButtonPressed;
 
@@ -278,12 +281,19 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (networkInputData.IsRevivePressed)
             playerRespawn.Respawn(false);
         
+        print(waitBeforeRespawn.RemainingTime(Runner));
+        
         // Respawn if timer expired
-        if (!isActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))
+        //if (!IsActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))
+            //playerRespawn.Respawn(false);
+        // Only respawn if the timer was actually set and has now finished
+        if (!IsActiveRagdoll && waitBeforeRespawn.IsRunning && waitBeforeRespawn.Expired(Runner))
+        {
             playerRespawn.Respawn(false);
+        }
 
         // Active ragdoll
-        if (isActiveRagdoll)
+        if (IsActiveRagdoll)
         {
             HandleStamina();
             HandleMovement(localForwardVelocity);

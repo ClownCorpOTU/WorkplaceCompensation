@@ -66,7 +66,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -4780700908045676049, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: -4518959592515986284, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
@@ -78,7 +78,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
       propertyPath: m_TagString
@@ -86,7 +86,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3162004937780831470, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
       propertyPath: m_Layer
-      value: 3
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -160,7 +160,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
 --- !u!114 &8998105275294017976
 MonoBehaviour:
   m_ObjectHideFlags: 0

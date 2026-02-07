@@ -7,7 +7,8 @@ public partial class NetworkPlayer
     [SerializeField] private float maxSpeed = 4f;
     [SerializeField] private float acceleration = 30f;
     [SerializeField] private float rotationAngle = 300f;
-    [SerializeField] private float jumpForce = 20f;
+    //[SerializeField] private float jumpForce = 20f;
+    [SerializeField] private float jumpHeight = 1.5f;
 
     private Vector2 moveInputVector = Vector2.zero;
     public Vector2 MoveInputVector => moveInputVector;
@@ -79,7 +80,21 @@ public partial class NetworkPlayer
 
         //print("Jumping!");
         audioManager.Play("Jump", transform.position);
+
+        float gravityMagnitude = Mathf.Abs(Physics.gravity.y);
+
+        float gravityRatio = 9.81f / gravityMagnitude;
+        float adjustedHeight = jumpHeight * gravityRatio;
         
+        float requiredVelocity = Mathf.Sqrt(2f * adjustedHeight * gravityMagnitude);
+        float totalImpulse = requiredVelocity * rb.mass;
+        
+        Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
+        rb.AddForce(launchDir * totalImpulse, ForceMode.Impulse);
+
+        lastActivityTime = Runner.SimulationTime;
+
+        /*
         // Drain once
         //CurrentStamina = Mathf.Max(0f, CurrentStamina - 3f);
 
@@ -89,5 +104,6 @@ public partial class NetworkPlayer
 
         // Reset regen timer
         lastActivityTime = Runner.SimulationTime;
+        */
     }
 }
