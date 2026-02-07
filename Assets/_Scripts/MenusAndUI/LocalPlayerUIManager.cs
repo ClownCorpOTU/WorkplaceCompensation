@@ -1,6 +1,7 @@
 ﻿using System;
 using Photon.Voice.Unity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LocalPlayerUIManager : MonoBehaviour
@@ -33,6 +34,16 @@ public class LocalPlayerUIManager : MonoBehaviour
         pausePanel.SetActive(false);
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
     private void Update()
