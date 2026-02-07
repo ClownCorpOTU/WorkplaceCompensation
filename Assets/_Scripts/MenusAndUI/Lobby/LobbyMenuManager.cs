@@ -4,6 +4,7 @@ using TMPro;
 using System.Collections.Generic;
 using Fusion;
 using System;
+using UnityEngine.SceneManagement;
 
 public class LobbyMenuManager : MonoBehaviour
 {
@@ -15,6 +16,7 @@ public class LobbyMenuManager : MonoBehaviour
 
     [SerializeField] TMP_InputField lobbyNameInput;
     //[SerializeField] TMP_InputField lobbySizeInput;
+    [SerializeField] TMP_Dropdown mapSelection;
 
     int maxLobbySize = 4;
 
@@ -29,11 +31,15 @@ public class LobbyMenuManager : MonoBehaviour
         {
             newLobbyPopUp = GameObject.Find("NewLobbyPopUp");
         }
-        if (lobbyNameInput == false)
+        if (lobbyNameInput == null)
         {
             lobbyNameInput = GameObject.Find("LobbyNameInput").GetComponent<TMP_InputField>();
         }
-        /*if (lobbySizeInput == false)
+        if (mapSelection == null)
+        {
+            mapSelection = GameObject.Find("MapOptions").GetComponent<TMP_Dropdown>();
+        }
+        /*if (lobbySizeInput == null)
         {
             lobbySizeInput = GameObject.Find("LobbySizeInput").GetComponent<TMP_InputField>();
         }*/
@@ -55,8 +61,31 @@ public class LobbyMenuManager : MonoBehaviour
 
         string lobbyName = lobbyNameInput.text;
 
-
+        SceneManager.LoadScene(SelectMap());
 
         newLobbyPopUp.SetActive(false); // Hide Popup.
+    }
+
+    public string SelectMap()
+    {
+        string sceneName = "FallExpo_FinalReview";
+
+        switch (mapSelection.value)
+        {
+            case 0:
+                {
+                    sceneName = "FallExpo_FinalReview";
+                    return sceneName;
+                }
+            case 1:
+            {
+                sceneName = "";
+                return sceneName;
+            }
+            default:
+                {
+                    return sceneName;
+                }
+        }
     }
 }

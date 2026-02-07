@@ -7,6 +7,7 @@ using System;
 public class LobbyEntry : MonoBehaviour
 {
     public TextMeshProUGUI lobbyName, playerCount;
+    public TMP_Dropdown mapSelection;
     public Button joinButton;
     public int currentPlayerCount = 0, maxPlayerCount = 0;
 
