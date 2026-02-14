@@ -10,6 +10,8 @@ public class LobbyMenuManager : MonoBehaviour
 {
     [SerializeField] List<LobbyEntry> lobbyEntries = new List<LobbyEntry>();
     [SerializeField] GameObject lobbyEntryPrefab;
+    [SerializeField] VerticalLayoutGroup lobbyDisplay;
+
 
     [SerializeField] GameObject lobbyUI;
     [SerializeField] GameObject newLobbyPopUp;
@@ -25,6 +27,11 @@ public class LobbyMenuManager : MonoBehaviour
         if (lobbyUI == null)
         {
             lobbyUI = GameObject.Find("LobbyUI");
+        }
+
+        if (lobbyDisplay == null)
+        {
+            lobbyDisplay = GameObject.Find("LobbyListContent").GetComponent<VerticalLayoutGroup>();
         }
 
         if (newLobbyPopUp == null)
@@ -45,6 +52,20 @@ public class LobbyMenuManager : MonoBehaviour
         }*/
         
         newLobbyPopUp.SetActive(false);
+    }
+
+    public void ClearLobbyList()
+    {
+        foreach (Transform child in lobbyDisplay.transform)
+        {
+            Destroy(child.gameObject);
+        }
+    }
+
+    public void AddToList(SessionInfo sessionInfo)
+    {
+        LobbyEntry newLobbyEntry = Instantiate(lobbyEntryPrefab, lobbyDisplay.transform).GetComponent<LobbyEntry>();
+        newLobbyEntry.SessionInformation(sessionInfo);
     }
 
     public void NewLobby()

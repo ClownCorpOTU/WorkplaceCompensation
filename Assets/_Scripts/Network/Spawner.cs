@@ -10,6 +10,7 @@ using UnityEngine;
 public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPlayer networkPlayerPrefab;
+    [SerializeField] private LobbyMenuManager lobbyManager;
     
     private Vector3 spawnPoint;
 
@@ -95,7 +96,21 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        
+        if (lobbyManager == null)
+        {
+            return;
+        }
+
+        if (sessionList.Count != 0)
+        {
+            lobbyManager.ClearLobbyList();
+
+            foreach (SessionInfo sessionInfo in sessionList)
+            {
+                lobbyManager.AddToList(sessionInfo);
+            }
+
+        }
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)

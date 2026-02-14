@@ -1,5 +1,7 @@
 using System;
+using System.Diagnostics;
 using System.Linq;
+using System.Net.NetworkInformation;
 using System.Threading.Tasks;
 using Fusion;
 using Fusion.Sockets;
@@ -24,7 +26,10 @@ public class NetworkRunnerHandler : MonoBehaviour
         QualitySettings.vSyncCount = 0;
         Application.targetFrameRate = 120;
         
-        networkRunner = FindFirstObjectByType<NetworkRunner>();
+        if (networkRunner == null)
+        {
+            networkRunner = FindFirstObjectByType<NetworkRunner>();
+        }
     }
 
     private void Start()
@@ -39,9 +44,11 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
         
         GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
-        
-        var clientTask = InitializeNetworkRunner(networkRunner, mode, sessionName, 
-            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
+        if (SceneManager.GetActiveScene().name != "MainMenu")
+        {
+            var clientTask = InitializeNetworkRunner(networkRunner, mode, sessionName, 
+                NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
+        }
     }
 
     private INetworkSceneManager GetSceneManager(NetworkRunner runner)
@@ -69,5 +76,29 @@ public class NetworkRunnerHandler : MonoBehaviour
             CustomLobbyName = runner.name,
             SceneManager = sceneManager
         });
+    }
+
+    private async Task JoinLobby()
+    {
+        string lobbyID = "lobbyName";
+
+        var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, lobbyID);
+
+        if (!result.Ok)
+        {
+            UnityEngine.Debug.LogError($"Unable to join lobby {lobbyID}.");
+        }
+    }
+
+    public void CreateGame (string sessionName, string sceneName)
+    {
+        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Host, sessionName, 
+            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetSceneByName(sceneName).buildIndex), null);
+    }
+
+    public void JoinGame (SessionInfo sessionInfo)
+    {
+        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Client, sessionInfo.Name, 
+            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
     }
 }
