@@ -32,6 +32,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Vector2 startSizeRange = new Vector2(0.1f, 0.4f);
     [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
     
+    [Networked] public float NetworkedMovementSpeed { get; set; }
+    
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
     private NetworkPlayerCamera playerCamera;
@@ -257,18 +259,18 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (inputReader.IsPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
         previousPausePressed = isPauseButtonPressed;
         
-        HandlePlayer(localForwardVelocity);
+        HandlePlayer();
     }
 
-    private void HandlePlayer(float localForwardVelocity)
+    private void HandlePlayer()
     {
         if (Object.HasStateAuthority)
         {
             GravityAndGrounding();
             
-            // Limit forward movement to our max speed
-            Vector3 localVelocityVsForward = transform.forward * Vector3.Dot(transform.forward, rb.linearVelocity);
-            localForwardVelocity = localVelocityVsForward.magnitude;
+            // Calculate speed ONLY on the Host
+            Vector3 localVelocity = transform.InverseTransformDirection(rb.linearVelocity);
+            NetworkedMovementSpeed = new Vector3(localVelocity.x, 0, localVelocity.z).magnitude;
         }/*
         else if (Object.HasInputAuthority)
         {
@@ -283,9 +285,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         print(waitBeforeRespawn.RemainingTime(Runner));
         
-        // Respawn if timer expired
-        //if (!IsActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))
-            //playerRespawn.Respawn(false);
         // Only respawn if the timer was actually set and has now finished
         if (!IsActiveRagdoll && waitBeforeRespawn.IsRunning && waitBeforeRespawn.Expired(Runner))
         {
@@ -296,12 +295,10 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (IsActiveRagdoll)
         {
             HandleStamina();
-            HandleMovement(localForwardVelocity);
+            HandleMovement();
         }
         
-        SyncAnimations(localForwardVelocity);
-        UpdateDustFX(localForwardVelocity);
-        UpdateSpineLean(localForwardVelocity);
+        SyncAnimations(NetworkedMovementSpeed);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
@@ -365,6 +362,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
                     NetworkPhysicsSyncedRotations.Get(i), interpolated.Alpha);
             }
         }
+        
+        UpdateSpineLean(NetworkedMovementSpeed);
+        UpdateDustFX(NetworkedMovementSpeed);
 
         // Smoother camera movement for clients
         if (Object.HasInputAuthority)

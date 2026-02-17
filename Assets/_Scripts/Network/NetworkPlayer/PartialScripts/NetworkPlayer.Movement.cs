@@ -17,7 +17,7 @@ public partial class NetworkPlayer
     private bool jumpConsumed = false;
     
     
-    private void HandleMovement(float localForwardVelocity)
+    private void HandleMovement()
     {
         float inputMagnitude = networkInputData.RawInput.magnitude;
         Vector3 moveDir = networkInputData.MoveDirection;
@@ -27,7 +27,7 @@ public partial class NetworkPlayer
             ApplyRotation(moveDir);
             
             // Apply movement (host handles physics)
-            if (localForwardVelocity < maxSpeed)
+            if (NetworkedMovementSpeed < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
                 audioManager.Play("Walk", transform.position);
@@ -78,8 +78,11 @@ public partial class NetworkPlayer
     {
         if (CurrentStamina < 3f) return; // not enough energy
 
-        //print("Jumping!");
-        audioManager.Play("Jump", transform.position);
+        // ONLY play audio if this is the "Forward" (first) execution of this tick
+        if (Runner.IsForward) 
+        {
+            audioManager.Play("Jump", transform.position);
+        }
 
         float gravityMagnitude = Mathf.Abs(Physics.gravity.y);
 
