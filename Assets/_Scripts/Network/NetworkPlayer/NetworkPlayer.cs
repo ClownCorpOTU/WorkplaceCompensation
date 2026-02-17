@@ -211,7 +211,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private void Update()
     {
         if (!Object || !Object.IsValid) return;
-        
+
         // TODO: This architecture is terrible. I'm checking for escape input outside of the loop so players can unpause
         isPauseButtonPressed = Object.HasInputAuthority && inputReader.IsPauseButtonPressed;
 
