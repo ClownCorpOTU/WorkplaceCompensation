@@ -7,7 +7,7 @@ public partial class NetworkPlayer
     [SerializeField] private float maxSpeed = 4f;
     [SerializeField] private float acceleration = 30f;
     [SerializeField] private float rotationAngle = 300f;
-    //[SerializeField] private float jumpForce = 20f;
+    [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float jumpHeight = 1.5f;
 
     private Vector2 moveInputVector = Vector2.zero;
@@ -59,7 +59,7 @@ public partial class NetworkPlayer
             jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
 
         // Execute jump once per liftoff
-        if (isGrounded && jumpBuffer.IsRunning && !jumpConsumed)
+        if (IsGrounded && jumpBuffer.IsRunning && !jumpConsumed)
         {
             jumpBuffer = TickTimer.None;
             jumpConsumed = true;
@@ -67,7 +67,7 @@ public partial class NetworkPlayer
             PerformJump(); // separate function for clarity
         }
 
-        if (isGrounded && !jumpBuffer.IsRunning)
+        if (IsGrounded && !jumpBuffer.IsRunning)
         {
             //print("Jump consumed = false");
             jumpConsumed = false;
@@ -90,7 +90,8 @@ public partial class NetworkPlayer
         float totalImpulse = requiredVelocity * rb.mass;
         
         Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
-        rb.AddForce(launchDir * totalImpulse, ForceMode.Impulse);
+        //rb.AddForce(launchDir * totalImpulse, ForceMode.Impulse);
+        rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
 
         lastActivityTime = Runner.SimulationTime;
 

@@ -127,7 +127,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
-        transform.name = $"Player_{(PlayerRefValue.RawEncoded % 1000) - 1}";
+        transform.name = $"Player_{Object.Id}";
 
         if (Object.HasInputAuthority)
         {
@@ -254,7 +254,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         isLiftingActive = networkInputData.IsLiftPressed;
         
         // Pause game (Called from here because right now there's no other way to know player input)
-        if (isPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
+        if (inputReader.IsPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
         previousPausePressed = isPauseButtonPressed;
         
         HandlePlayer(localForwardVelocity);
@@ -269,13 +269,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             // Limit forward movement to our max speed
             Vector3 localVelocityVsForward = transform.forward * Vector3.Dot(transform.forward, rb.linearVelocity);
             localForwardVelocity = localVelocityVsForward.magnitude;
-        }
+        }/*
         else if (Object.HasInputAuthority)
         {
             // Do a lightweight local estimate for visuals
             localForwardVelocity = rb.linearVelocity.magnitude;
             isGrounded = Physics.CheckSphere(transform.position, 0.25f);
-        }
+        }*/
         
         // Respawn in place
         if (networkInputData.IsRevivePressed)
