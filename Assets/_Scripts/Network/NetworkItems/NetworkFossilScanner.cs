@@ -6,16 +6,26 @@ public class NetworkFossilScanner : NetworkBehaviour
     [Header("Settings")]
     [SerializeField] private float maxBatteryLife = 60f;
     [Networked] public float CurrentBattery { get; set; }
+    [Networked] public NetworkBool IsActive { get; set; }
 
     [Header("Detection")]
     [SerializeField] private float detectionRange = 20f;
 
-    private NetworkFossilManager fossilManager;
-    [HideInInspector] public bool IsActive = false;
+    [Header("Audio Settings")] 
+    [SerializeField] private Vector2 tickDelayRange = new Vector2(0.1f, 1.5f);
+    [SerializeField] private Vector2 tickPitchRange = new Vector2(0.9f, 1.1f);
+    [SerializeField] private Vector2 tickVolumeRange = new Vector2(0.5f, 1.0f);
 
+    private NetworkFossilManager fossilManager;
+    private AudioSource tickSource;
+    private float nextBeepTime;
+    private float currentVolume;
+    
     public override void Spawned()
     {
         fossilManager = FindFirstObjectByType<NetworkFossilManager>();
+        tickSource = GetComponent<AudioSource>();
+        
         if (Object.HasStateAuthority) CurrentBattery = maxBatteryLife;
     }
 
@@ -26,7 +36,6 @@ public class NetworkFossilScanner : NetworkBehaviour
             if (Object.HasStateAuthority && IsActive)
             {
                 CurrentBattery -= Runner.DeltaTime;
-                UpdateScannerFeedback();
             }
         }
         else
@@ -34,6 +43,11 @@ public class NetworkFossilScanner : NetworkBehaviour
             // Battery can be recharged by taking the scanner back to it's original position
             OnBatteryDead();
         }
+    }
+
+    public override void Render()
+    {
+        if (IsActive && CurrentBattery > 0) UpdateScannerFeedback();
     }
 
     private void UpdateScannerFeedback()
@@ -46,15 +60,33 @@ public class NetworkFossilScanner : NetworkBehaviour
 
             if (distance <= detectionRange)
             {
-                // TODO: Trigger beeping logic based on distance
-                PlayBeep(distance);
+                print($"Closest fossil is {distance} units away.");
+                
+                // Normalize distance (0 = at fossil; 1 = max range)
+                float t = Mathf.Clamp01(distance / detectionRange);
+                
+                // Beep faster when t is closer to 0
+                float currentDelay = Mathf.Lerp(tickDelayRange.x, tickDelayRange.y, t);
+                
+                // Volume increases with proximity
+                currentVolume = Mathf.Lerp(tickVolumeRange.y, tickVolumeRange.x, t);
+
+                if (Time.time > nextBeepTime)
+                {
+                    PlayBeep();
+                    nextBeepTime = Time.time + currentDelay;
+                }
             }
         }
     }
 
-    private void PlayBeep(float distance)
+    private void PlayBeep()
     {
-        print($"Closest fossil is {distance} units away.");
+        if (tickSource == null) return;
+
+        tickSource.volume = currentVolume;
+        tickSource.pitch = Random.Range(tickPitchRange.x, tickPitchRange.y);
+        tickSource.PlayOneShot(tickSource.clip);
     }
 
     private void OnBatteryDead()
