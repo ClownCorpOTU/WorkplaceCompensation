@@ -283,8 +283,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (networkInputData.IsRevivePressed)
             playerRespawn.Respawn(false);
         
-        print(waitBeforeRespawn.RemainingTime(Runner));
-        
         // Only respawn if the timer was actually set and has now finished
         if (!IsActiveRagdoll && waitBeforeRespawn.IsRunning && waitBeforeRespawn.Expired(Runner))
         {
