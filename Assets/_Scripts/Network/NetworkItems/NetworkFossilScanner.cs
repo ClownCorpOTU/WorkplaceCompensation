@@ -1,47 +1,68 @@
+using System;
 using System.Collections;
 using Fusion;
 using UnityEngine;
+using Random = UnityEngine.Random;
+
+public enum Axis { X, Y, Z }
 
 public class NetworkFossilScanner : NetworkBehaviour
 {
-    [Header("Settings")]
+    [Header("Scanner Settings")]
+    [SerializeField] private float detectionRange = 20f;
     [SerializeField] private float maxBatteryLife = 60f;
     [Networked] public float CurrentBattery { get; set; }
-    [Networked, HideInInspector] public NetworkBool IsActive { get; set; }
+    [SerializeField] private float drainRate = 1f;
+    [SerializeField] private float rechargeRate = 1.2f;
     [SerializeField] private float heightOffset = 0.1f;
-
-    [Header("Detection")]
-    [SerializeField] private float detectionRange = 20f;
-
-    [Header("Audio Settings")] 
+    
+    [Header("Visual Settings")] 
+    [SerializeField] private Transform arrowPivot;
+    [SerializeField] private MeshRenderer arrowRend;
+    [SerializeField] private Gradient signalGradient;
+    [SerializeField] private Vector2 signalEmissionRange = new Vector2(0f, 5f);
+    [SerializeField] private Transform batteryBarPivot;
+    [SerializeField] private MeshRenderer batteryBarRend;
+    [SerializeField] private Gradient batteryGradient;
+    [SerializeField] private Axis batteryScalingAxis = Axis.Z;
+    
+    [Header("Audio Settings")]
     [SerializeField] private Vector2 tickDelayRange = new Vector2(0.1f, 1.5f);
     [SerializeField] private Vector2 tickPitchRange = new Vector2(0.9f, 1.1f);
     [SerializeField] private Vector2 tickVolumeRange = new Vector2(0.5f, 1.0f);
-
-    [Header("Visuals")]
-    [SerializeField] private MeshRenderer[] ledArray;
-    [SerializeField] private Gradient signalGradient;
+    
+    [Networked, HideInInspector] public NetworkBool IsActive { get; set; }
+    [Networked, HideInInspector] public NetworkBool IsInRechargeZone { get; set; }
 
     private NetworkFossilManager fossilManager;
     private AudioSource tickSource;
     private float nextBeepTime;
     private float currentVolume;
+    private Vector3 batteryOriginalScale;
     
     public override void Spawned()
     {
         fossilManager = FindFirstObjectByType<NetworkFossilManager>();
         tickSource = GetComponent<AudioSource>();
+        if (batteryBarPivot != null) batteryOriginalScale = batteryBarPivot.localScale;
         
         if (Object.HasStateAuthority) CurrentBattery = maxBatteryLife;
     }
 
     public override void FixedUpdateNetwork()
     {
+        if (!Object.HasStateAuthority) return;
+        
+        if (IsInRechargeZone && !IsActive && CurrentBattery < maxBatteryLife)
+        {
+            CurrentBattery += Runner.DeltaTime * rechargeRate;
+        }
+        
         if (CurrentBattery > 0)
         {
-            if (Object.HasStateAuthority && IsActive)
+            if (IsActive)
             {
-                CurrentBattery -= Runner.DeltaTime;
+                CurrentBattery -= Runner.DeltaTime * drainRate;
                 
                 // Keep model grounded
                 if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
@@ -63,7 +84,11 @@ public class NetworkFossilScanner : NetworkBehaviour
 
     public override void Render()
     {
-        if (IsActive && CurrentBattery > 0) UpdateScannerFeedback();
+        if (IsActive && CurrentBattery > 0)
+        {
+            UpdateScannerFeedback();
+        }
+        UpdateBatteryVisuals();
     }
 
     private void UpdateScannerFeedback()
@@ -94,7 +119,7 @@ public class NetworkFossilScanner : NetworkBehaviour
                 }
                 
                 // Lights
-                UpdateDirectionalVisuals(fossilPos);
+                UpdateCompass(fossilPos, t);
             }
         }
     }
@@ -108,34 +133,90 @@ public class NetworkFossilScanner : NetworkBehaviour
         tickSource.PlayOneShot(tickSource.clip);
     }
 
-    private void UpdateDirectionalVisuals(Vector3 fossilPos)
+    private void UpdateCompass(Vector3 fossilPos, float t)
     {
-        // Get direction to fossil
-        Vector3 dirToFossil = (fossilPos - transform.position).normalized;
-        
-        // Calculate forward and right
-        float forwardDot = Vector3.Dot(transform.forward, dirToFossil);
-        float rightDot = Vector3.Dot(transform.right, dirToFossil);
-        
-        // Update each LED
-        for (int i = 0; i < ledArray.Length; i++)
-        {
-            // Calculate target dot (Left LED is -1.0; center is 0.0; Right is 1.0)
-            float ledTargetWeight = Mathf.Lerp(-1f, 1f, (float)i / (ledArray.Length - 1));
-            
-            // How much does this LED match the current direction?
-            float intensity = Mathf.Max(0, 1f - Mathf.Abs(rightDot - ledTargetWeight));
-            
-            // Only light up bright if we are also facing generally towards it
-            if (forwardDot < 0) intensity *= 0.2f; // Dim if it's behind us
+        if (arrowPivot == null) return;
 
+        Vector3 direction = (fossilPos - transform.position);
+        direction.y = 0;
+
+        if (direction != Vector3.zero)
+        {
+            // Create target rotation
+            Quaternion targetRot = Quaternion.LookRotation(direction);
+            
+            // Smoothly rotate the arrow towards the fossil
+            arrowPivot.rotation = Quaternion.Slerp(arrowPivot.rotation, targetRot, Time.deltaTime * 5f);
+            
+            // Change color
+            if (arrowRend == null) return;
+            
+            float intensity = 1f - t;
             Color finalColor = signalGradient.Evaluate(intensity);
-            ledArray[i].material.SetColor("_BaseColor", finalColor * intensity * 5f);
+            
+            arrowRend.material.SetColor("_BaseColor", finalColor);
+            arrowRend.material.SetColor("_EmissionColor",
+                finalColor * Mathf.LinearToGammaSpace(intensity * signalEmissionRange.y));
+        }
+        else
+        {
+            arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
+            arrowRend.material.SetColor("_EmissionColor",
+                signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
+        }
+    }
+
+    private void UpdateBatteryVisuals()
+    {
+        if (batteryBarPivot == null) return;
+
+        // Calculate scale (Min 0.01 so lighting doesn't mess up)
+        float batteryPercent = Mathf.Clamp01(CurrentBattery / maxBatteryLife);
+        batteryPercent = Mathf.Max(0.01f, batteryPercent);
+
+        // Scale bar on the needed axis
+        Vector3 scale = batteryOriginalScale;
+
+        switch (batteryScalingAxis)
+        {
+            case Axis.X:
+                scale.x *= batteryPercent;
+                break;
+            case Axis.Y:
+                scale.y *= batteryPercent;
+                break;
+            case Axis.Z:
+                scale.z *= batteryPercent;
+                break;
+        }
+
+        batteryBarPivot.localScale = scale;
+        
+        // Change color
+        if (batteryBarRend != null)
+        {
+            Color barColor = batteryGradient.Evaluate(batteryPercent);
+            batteryBarRend.material.SetColor("_BaseColor", barColor);
+            batteryBarRend.material.SetColor("_EmissionColor", barColor * (2f * batteryPercent));
         }
     }
 
     private void OnBatteryDead()
     {
-        print("Battery is dead!");
+        arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
+        arrowRend.material.SetColor("_EmissionColor",
+            signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("RechargeStation"))
+            IsInRechargeZone = true;
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("RechargeStation"))
+            IsInRechargeZone = false;
     }
 }
