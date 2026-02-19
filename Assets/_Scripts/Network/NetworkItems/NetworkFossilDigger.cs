@@ -37,6 +37,7 @@ public class NetworkFossilDigger : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         
         // Keep model grounded
+        /*
         if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
         {
             float targetY = hit.point.y + heightOffset;
@@ -45,6 +46,7 @@ public class NetworkFossilDigger : NetworkBehaviour
             // Align rotation to slope
             transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
         }
+        */
 
         // Handle active digging process
         if (isDigging)

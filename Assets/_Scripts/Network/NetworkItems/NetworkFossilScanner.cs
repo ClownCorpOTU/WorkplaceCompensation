@@ -39,12 +39,14 @@ public class NetworkFossilScanner : NetworkBehaviour
     private float nextBeepTime;
     private float currentVolume;
     private Vector3 batteryOriginalScale;
+    private Rigidbody rb;
     
     public override void Spawned()
     {
         fossilManager = FindFirstObjectByType<NetworkFossilManager>();
         tickSource = GetComponent<AudioSource>();
         if (batteryBarPivot != null) batteryOriginalScale = batteryBarPivot.localScale;
+        rb = GetComponent<Rigidbody>();
         
         if (Object.HasStateAuthority) CurrentBattery = maxBatteryLife;
     }
