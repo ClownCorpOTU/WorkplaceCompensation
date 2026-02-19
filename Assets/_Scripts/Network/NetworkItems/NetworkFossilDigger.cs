@@ -14,6 +14,7 @@ public class NetworkFossilDigger : NetworkBehaviour
 
     [Header("Visuals")] 
     [SerializeField] private Transform fossilSpawnPos;
+    [SerializeField] private MeshRenderer[] batteryLights;
     
     [Networked] private TickTimer autoStartDigTimer { get; set; }
     [Networked] private TickTimer digProgressTimer { get; set; }
@@ -99,10 +100,13 @@ public class NetworkFossilDigger : NetworkBehaviour
     private void StartDigging(int fossilIndex)
     {
         print("Starting the 2 second dig process..");
+        
         isDigging = true;
         pendingFossilIndex = fossilIndex;
         digProgressTimer = TickTimer.CreateFromSeconds(Runner, digTime);
+        
         CurrentCharges--;
+        
         autoStartDigTimer = TickTimer.None; // Reset the auto-timer
     }
 
@@ -115,8 +119,43 @@ public class NetworkFossilDigger : NetworkBehaviour
         lastSeenFossilIndex = -1;
     }
 
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("RechargeStation"))
+            CurrentCharges = maxCharges;
+    }
+    
     public override void Render()
     {
-        // Digging sounds and particles
+        // Determine the base color based on charges
+        Color chargeColor0 = (CurrentCharges >= 1) ? Color.green : Color.red;
+        Color chargeColor1 = (CurrentCharges >= 2) ? Color.green : Color.red;
+
+        // 2. Check if we are in the "Verification" phase (Waiting to dig)
+        bool isVerifying = autoStartDigTimer.IsRunning;
+
+        if (isVerifying)
+        {
+            // Create a fast flashing effect using a sine wave
+            float flash = Mathf.PingPong(Time.time * 2f, 1f);
+            chargeColor0 = Color.Lerp(chargeColor0, Color.yellow, flash);
+            chargeColor1 = Color.Lerp(chargeColor1, Color.yellow, flash);
+        }
+        else if (isDigging)
+        {
+            // While digging, change color to something else
+            chargeColor0 = Color.white;
+            chargeColor1 = Color.white;
+        }
+
+        // 3. Apply the colors
+        ApplyLightStyle(batteryLights[0], chargeColor0);
+        ApplyLightStyle(batteryLights[1], chargeColor1);
+    }
+
+    private void ApplyLightStyle(MeshRenderer rend, Color col)
+    {
+        rend.material.SetColor("_BaseColor", col);
+        rend.material.SetColor("_EmissionColor", col * 3f); // Brighter for visibility
     }
 }
