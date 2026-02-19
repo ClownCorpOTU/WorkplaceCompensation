@@ -1,3 +1,4 @@
+using System.Collections;
 using Fusion;
 using UnityEngine;
 
@@ -15,6 +16,12 @@ public class NetworkFossilScanner : NetworkBehaviour
     [SerializeField] private Vector2 tickDelayRange = new Vector2(0.1f, 1.5f);
     [SerializeField] private Vector2 tickPitchRange = new Vector2(0.9f, 1.1f);
     [SerializeField] private Vector2 tickVolumeRange = new Vector2(0.5f, 1.0f);
+
+    [Header("Visuals")]
+    [SerializeField] private MeshRenderer signalLight;
+    [SerializeField] private Gradient signalGradient;
+    [SerializeField] private float minEmission = 0f;
+    [SerializeField] private float maxEmission = 5f;
 
     private NetworkFossilManager fossilManager;
     private AudioSource tickSource;
@@ -76,6 +83,16 @@ public class NetworkFossilScanner : NetworkBehaviour
                     PlayBeep();
                     nextBeepTime = Time.time + currentDelay;
                 }
+                
+                // Lights
+                if (signalLight == null) return;
+
+                float intensity = 1f - t;
+                Color finalColor = signalGradient.Evaluate(intensity);
+                
+                signalLight.material.SetColor("_BaseColor", finalColor);
+                signalLight.material.SetColor("_EmissionColor", 
+                    finalColor * Mathf.LinearToGammaSpace(intensity * maxEmission));
             }
         }
     }
@@ -87,6 +104,14 @@ public class NetworkFossilScanner : NetworkBehaviour
         tickSource.volume = currentVolume;
         tickSource.pitch = Random.Range(tickPitchRange.x, tickPitchRange.y);
         tickSource.PlayOneShot(tickSource.clip);
+
+        StartCoroutine(FlashLight());
+    }
+
+    private IEnumerator FlashLight()
+    {
+        signalLight.material.EnableKeyword("_EMISSION");
+        yield return new WaitForSeconds(0.05f);
     }
 
     private void OnBatteryDead()
