@@ -7,7 +7,8 @@ public class NetworkFossilScanner : NetworkBehaviour
     [Header("Settings")]
     [SerializeField] private float maxBatteryLife = 60f;
     [Networked] public float CurrentBattery { get; set; }
-    [Networked] public NetworkBool IsActive { get; set; }
+    [Networked, HideInInspector] public NetworkBool IsActive { get; set; }
+    [SerializeField] private float heightOffset = 0.1f;
 
     [Header("Detection")]
     [SerializeField] private float detectionRange = 20f;
@@ -18,10 +19,8 @@ public class NetworkFossilScanner : NetworkBehaviour
     [SerializeField] private Vector2 tickVolumeRange = new Vector2(0.5f, 1.0f);
 
     [Header("Visuals")]
-    [SerializeField] private MeshRenderer signalLight;
+    [SerializeField] private MeshRenderer[] ledArray;
     [SerializeField] private Gradient signalGradient;
-    [SerializeField] private float minEmission = 0f;
-    [SerializeField] private float maxEmission = 5f;
 
     private NetworkFossilManager fossilManager;
     private AudioSource tickSource;
@@ -43,6 +42,16 @@ public class NetworkFossilScanner : NetworkBehaviour
             if (Object.HasStateAuthority && IsActive)
             {
                 CurrentBattery -= Runner.DeltaTime;
+                
+                // Keep model grounded
+                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
+                {
+                    float targetY = hit.point.y + heightOffset;
+                    transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
+                    
+                    // Align rotation to slope
+                    transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                }
             }
         }
         else
@@ -85,14 +94,7 @@ public class NetworkFossilScanner : NetworkBehaviour
                 }
                 
                 // Lights
-                if (signalLight == null) return;
-
-                float intensity = 1f - t;
-                Color finalColor = signalGradient.Evaluate(intensity);
-                
-                signalLight.material.SetColor("_BaseColor", finalColor);
-                signalLight.material.SetColor("_EmissionColor", 
-                    finalColor * Mathf.LinearToGammaSpace(intensity * maxEmission));
+                UpdateDirectionalVisuals(fossilPos);
             }
         }
     }
@@ -104,14 +106,32 @@ public class NetworkFossilScanner : NetworkBehaviour
         tickSource.volume = currentVolume;
         tickSource.pitch = Random.Range(tickPitchRange.x, tickPitchRange.y);
         tickSource.PlayOneShot(tickSource.clip);
-
-        StartCoroutine(FlashLight());
     }
 
-    private IEnumerator FlashLight()
+    private void UpdateDirectionalVisuals(Vector3 fossilPos)
     {
-        signalLight.material.EnableKeyword("_EMISSION");
-        yield return new WaitForSeconds(0.05f);
+        // Get direction to fossil
+        Vector3 dirToFossil = (fossilPos - transform.position).normalized;
+        
+        // Calculate forward and right
+        float forwardDot = Vector3.Dot(transform.forward, dirToFossil);
+        float rightDot = Vector3.Dot(transform.right, dirToFossil);
+        
+        // Update each LED
+        for (int i = 0; i < ledArray.Length; i++)
+        {
+            // Calculate target dot (Left LED is -1.0; center is 0.0; Right is 1.0)
+            float ledTargetWeight = Mathf.Lerp(-1f, 1f, (float)i / (ledArray.Length - 1));
+            
+            // How much does this LED match the current direction?
+            float intensity = Mathf.Max(0, 1f - Mathf.Abs(rightDot - ledTargetWeight));
+            
+            // Only light up bright if we are also facing generally towards it
+            if (forwardDot < 0) intensity *= 0.2f; // Dim if it's behind us
+
+            Color finalColor = signalGradient.Evaluate(intensity);
+            ledArray[i].material.SetColor("_BaseColor", finalColor * intensity * 5f);
+        }
     }
 
     private void OnBatteryDead()
