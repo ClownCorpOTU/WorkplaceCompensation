@@ -43,6 +43,11 @@ public class NetworkRunnerHandler : MonoBehaviour
             sessionName = "TestSession";
         }
         
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            return;
+        }
+
         GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
@@ -78,10 +83,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         });
     }
 
-    private async Task JoinLobby()
+    private async Task JoinLobby(string lobbyID)
     {
-        string lobbyID = "lobbyName";
-
         var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, lobbyID);
 
         if (!result.Ok)
@@ -93,7 +96,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     public void CreateGame (string sessionName, string sceneName)
     {
         var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Host, sessionName, 
-            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetSceneByName(sceneName).buildIndex), null);
+            NetAddress.Any(), /*SceneRef.FromIndex(SceneManager.GetSceneByName(sceneName).buildIndex)*/ SceneRef.FromPath(sceneName), null);
     }
 
     public void JoinGame (SessionInfo sessionInfo)

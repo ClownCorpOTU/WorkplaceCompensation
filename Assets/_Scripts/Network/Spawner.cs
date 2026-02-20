@@ -31,7 +31,7 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
+        if (runner.IsServer && lobbyManager == null)
         {
             var spawnedPlayer = runner.Spawn(networkPlayerPrefab.gameObject, spawnPoint, Quaternion.identity, player);
             spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
@@ -103,7 +103,7 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
         if (sessionList.Count != 0)
         {
-            lobbyManager.ClearLobbyList();
+            lobbyManager.ClearLobbyDisplay();
 
             foreach (SessionInfo sessionInfo in sessionList)
             {
