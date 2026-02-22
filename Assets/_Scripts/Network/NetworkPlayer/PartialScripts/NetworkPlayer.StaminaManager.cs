@@ -35,6 +35,9 @@ public partial class NetworkPlayer
                 {
                     staminaDrainRate = otherPlayer.IsActiveRagdoll ? maxStaminaDrainRate : 2.5f;
                 }
+                else if (otherObject.CompareTag("SlowStaminaDrain")){
+                    staminaDrainRate = Mathf.Clamp(playerGrab.CurrentlyGrabbedRigidbody.mass * 0.1f, minStaminaDrainRate, maxStaminaDrainRate);
+                }
                 else
                 {
                     staminaDrainRate = Mathf.Clamp(playerGrab.CurrentlyGrabbedRigidbody.mass * 0.5f, minStaminaDrainRate, maxStaminaDrainRate);

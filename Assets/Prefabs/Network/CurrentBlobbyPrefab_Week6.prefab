@@ -1839,15 +1839,22 @@ MonoBehaviour:
   rateOverDistanceRange: {x: 2, y: 15}
   startSizeRange: {x: 0.2, y: 1}
   startSpeedRange: {x: 0, y: 0}
+  _NetworkedMovementSpeed: 0
   _NetworkPhysicsSyncedRotations: []
+  extraGravity: 27
   groundCheckRadius: 0.25
   groundCheckDistance: 0.3
   groundCheckOrigin: {fileID: 5458329399638187860}
+  _IsGrounded:
+    _value: 0
   maxSpeed: 7.5
   acceleration: 55
   rotationAngle: 360
-  jumpForce: 12
+  jumpForce: 75
+  jumpHeight: 1.5
   ragdollTime: 3
+  _IsActiveRagdoll:
+    _value: 1
   spineTarget: {fileID: 4488006285845976720}
   maxLeanAngle: 18
   forwardSnapAngle: 25
