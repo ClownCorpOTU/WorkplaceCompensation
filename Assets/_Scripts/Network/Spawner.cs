@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Spawns the player and collects local input to send to the host.
@@ -17,6 +18,11 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
     public void Initialize(Vector3 pos)
     {
         spawnPoint = pos;
+        
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            lobbyManager = GameObject.FindFirstObjectByType<LobbyMenuManager>();
+        }
     }
     
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -31,7 +37,7 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer && lobbyManager == null)
+        if (runner.IsServer && SceneManager.GetActiveScene().name != "Lobby")
         {
             var spawnedPlayer = runner.Spawn(networkPlayerPrefab.gameObject, spawnPoint, Quaternion.identity, player);
             spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
@@ -96,7 +102,7 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        if (lobbyManager == null)
+        if (SceneManager.GetActiveScene().name == "Lobby")
         {
             return;
         }
