@@ -78,9 +78,14 @@ public class NetworkRunnerHandler : MonoBehaviour
             Address = address,
             Scene = scene,
             SessionName = sessionName,
-            CustomLobbyName = runner.name,
+            CustomLobbyName = sessionName,
             SceneManager = sceneManager
         });
+    }
+
+    public void OnJoinLobby(string lobbyName)
+    {
+        var clientTask = JoinLobby(lobbyName);
     }
 
     private async Task JoinLobby(string lobbyID)
@@ -93,10 +98,12 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
     }
 
-    public void CreateGame (string sessionName, string sceneName)
+    public void CreateGame (string sessionName, string scenePath)
     {
+        int buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+
         var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Host, sessionName, 
-            NetAddress.Any(), /*SceneRef.FromIndex(SceneManager.GetSceneByName(sceneName).buildIndex)*/ SceneRef.FromPath(sceneName), null);
+            NetAddress.Any(), SceneRef.FromIndex(buildIndex), null);
     }
 
     public void JoinGame (SessionInfo sessionInfo)

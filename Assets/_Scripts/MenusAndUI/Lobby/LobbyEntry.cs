@@ -6,12 +6,25 @@ using System;
 
 public class LobbyEntry : MonoBehaviour
 {
+    [Header("Managers")]
+    [SerializeField] LobbyMenuManager lobbyManager;
+
+    [Header("Lobby Entry UI Info")]
     [SerializeField] TextMeshProUGUI lobbyName, playerCount;
     public Button joinButton;
     public int currentPlayerCount = 0, maxPlayerCount = 0;
 
+    [Header("Session")]
     SessionInfo sessionInfo;
     public event Action<SessionInfo> OnJoinSession;
+
+    public LobbyEntry(LobbyMenuManager lobbyMenuManager)
+    {
+        if (lobbyMenuManager != null)
+        {
+            lobbyManager = lobbyMenuManager;
+        }    
+    }
 
     /// <summary>
     /// Update the entry that is displayed.
@@ -20,7 +33,7 @@ public class LobbyEntry : MonoBehaviour
     /// <param name="playerInLobby">Number of players in the lobby, currently.</param>
     /// <param name="playerCap">Maximum players allowed in the lobby.</param>
     /// <param name="map">String of the scene's name that the player will see.</param>
-    public void UpdatedEntryInfo(string name, int playerInLobby, int playerCap, string map = null)
+    public void UpdateEntryInfo(string name, int playerInLobby, int playerCap, string map = null)
     {
         lobbyName.text = name;
         currentPlayerCount = playerInLobby;
@@ -38,10 +51,19 @@ public class LobbyEntry : MonoBehaviour
 
     public void SessionInformation(SessionInfo info)
     {
-        sessionInfo = info;
+        this.sessionInfo = info;
+
+        UpdateEntryInfo(info.Name, info.PlayerCount, info.MaxPlayers);
+
+        bool canPlayerJoin = true;
+        if (currentPlayerCount >= maxPlayerCount)
+        {
+            canPlayerJoin = false;
+        }
+        joinButton.gameObject.SetActive(canPlayerJoin);
     }
 
-    public void JoinRoom()
+    public void OnJoinRoomClick()
     {
         if (currentPlayerCount >= maxPlayerCount)
         {
@@ -49,11 +71,23 @@ public class LobbyEntry : MonoBehaviour
             return;
         }
 
-        NetworkManager._runnerInstance.StartGame(new Fusion.StartGameArgs()
-        {
-            SessionName = lobbyName.text,
-        });
+        currentPlayerCount++;
 
+        UpdatePlayerCount();
+
+        NetworkRunnerHandler networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
+
+        networkRunnerHandler.OnJoinLobby(lobbyName.text);
+    }
+
+    public void OnClick()
+    {
+        OnJoinSession?.Invoke(this.sessionInfo);
+    }
+
+    public void ExitRoom()
+    {
+        currentPlayerCount--;
         UpdatePlayerCount();
     }
 }

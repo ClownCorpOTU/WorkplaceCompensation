@@ -28,8 +28,6 @@ public class LobbyMenuManager : MonoBehaviour
 
     [Header ("Lobby")]
     public Dictionary<string, GameObject> lobbyEntriesDictionary = new Dictionary<string, GameObject>();
-    public SessionInfo sessionInfo;
-
     int maxLobbySize = 4;
 
     void Awake()
@@ -74,11 +72,6 @@ public class LobbyMenuManager : MonoBehaviour
         newLobbyPopUp.SetActive(false);
     }
 
-    void Start()
-    {
-        sessionInfo = NetworkManager._runnerInstance.SessionInfo;
-    }
-
     public void ClearLobbyDisplay()
     {
         foreach (Transform child in lobbyDisplay.transform)
@@ -91,8 +84,6 @@ public class LobbyMenuManager : MonoBehaviour
     {
         LobbyEntry newLobbyEntry = Instantiate(lobbyEntryPrefab, lobbyDisplay.transform).GetComponent<LobbyEntry>();
         newLobbyEntry.SessionInformation(info);
-
-        newLobbyEntry.maxPlayerCount = maxLobbySize;
     }
 
     public void OnCreateNewLobby()
@@ -113,7 +104,7 @@ public class LobbyMenuManager : MonoBehaviour
 
         networkRunnerHandler.CreateGame(lobbyName, SelectMap());
 
-        CreateEntry(lobbyName, sessionInfo);
+        CreateEntry(lobbyName, NetworkManager._runnerInstance.SessionInfo);
 
         newLobbyPopUp.SetActive(false); // Hide Popup.
     }
@@ -125,25 +116,19 @@ public class LobbyMenuManager : MonoBehaviour
     /// <returns>The scene of the level.</returns>
     public string SelectMap()
     {
-        string sceneName = "";
-
         switch (mapSelection.value)
         {
             case 0:
                 {
-                    sceneName = "_Scene/Fall/FallExpo_FinalReview";
-                    //sceneName = "FallExpo_FinalReview";
-                    return sceneName;
+                    return "Assets/_Scenes/Fall/FallExpo_FinalReview.unity";
                 }
             case 1:
             {
-                sceneName = "_Scene/Winter/Test_MarsCanyon";
-                //sceneName = "Test_MarsCanyon";
-                return sceneName;
+                return "Assets/_Scenes/Winter/Test_MarsCanyon.unity";
             }
             default:
                 {
-                    return "FallExpo_FinalReview";
+                    return "Assets/_Scenes/Fall/FallExpo_FinalReview.unity";
                 }
         }
     }
@@ -220,7 +205,7 @@ public class LobbyMenuManager : MonoBehaviour
         
         LobbyEntry entryScript = entry.GetComponent<LobbyEntry>();
 
-        entryScript.UpdatedEntryInfo(session.Name, session.PlayerCount, session.MaxPlayers);
+        entryScript.SessionInformation(session);
 
         entryScript.joinButton.interactable = session.IsOpen;
 
