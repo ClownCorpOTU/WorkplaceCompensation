@@ -1,64 +1,38 @@
-﻿/*
-using System;
-using UnityEngine;
-
-public partial class NetworkPlayer
-{
-    private bool isGrounded = false;
-    private RaycastHit[] raycastHits = new RaycastHit[10];
-
-    // Spherecast params
-    private const float sphereCastRadius = 0.2f;
-    private const float sphereCastMaxDistance = 0.1f;
-    private readonly Vector3 sphereCastOffset = Vector3.up * 0.05f;
-
-    private void GravityAndGrounding()
-    {
-        isGrounded = false; // Check if we are grounded
-
-        int numberOfHits = Physics.SphereCastNonAlloc(
-            rb.position + sphereCastOffset,
-            sphereCastRadius,
-            Vector3.down,
-            raycastHits,
-            sphereCastMaxDistance
-        );
-
-        for (int i = 0; i < numberOfHits; i++)
-        {
-            if (raycastHits[i].transform.root == transform) continue; // Ignore self hits
-
-            isGrounded = true;
-            break;
-        }
-
-        // Add extra gravity when not grounded
-        if (!isGrounded) rb.AddForce(Vector3.down * 25f);
-    }
-}
-*/
-
+﻿using Fusion;
 using UnityEngine;
 
 public partial class NetworkPlayer
 {
     [Header("Ground Detection")]
+    [SerializeField] private float extraGravity = 7.5f;
     [SerializeField] private float groundCheckRadius = 0.25f;
     [SerializeField] private float groundCheckDistance = 0.3f;
     [SerializeField] private Transform groundCheckOrigin; // assign foot or base transform in inspector
-
-    private bool isGrounded = false;
+    
+    [Networked, OnChangedRender(nameof(OnGroundedChange))]
+    public NetworkBool IsGrounded { get; set; }
     
     private readonly RaycastHit[] groundHits = new RaycastHit[10];
-    private const float extraGravity = 25f;
 
+
+    private void OnGroundedChange()
+    {
+        // Do anything needed
+    }
     
     private void GravityAndGrounding()
     {
-        isGrounded = false;
+        if (!Object.HasStateAuthority) return;
+
+        // If we are moving UP quickly (jumping), skip grounding for a few ticks
+        if (!jumpCooldown.ExpiredOrNotRunning(Runner))
+        {
+            IsGrounded = false;
+            return;
+        }
         
         Vector3 origin = groundCheckOrigin != null ? groundCheckOrigin.position : rb.position;
-        origin += Vector3.up * 0.05f; // small offset to avoid self-intersection
+        origin += Vector3.up * 0.1f; // small offset to avoid self-intersection
 
         int hitCount = Physics.SphereCastNonAlloc(
             origin,
@@ -70,21 +44,30 @@ public partial class NetworkPlayer
             QueryTriggerInteraction.Ignore
         );
 
+        bool foundGround = false;
         for (int i = 0; i < hitCount; i++)
         {
             var hit = groundHits[i];
             
             if (hit.transform.root == transform) continue; // ignore self
             if (Vector3.Angle(hit.normal, Vector3.up) > 60f) continue; // too steep
-            
-            isGrounded = true;
+
+            foundGround = true;
             break;
         }
 
-        // Apply stronger gravity when not grounded
-        if (!isGrounded)
-            rb.AddForce(Vector3.down * extraGravity, ForceMode.Acceleration);
+        IsGrounded = foundGround;
 
-        Debug.DrawRay(origin, Vector3.down * groundCheckDistance, isGrounded ? Color.green : Color.red);
+        // Apply extra gravity in air to prevent floatiness
+        if (!IsGrounded)
+        {
+            // If gravity is 9.81, multiplier is 1. If it's 3.7 (Mars), multiplier is ~0.37
+            float gravityMultiplier = Mathf.Abs(Physics.gravity.y) / 9.81f;
+        
+            // Apply scaled extra gravity
+            rb.AddForce(Vector3.down * (extraGravity * gravityMultiplier), ForceMode.Acceleration);
+        }
+
+        Debug.DrawRay(origin, Vector3.down * groundCheckDistance, IsGrounded ? Color.green : Color.red);
     }
 }

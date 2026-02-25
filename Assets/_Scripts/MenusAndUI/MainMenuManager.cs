@@ -6,6 +6,8 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] string gameplayScene = "FallExpo_FinalReview";
+    [SerializeField] string testA_EarthCanyon = "FallExpo_FinalReview";
+    [SerializeField] string testB_MarsCanyon = "FallExpo_FinalReview";
     [SerializeField] string lobbyScene = "Lobby";
     
     [SerializeField] GameObject notesMenu;
@@ -28,6 +30,11 @@ public class MainMenuManager : MonoBehaviour
     {
         DisableUI();
         SceneManager.LoadScene(gameplayScene);
+    }
+
+    public void ABTestingPlay(bool isA)
+    {
+        SceneManager.LoadScene(isA ? testA_EarthCanyon : testB_MarsCanyon);
     }
 
     public void GoToLobbyMenu()

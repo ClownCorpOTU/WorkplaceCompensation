@@ -96,7 +96,7 @@ MonoBehaviour:
     FieldOfView: 75
     OrthographicSize: 5
     NearClipPlane: 0.3
-    FarClipPlane: 1000
+    FarClipPlane: 300
     Dutch: 0
     ModeOverride: 0
     PhysicalProperties:
@@ -132,7 +132,7 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   OrbitStyle: 0
-  Radius: 6.5
+  Radius: 5
   Orbits:
     Top:
       Radius: 2
@@ -158,10 +158,10 @@ MonoBehaviour:
   VerticalAxis:
     Value: 45
     Center: 25
-    Range: {x: 10, y: 80}
+    Range: {x: 0, y: 80}
     Wrap: 0
     Recentering:
-      Enabled: 0
+      Enabled: 1
       Wait: 1
       Time: 2
     Restrictions: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
       Size: {x: 0.8, y: 0.8}
       Offset: {x: 0, y: 0}
   CenterOnActivate: 1
-  TargetOffset: {x: 0, y: 0.74, z: 0}
+  TargetOffset: {x: 0, y: 0, z: 0}
   Damping: {x: 0.2, y: 0.2}
   Lookahead:
     Enabled: 0
@@ -222,7 +222,7 @@ MonoBehaviour:
   IgnoreTag: Player
   TransparentLayers:
     serializedVersion: 2
-    m_Bits: 766
+    m_Bits: 1790
   MinimumDistanceFromTarget: 0.8
   AvoidObstacles:
     Enabled: 1
@@ -490,3 +490,4 @@ MonoBehaviour:
   occlusionMask:
     serializedVersion: 2
     m_Bits: 273
+  occlusionCheckInterval: 0.1
