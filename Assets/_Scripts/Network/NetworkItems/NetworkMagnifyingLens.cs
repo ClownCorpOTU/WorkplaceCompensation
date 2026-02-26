@@ -1,12 +1,21 @@
 using System;
+using System.Collections.Generic;
 using Fusion;
 using UnityEngine;
 
 public class NetworkMagnifyingLens : NetworkBehaviour
 {
     [SerializeField] private GameObject eggPrefab;
+
+    [Header("Timing Settings")] 
+    [SerializeField] private float playerCookTime = 2.0f;
+    [SerializeField] private float fossilCookTime = 1.3f;
+    
     private bool hasHitPlayer;
     private NetworkGameManager networkGameManager;
+
+    // Tracks Object ID -> Time spent cooking
+    private Dictionary<NetworkId, float> cookTrackers = new Dictionary<NetworkId, float>();
 
     public override void Spawned()
     {
