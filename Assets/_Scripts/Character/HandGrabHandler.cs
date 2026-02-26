@@ -73,7 +73,11 @@ public class HandGrabHandler : MonoBehaviour
 
         playerGrab.CurrentlyGrabbedRigidbody = otherRB;
         playerGrab.CurrentlyGrabbedHandSide = handSide;
-            
+        
+        if (other.gameObject.TryGetComponent(out GrabbedByTracker grabTracker))
+            grabTracker.OnGrabbedBy(networkPlayer);
+        
+        // Update vials to use GrabbedByTracker later
         if (other.gameObject.TryGetComponent(out Vial v))
             v.OnGrabbedBy(networkPlayer);
 

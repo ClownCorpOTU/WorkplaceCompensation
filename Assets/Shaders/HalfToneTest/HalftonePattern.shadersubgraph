@@ -43,9 +43,6 @@
             "m_Id": "02d5662bc9474b7cb86b93604c2492dc"
         },
         {
-            "m_Id": "00917979dad2429c91c6b5502c45fb24"
-        },
-        {
             "m_Id": "812d89b4f025465d9e5ab32c4bc01233"
         }
     ],
@@ -182,9 +179,6 @@
         },
         {
             "m_Id": "81226535fcd242dfb12c80a05e8b4162"
-        },
-        {
-            "m_Id": "5c2706d3e05244b38517e118f576e42d"
         },
         {
             "m_Id": "7b378169d01d46c882c923ea93e078c5"
@@ -1135,46 +1129,6 @@
 }
 
 {
-    "m_SGVersion": 1,
-    "m_Type": "UnityEditor.ShaderGraph.Internal.Vector1ShaderProperty",
-    "m_ObjectId": "00917979dad2429c91c6b5502c45fb24",
-    "m_Guid": {
-        "m_GuidSerialized": "7e9a3da4-902a-4269-b913-5f39fbdf8745"
-    },
-    "m_Name": "CrossHatchIntensity",
-    "m_DefaultRefNameVersion": 1,
-    "m_RefNameGeneratedByDisplayName": "CrossHatchIntensity",
-    "m_DefaultReferenceName": "_CrossHatchIntensity",
-    "m_OverrideReferenceName": "",
-    "m_GeneratePropertyBlock": true,
-    "m_UseCustomSlotLabel": false,
-    "m_CustomSlotLabel": "",
-    "m_DismissedVersion": 0,
-    "m_Precision": 0,
-    "overrideHLSLDeclaration": false,
-    "hlslDeclarationOverride": 0,
-    "m_Hidden": false,
-    "m_PerRendererData": false,
-    "m_customAttributes": [],
-    "m_Value": 0.5,
-    "m_FloatType": 0,
-    "m_RangeValues": {
-        "x": 0.0,
-        "y": 1.0
-    },
-    "m_SliderType": 0,
-    "m_SliderPower": 3.0,
-    "m_EnumType": 0,
-    "m_CSharpEnumString": "",
-    "m_EnumNames": [
-        "Default"
-    ],
-    "m_EnumValues": [
-        0
-    ]
-}
-
-{
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.Internal.BooleanShaderProperty",
     "m_ObjectId": "00ac429ff9894e9db3932d17d374d896",
@@ -1476,9 +1430,6 @@
         },
         {
             "m_Id": "0f15000754584e80bde12edd995422dc"
-        },
-        {
-            "m_Id": "00917979dad2429c91c6b5502c45fb24"
         },
         {
             "m_Id": "812d89b4f025465d9e5ab32c4bc01233"
@@ -2473,7 +2424,7 @@
     "m_ObjectId": "3d6046888d8443c78e419423c31b41b9",
     "m_Title": "Generate halftone grid",
     "m_Position": {
-        "x": -1248.9998779296875,
+        "x": -1249.0,
         "y": 1263.0
     }
 }
@@ -3048,42 +2999,6 @@
 {
     "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
-    "m_ObjectId": "5c2706d3e05244b38517e118f576e42d",
-    "m_Group": {
-        "m_Id": "db44b795856249cea7750da3ed5579c0"
-    },
-    "m_Name": "Property",
-    "m_DrawState": {
-        "m_Expanded": true,
-        "m_Position": {
-            "serializedVersion": "2",
-            "x": 422.9999694824219,
-            "y": 820.9999389648438,
-            "width": 180.99996948242188,
-            "height": 34.0
-        }
-    },
-    "m_Slots": [
-        {
-            "m_Id": "8506e65f357f459a9c8ca36a03f17a53"
-        }
-    ],
-    "synonyms": [],
-    "m_Precision": 0,
-    "m_PreviewExpanded": true,
-    "m_DismissedVersion": 0,
-    "m_PreviewMode": 0,
-    "m_CustomColors": {
-        "m_SerializableColors": []
-    },
-    "m_Property": {
-        "m_Id": "00917979dad2429c91c6b5502c45fb24"
-    }
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.PropertyNode",
     "m_ObjectId": "60112a5bf381467a9f269fff458fca08",
     "m_Group": {
         "m_Id": "c3b9b06bbce24699968597496779cdc0"
@@ -3556,7 +3471,7 @@
     "m_ObjectId": "77e0f5782f2248df8a0619cd1bde6967",
     "m_Title": "Correct screen space aspect ratio",
     "m_Position": {
-        "x": -1955.9998779296875,
+        "x": -1956.0,
         "y": 1286.0
     }
 }
@@ -3985,21 +3900,6 @@
     "m_ObjectId": "8439372802264e0ebb0e06ea1d0c5e98",
     "m_Id": 0,
     "m_DisplayName": "Softness",
-    "m_SlotType": 1,
-    "m_Hidden": false,
-    "m_ShaderOutputName": "Out",
-    "m_StageCapability": 3,
-    "m_Value": 0.0,
-    "m_DefaultValue": 0.0,
-    "m_Labels": []
-}
-
-{
-    "m_SGVersion": 0,
-    "m_Type": "UnityEditor.ShaderGraph.Vector1MaterialSlot",
-    "m_ObjectId": "8506e65f357f459a9c8ca36a03f17a53",
-    "m_Id": 0,
-    "m_DisplayName": "CrossHatchIntensity",
     "m_SlotType": 1,
     "m_Hidden": false,
     "m_ShaderOutputName": "Out",
@@ -4795,7 +4695,7 @@
     "m_ObjectId": "a55670b73d5e47e3b03dd01e27d616f6",
     "m_Title": "Stepped time for \"spiderverse\" look",
     "m_Position": {
-        "x": -1683.9998779296875,
+        "x": -1684.0,
         "y": 680.0
     }
 }
@@ -5504,7 +5404,7 @@
     "m_ObjectId": "c3b9b06bbce24699968597496779cdc0",
     "m_Title": "Remap values",
     "m_Position": {
-        "x": -342.9998779296875,
+        "x": -342.9998474121094,
         "y": 182.00001525878907
     }
 }
@@ -6167,7 +6067,7 @@
     "m_ObjectId": "db44b795856249cea7750da3ed5579c0",
     "m_Title": "Pattern",
     "m_Position": {
-        "x": 129.00015258789063,
+        "x": 129.0,
         "y": 662.0
     }
 }
@@ -6510,7 +6410,7 @@
     "m_ObjectId": "ea18d9a9beea4420846e58bebf6fc085",
     "m_Title": "Depth based thickness",
     "m_Position": {
-        "x": -1941.9998779296875,
+        "x": -1942.0,
         "y": 1640.0
     }
 }
