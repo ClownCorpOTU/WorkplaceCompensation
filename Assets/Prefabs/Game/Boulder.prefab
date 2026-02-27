@@ -15,7 +15,6 @@ GameObject:
   - component: {fileID: 83685281124839583}
   - component: {fileID: 5394659471878344179}
   - component: {fileID: 7645385203000742785}
-  - component: {fileID: 8414763890129694171}
   - component: {fileID: -3224860854521097889}
   m_Layer: 0
   m_Name: Boulder
@@ -185,22 +184,8 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 5394659471878344179}
-  - {fileID: 8414763890129694171}
   - {fileID: -3224860854521097889}
   ForceRemoteRenderTimeframe: 0
---- !u!114 &8414763890129694171
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8194112378920432843}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5c296c11dae6de44fb87d02e4ec4abb1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::NetworkSelfDestruct
-  selfDestructTime: 12
 --- !u!114 &-3224860854521097889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,3 +198,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f055f78a752cd04296093568c5566b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkFlattenBlobby
+  selfDestructTime: 12
+  breakVfxPrefab: {fileID: 3480301468181321488, guid: 34883640f89bba84885fe5885c21fa37, type: 3}

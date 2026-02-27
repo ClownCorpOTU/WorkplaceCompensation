@@ -3,7 +3,10 @@ using UnityEngine;
 
 public class NetworkBoulderGenerator : NetworkBehaviour
 {
+    [Header("Spawn Settings")]
     [SerializeField] private Transform[] spawnPos;
+
+    [Header("Boulder Settings")]
     [SerializeField] private GameObject boulderPrefab;
     [SerializeField] private Vector2 timeBetweenSpawns = new Vector2(2f, 10f);
     [SerializeField] private Vector2 boulderSizeMultiplierRange = new Vector2(0f, 0.6f);

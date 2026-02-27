@@ -118,8 +118,6 @@ public class NetworkFossilScanner : NetworkBehaviour
 
             if (distance <= detectionRange)
             {
-                print($"Closest fossil is {distance} units away.");
-                
                 // Normalize distance (0 = at fossil; 1 = max range)
                 float t = Mathf.Clamp01(distance / detectionRange);
                 
