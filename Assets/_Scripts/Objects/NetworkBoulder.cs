@@ -15,11 +15,13 @@ public class NetworkBoulder : NetworkBehaviour
     private ChangeDetector changes;
     private AudioManager audioManager;
     private bool isDespawning = false;
+    private Vector3 boulderScale;
 
     public override void Spawned()
     {
         audioManager = FindFirstObjectByType<AudioManager>();
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        boulderScale = transform.localScale;
         
         if (Object.HasStateAuthority) selfDestructTimer = TickTimer.CreateFromSeconds(Runner, selfDestructTime);
     }
@@ -80,7 +82,33 @@ public class NetworkBoulder : NetworkBehaviour
     private void TriggerBreakEffects()
     {
         if (audioManager != null) audioManager.Play("RockBreak", transform.position);
-        if (breakVfxPrefab != null) Instantiate(breakVfxPrefab, transform.position, transform.rotation);
+
+        if (breakVfxPrefab != null)
+        {
+            var brokenBoulder = Instantiate(breakVfxPrefab, transform.position, transform.rotation);
+            brokenBoulder.transform.localScale = boulderScale;
+            
+            // Get the velocity of the current networked boulder to pass it to the chunks
+            Vector3 currentVelocity = Vector3.zero;
+            if (TryGetComponent<Rigidbody>(out var rb))
+            {
+                currentVelocity = rb.linearVelocity;
+            }
+
+            // Loop through all chunks in the broken prefab
+            Rigidbody[] chunks = brokenBoulder.GetComponentsInChildren<Rigidbody>();
+            foreach (var chunkRb in chunks)
+            {
+                chunkRb.isKinematic = false; // Force physics back on
+                chunkRb.WakeUp();            // Ensure the physics engine is looking at it
+            
+                // Give it the boulder's momentum + a little random 'pop'
+                chunkRb.linearVelocity = currentVelocity + UnityEngine.Random.insideUnitSphere * 2f;
+            }
+            
+            // Destroy the boulder
+            Destroy(brokenBoulder, 5f);
+        }
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]

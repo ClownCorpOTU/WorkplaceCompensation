@@ -3825,15 +3825,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2004815210636326976, guid: 6b069d85028efef43a27bcb639d3db36, type: 3}
       propertyPath: sounds.Array.data[2].variations.Array.data[0].volume
-      value: 0.05
+      value: 0.1
       objectReference: {fileID: 0}
     - target: {fileID: 2004815210636326976, guid: 6b069d85028efef43a27bcb639d3db36, type: 3}
       propertyPath: sounds.Array.data[2].variations.Array.data[1].volume
-      value: 0.05
+      value: 0.07
       objectReference: {fileID: 0}
     - target: {fileID: 2004815210636326976, guid: 6b069d85028efef43a27bcb639d3db36, type: 3}
       propertyPath: sounds.Array.data[2].variations.Array.data[2].volume
-      value: 0.05
+      value: 0.09
       objectReference: {fileID: 0}
     - target: {fileID: 2004815210636326976, guid: 6b069d85028efef43a27bcb639d3db36, type: 3}
       propertyPath: sounds.Array.data[20].variations.Array.data[0].volume
@@ -10223,6 +10223,14 @@ PrefabInstance:
     - target: {fileID: 183915466959523156, guid: 1bf55dcc38d4f2649906fc584bbb2309, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2389253608785531506, guid: 1bf55dcc38d4f2649906fc584bbb2309, type: 3}
+      propertyPath: timeBetweenSpawns.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2389253608785531506, guid: 1bf55dcc38d4f2649906fc584bbb2309, type: 3}
+      propertyPath: timeBetweenSpawns.y
+      value: 12
       objectReference: {fileID: 0}
     - target: {fileID: 4531297077904348380, guid: 1bf55dcc38d4f2649906fc584bbb2309, type: 3}
       propertyPath: m_Name
