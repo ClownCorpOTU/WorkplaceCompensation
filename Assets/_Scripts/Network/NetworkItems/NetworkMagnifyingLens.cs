@@ -44,6 +44,7 @@ public class NetworkMagnifyingLens : NetworkBehaviour
         
         if (other.transform.root.TryGetComponent(out NetworkPlayer networkPlayer))
         {
+            networkPlayer.GetComponent<DissolvingController>().BeginFx();
             networkPlayer.MakeRagdoll();
             hasHitPlayer = false;
         }
