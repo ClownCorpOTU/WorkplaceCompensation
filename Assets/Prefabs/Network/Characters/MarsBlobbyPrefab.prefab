@@ -1065,9 +1065,9 @@ MonoBehaviour:
   groundCheckOrigin: {fileID: 8748472202373108759}
   _IsGrounded:
     _value: 0
-  maxSpeed: 7.5
-  acceleration: 55
-  rotationAngle: 360
+  maxSpeed: 8.5
+  acceleration: 60
+  rotationAngle: 380
   jumpForce: 75
   jumpHeight: 1.5
   ragdollTime: 4.5
@@ -1083,8 +1083,8 @@ MonoBehaviour:
   maxStamina: 15
   minStaminaDrainRate: 0.2
   maxStaminaDrainRate: 3
-  regenDelay: 0.5
-  regenRate: 4
+  regenDelay: 0.8
+  regenRate: 3
   _CurrentStamina: 15
 --- !u!114 &948579957752299310
 MonoBehaviour:
