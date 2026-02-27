@@ -13,7 +13,11 @@ using UnityEngine.SceneManagement;
 public class NetworkRunnerHandler : MonoBehaviour
 {
     [SerializeField] private NetworkRunner networkRunnerPrefab;
+    [SerializeField] private Vector3 spawnPoint;
+    [SerializeField] private bool shouldStartInSinglePlayer = false;
     private NetworkRunner networkRunner;
+    
+    public Vector3 SpawnPoint => spawnPoint;
 
     private void Awake()
     {
@@ -30,10 +34,13 @@ public class NetworkRunnerHandler : MonoBehaviour
         {
             networkRunner = Instantiate(networkRunnerPrefab);
             networkRunner.name = "NetworkRunner";
+            networkRunner.gameObject.GetComponent<Spawner>().Initialize(spawnPoint);
             sessionName = "TestSession";
         }
         
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.AutoHostOrClient, sessionName, 
+        GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
+        
+        var clientTask = InitializeNetworkRunner(networkRunner, mode, sessionName, 
             NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
     }
 

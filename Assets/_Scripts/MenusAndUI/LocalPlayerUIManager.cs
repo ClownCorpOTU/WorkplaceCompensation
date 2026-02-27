@@ -1,6 +1,7 @@
 ﻿using System;
 using Photon.Voice.Unity;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LocalPlayerUIManager : MonoBehaviour
@@ -8,6 +9,7 @@ public class LocalPlayerUIManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private Image staminaBarImage;
     [SerializeField] private GameObject fakeLoadingScreen;
+    [SerializeField] private Material radiationScreenMat;
 
     private Recorder recorder;
     public bool IsLocalGamePaused { get; private set; }
@@ -34,6 +36,16 @@ public class LocalPlayerUIManager : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void BackToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
+    }
+
     private void Update()
     {
         var normalizeStamina = NetworkPlayer.Local.NormalizeStamina();
@@ -48,5 +60,10 @@ public class LocalPlayerUIManager : MonoBehaviour
         }
         
         recorder.RecordingEnabled = !mute;
+    }
+
+    public void UpdateRadiationFullScreenEffect(float intensity)
+    {
+        radiationScreenMat.SetFloat("_RadiationIntensity", intensity);
     }
 }

@@ -21,7 +21,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_BoxBrownToon
-  m_Shader: {fileID: -6465566751694194690, guid: 1a6809763bae2674585b57e1f4d74c38, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 205e052655cda7a459c12d7cfead4efd, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -30,7 +30,8 @@ Material:
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
-  stringTagMap: {}
+  stringTagMap:
+    RenderType: Opaque
   disabledShaderPasses:
   - MOTIONVECTORS
   m_LockedProperties: 
@@ -61,6 +62,10 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _HeightMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
@@ -79,6 +84,18 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampTexture:
+        m_Texture: {fileID: 2800000, guid: a1a4108227a8a8b4f9067f80f37c33ec, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_37b0f26b23a442479443b8b1ddb96bbf_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a790875aa8764e949e611796b223eb78_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ShadowTexture:
@@ -103,15 +120,22 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - LIGHTMAP_SHADOW_MIXING: 0
+    - SHADOWS_SHADOWMASK: 0
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
+    - _AlphaClipThreshold: 0.5
     - _AlphaToMask: 0
     - _AmbientLightIntensity: 0.2
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CastShadows: 1
+    - _ChromaKey: 0
+    - _CircleDensity: 25
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
+    - _CrossHatchIntensity: 0.5
     - _Cull: 2
     - _Cutoff: 0.5
     - _DetailAlbedoMapScale: 1
@@ -119,38 +143,65 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FalloffThreshold: 3
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HeightMapStrength: 1
+    - _LIGHTMAP_SHADOW_MIXING: 0
+    - _LitThreshold: 0.2
     - _Metallic: 0
+    - _NormalMapStrength: 0
     - _NormalStrength: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _PatternDensity: 13
+    - _PatternDensityFar: 10
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
     - _RimLightPower: 10
-    - _Smoothness: 0.5
+    - _Rotation: 45
+    - _Rotation2: -45
+    - _SPECULAR: 0
+    - _ShadingMultiplier: 1
+    - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
+    - _Softness: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _TimePosterization: 4
     - _USENORMALMAP: 0
+    - _UseHeightMap: 0
+    - _UseNormalMap: 0
+    - _UseOcclusionMap: 0
+    - _UseScreenSpace: 1
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
+    - _ZTest: 4
     - _ZWrite: 1
+    - _ZWriteControl: 0
     m_Colors:
     - _Albedo: {r: 0.6150943, g: 0.41071883, b: 0.12882164, a: 1}
-    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
+    - _BaseColor: {r: 0.7647059, g: 0.42745098, b: 0, a: 1}
+    - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
+    - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
     - _Color: {r: 0, g: 0, b: 0, a: 1}
+    - _CrossHatchFade: {r: 5, g: 20, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Offset: {r: 0, g: 0, b: 0, a: 0}
+    - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}
     - _RimLightColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RotationJitterRange: {r: -5, g: -5, b: 0, a: 0}
     - _ShadowColor: {r: 0, g: 0, b: 0, a: 1}
     - _ShadowPatternColor: {r: 1, g: 1, b: 1, a: 1}
     - _ShadowTextureMovement: {r: 0.03, g: 0.03, b: 0, a: 0}
     - _ShadowTextureMovementSpeed: {r: 0.01, g: 0.01, b: 0, a: 0}
     - _ShadowTextureTiling: {r: 2, g: 2, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularColour: {r: 1, g: 1, b: 1, a: 0}
+    - _Tiling: {r: 1, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
