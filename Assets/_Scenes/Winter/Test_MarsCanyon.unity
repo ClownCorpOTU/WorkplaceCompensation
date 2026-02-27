@@ -3248,89 +3248,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 757131734}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1001 &779273723
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 1998791958}
-    m_Modifications:
-    - target: {fileID: 1454139170685542853, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1454139170685542853, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: EmissionModule.enabled
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1866911695039097158, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_Name
-      value: DustDrilling_VFX
-      objectReference: {fileID: 0}
-    - target: {fileID: 1866911695039097158, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.22
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.7071068
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 90
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7304549639833618435, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
---- !u!4 &779273724 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-  m_PrefabInstance: {fileID: 779273723}
-  m_PrefabAsset: {fileID: 0}
---- !u!198 &779273726 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 1454139170685542853, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
-  m_PrefabInstance: {fileID: 779273723}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &794471655
 GameObject:
   m_ObjectHideFlags: 0
@@ -8765,11 +8682,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1993208449}
   m_CullTransparentMesh: 1
---- !u!4 &1998791958 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5779703460626994009, guid: 2c4f991d634cdc3418d8a5bf9d2b0663, type: 3}
-  m_PrefabInstance: {fileID: 3799263594867086733}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &2035403209
 GameObject:
   m_ObjectHideFlags: 0
@@ -10044,14 +9956,6 @@ PrefabInstance:
       propertyPath: SortKey
       value: 2131143402
       objectReference: {fileID: 0}
-    - target: {fileID: 2553400911150483471, guid: 2c4f991d634cdc3418d8a5bf9d2b0663, type: 3}
-      propertyPath: digTime
-      value: 5
-      objectReference: {fileID: 0}
-    - target: {fileID: 2553400911150483471, guid: 2c4f991d634cdc3418d8a5bf9d2b0663, type: 3}
-      propertyPath: diggingVfx
-      value: 
-      objectReference: {fileID: 779273726}
     - target: {fileID: 5779703460626994009, guid: 2c4f991d634cdc3418d8a5bf9d2b0663, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.55
@@ -10096,12 +10000,13 @@ PrefabInstance:
       propertyPath: m_Name
       value: FossilDrill
       objectReference: {fileID: 0}
+    - target: {fileID: 7521664244571521874, guid: 2c4f991d634cdc3418d8a5bf9d2b0663, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.25
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 5779703460626994009, guid: 2c4f991d634cdc3418d8a5bf9d2b0663, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 779273724}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c4f991d634cdc3418d8a5bf9d2b0663, type: 3}
 --- !u!1001 &4406203880533889240

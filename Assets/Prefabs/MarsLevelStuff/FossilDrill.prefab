@@ -290,6 +290,89 @@ Transform:
   m_Children: []
   m_Father: {fileID: 5779703460626994009}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1521073122010960814
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 7521664244571521874}
+    m_Modifications:
+    - target: {fileID: 1454139170685542853, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1454139170685542853, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: EmissionModule.enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1866911695039097158, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_Name
+      value: DustDrilling_VFX
+      objectReference: {fileID: 0}
+    - target: {fileID: 1866911695039097158, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0.253
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.00000008940697
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 90
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7304549639833618435, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+--- !u!198 &87200261858849387 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 1454139170685542853, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+  m_PrefabInstance: {fileID: 1521073122010960814}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2940541180566458817 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4455477773494501999, guid: bb18d917e59f044458a684ce8efe88ad, type: 3}
+  m_PrefabInstance: {fileID: 1521073122010960814}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6322799690521375922
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -300,15 +383,15 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.55
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -49.764
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.24
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
       propertyPath: m_LocalRotation.w
@@ -363,6 +446,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8687150487754885492}
+    - targetCorrespondingSourceObject: {fileID: 4601914756470192096, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2940541180566458817}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
       insertIndex: -1
@@ -495,7 +581,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NetworkFossilDigger
   maxCharges: 2
   autoDigDelay: 2
-  digTime: 2
+  digTime: 5
   digRange: 3
   fossilPrefab: {fileID: 8304351397457437026, guid: 28fb40e70734fa94a8b319f99fabf484, type: 3}
   heightOffset: 0.01
@@ -503,3 +589,13 @@ MonoBehaviour:
   batteryLights:
   - {fileID: 7066442079948089448}
   - {fileID: 902566793398244416}
+  diggingVfx: {fileID: 87200261858849387}
+  drillBit: {fileID: 7521664244571521874}
+  rotationSpeed: 100
+  bobSpeed: 20
+  bobAmount: 0.2
+--- !u!4 &7521664244571521874 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 4601914756470192096, guid: 2dbeadd1f56dd994b86b874f459759fa, type: 3}
+  m_PrefabInstance: {fileID: 6322799690521375922}
+  m_PrefabAsset: {fileID: 0}
