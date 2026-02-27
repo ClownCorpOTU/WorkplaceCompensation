@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4526468191666176930}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Arrow
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -44,7 +44,7 @@ GameObject:
   - component: {fileID: 2885390794442123630}
   - component: {fileID: 8158721642810792536}
   - component: {fileID: 202395578817214554}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: BatteryBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -152,7 +152,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2826219469197515453}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Battery
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -242,6 +242,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 87272a502545d3948bf8edc8dbe97358, type: 3}
       propertyPath: m_Name
       value: FossilScannerV2
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 87272a502545d3948bf8edc8dbe97358, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 87272a502545d3948bf8edc8dbe97358, type: 3}
       propertyPath: m_TagString
@@ -633,6 +637,14 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: aaf9b9c923d42e94eb2e442d54de60cd, type: 3}
       propertyPath: m_Name
       value: Arrow
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: aaf9b9c923d42e94eb2e442d54de60cd, type: 3}
+      propertyPath: m_Layer
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 3642240736110135491, guid: aaf9b9c923d42e94eb2e442d54de60cd, type: 3}
+      propertyPath: m_Layer
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

@@ -13,13 +13,15 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     
     private bool hasHitPlayer;
     private NetworkGameManager networkGameManager;
-
+    private AudioManager audioManager;
+    
     // Tracks Object ID -> Time spent cooking
     private Dictionary<NetworkId, float> cookTrackers = new Dictionary<NetworkId, float>();
 
     public override void Spawned()
     {
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
+        audioManager = FindFirstObjectByType<AudioManager>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -45,6 +47,7 @@ public class NetworkMagnifyingLens : NetworkBehaviour
         if (other.transform.root.TryGetComponent(out NetworkPlayer networkPlayer))
         {
             networkPlayer.GetComponent<DissolvingController>().BeginFx();
+            RPC_Play("PlayerBurn", networkPlayer.transform.position);
             networkPlayer.MakeRagdoll();
             hasHitPlayer = false;
         }
@@ -62,5 +65,13 @@ public class NetworkMagnifyingLens : NetworkBehaviour
         
         // Spawn egg
         Runner.Spawn(eggPrefab, other.transform.position, Quaternion.identity);
+    }
+    
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        print("Playing!");
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 }
