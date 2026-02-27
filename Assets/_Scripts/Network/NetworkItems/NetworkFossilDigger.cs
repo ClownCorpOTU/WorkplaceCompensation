@@ -15,6 +15,7 @@ public class NetworkFossilDigger : NetworkBehaviour
     [Header("Visuals")] 
     [SerializeField] private Transform fossilSpawnPos;
     [SerializeField] private MeshRenderer[] batteryLights;
+    [SerializeField] private ParticleSystem diggingVfx;
     
     [Networked] private TickTimer autoStartDigTimer { get; set; }
     [Networked] private TickTimer digProgressTimer { get; set; }
@@ -23,12 +24,15 @@ public class NetworkFossilDigger : NetworkBehaviour
     [Networked, HideInInspector] private int CurrentCharges { get; set; }
     
     private NetworkFossilManager fossilManager;
+    private AudioManager audioManager;
     private int lastSeenFossilIndex = -1;
     
     
     public override void Spawned()
     {
         fossilManager = FindFirstObjectByType<NetworkFossilManager>();
+        audioManager = FindFirstObjectByType<AudioManager>();
+        
         if (Object.HasStateAuthority) CurrentCharges = maxCharges;
     }
     
@@ -148,6 +152,16 @@ public class NetworkFossilDigger : NetworkBehaviour
             // While digging, change color to something else
             chargeColor0 = Color.white;
             chargeColor1 = Color.white;
+
+            if (diggingVfx != null && !diggingVfx.isPlaying)
+            {
+                RPC_Play("FossilDigger", transform.position);
+                diggingVfx.Play();
+            }
+        }
+        else
+        {
+            if (diggingVfx != null && diggingVfx.isPlaying) diggingVfx.Stop();
         }
 
         // 3. Apply the colors
@@ -159,5 +173,12 @@ public class NetworkFossilDigger : NetworkBehaviour
     {
         rend.material.SetColor("_BaseColor", col);
         rend.material.SetColor("_EmissionColor", col * 3f); // Brighter for visibility
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        print("Playing!");
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 }

@@ -65,17 +65,6 @@ public class NetworkFossilScanner : NetworkBehaviour
             if (IsActive)
             {
                 CurrentBattery -= Runner.DeltaTime * drainRate;
-
-                
-                // Keep model grounded
-                if (Physics.Raycast(transform.position, Vector3.back, out RaycastHit hit, 2f))
-                {
-                    float targetY = hit.point.y + heightOffset;
-                    transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
-
-                    // Align rotation to slope
-                    transform.rotation = Quaternion.FromToRotation(transform.forward, hit.normal) * transform.rotation;
-                }
                 
                 /*
                 // Make scanner stick to ground (using) Vector3.back (0, 0, -1) because Z is the vertical axis on this model)

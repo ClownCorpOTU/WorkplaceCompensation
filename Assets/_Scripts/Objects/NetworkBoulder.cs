@@ -83,6 +83,7 @@ public class NetworkBoulder : NetworkBehaviour
     {
         if (audioManager != null) audioManager.Play("RockBreak", transform.position);
 
+        // BUG: Right now the physics of the broken boulder freezes on the clients
         if (breakVfxPrefab != null)
         {
             var brokenBoulder = Instantiate(breakVfxPrefab, transform.position, transform.rotation);
