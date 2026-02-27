@@ -65,16 +65,31 @@ public class NetworkFossilScanner : NetworkBehaviour
             if (IsActive)
             {
                 CurrentBattery -= Runner.DeltaTime * drainRate;
+
                 
                 // Keep model grounded
-                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
+                if (Physics.Raycast(transform.position, Vector3.back, out RaycastHit hit, 2f))
                 {
                     float targetY = hit.point.y + heightOffset;
                     transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
-                    
+
                     // Align rotation to slope
-                    transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                    transform.rotation = Quaternion.FromToRotation(transform.forward, hit.normal) * transform.rotation;
                 }
+                
+                /*
+                // Make scanner stick to ground (using) Vector3.back (0, 0, -1) because Z is the vertical axis on this model)
+                if (Physics.Raycast(transform.position, Vector3.back, out RaycastHit hit, 2f))
+                {
+                    // Apply the offset to the Z axis instead of Y
+                    float targetZ = hit.point.z + heightOffset;
+                    transform.position = new Vector3(transform.position.x, transform.position.y, targetZ);
+    
+                    // Align the model's 'forward' (local Z) to the surface normal
+                    // We use transform.forward because that is the 'Up' axis for a Z-up model
+                    transform.rotation = Quaternion.FromToRotation(transform.forward, hit.normal) * transform.rotation;
+                }
+                */
             }
         }
         else
