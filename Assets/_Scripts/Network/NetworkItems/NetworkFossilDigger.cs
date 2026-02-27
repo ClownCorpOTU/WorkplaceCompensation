@@ -33,11 +33,15 @@ public class NetworkFossilDigger : NetworkBehaviour
     private AudioManager audioManager;
     private int lastSeenFossilIndex = -1;
     private Vector3 drillBitDefaultLocalPos;
+    private NetworkGameManager networkGameManager;
+    private GrabbedByTracker grabTracker;
     
     public override void Spawned()
     {
         fossilManager = FindFirstObjectByType<NetworkFossilManager>();
         audioManager = FindFirstObjectByType<AudioManager>();
+        networkGameManager = FindFirstObjectByType<NetworkGameManager>();
+        grabTracker = GetComponent<GrabbedByTracker>();
 
         if (drillBit != null) drillBitDefaultLocalPos = drillBit.localPosition;
         if (Object.HasStateAuthority) CurrentCharges = maxCharges;
@@ -125,6 +129,8 @@ public class NetworkFossilDigger : NetworkBehaviour
         fossilManager.RPC_ClearFossil(pendingFossilIndex);
         Runner.Spawn(fossilPrefab, fossilSpawnPos.position, Quaternion.identity);
         lastSeenFossilIndex = -1;
+        
+        networkGameManager.AddScore(grabTracker.LastHeldBy, 1);
     }
 
     private void OnTriggerEnter(Collider other)
