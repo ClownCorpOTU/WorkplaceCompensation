@@ -1421,7 +1421,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a035b7f40ffd5b042895ce80e910bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuManager
-  gameplayScene: WinterWeek2_ShaderTests
+  gameplayScene: Test_MarsCanyon
   testA_EarthCanyon: Test_EarthCanyon
   testB_MarsCanyon: Test_MarsCanyon
   lobbyScene: Lobby
@@ -1955,17 +1955,17 @@ MonoBehaviour:
     1) When joining the game, the main screen and loading screen
     flicker.
 
-    2) The audio doesn''t work for the clients.
+    2) Some audio and juice doesn''t work for the clients.
 
-    3) Respawn doesn''t
-    properly fix player rotation.
+    3)
+    Respawn doesn''t properly fix player rotation.
 
-    4) Radiation full screen effect does not work
-    for clients (You will be killed though).
+    4) Radiation full screen
+    effect does not work for clients (You will be killed though).
 
 
-    If you have any other feedback
-    apart from this, please check out our Itch.io page!'
+    If you have
+    any other feedback apart from this, please check out our Itch.io page!'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
   m_sharedMaterial: {fileID: -9091359613071364474, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
@@ -2301,7 +2301,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1275759384
 RectTransform:
   m_ObjectHideFlags: 0
@@ -2820,7 +2820,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1590444499
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3006,9 +3006,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Play
-
-'
+  m_text: Play - Lvl2. Mars
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
   m_sharedMaterial: {fileID: -9091359613071364474, guid: 4c883f44042ebfd45b3b5b3c7ce1d3d4, type: 2}
@@ -3035,7 +3033,7 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 58.4
+  m_fontSize: 38.05
   m_fontSizeBase: 24
   m_fontWeight: 400
   m_enableAutoSizing: 1
@@ -3565,7 +3563,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2121538162
 RectTransform:
   m_ObjectHideFlags: 0

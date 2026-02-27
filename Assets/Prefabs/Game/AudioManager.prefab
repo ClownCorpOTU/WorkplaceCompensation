@@ -103,7 +103,7 @@ MonoBehaviour:
     volume: 0.1
     pitch: 1
     source: {fileID: 0}
-    loop: 1
+    loop: 0
     is3D: 0
   - name: Ragdoll
     clip: {fileID: 8300000, guid: be1d2a3287edf4b4db6b0ca9fe83561b, type: 3}
@@ -116,11 +116,11 @@ MonoBehaviour:
     loop: 0
     is3D: 1
   - name: Walk
-    clip: {fileID: 8300000, guid: 7f53201a134c44d439d3a19e758f9b32, type: 3}
+    clip: {fileID: 0}
     hasVariations: 1
     variations:
-    - name: Blobby Step 1
-      clip: {fileID: 8300000, guid: 413293014d984df4d8cc7eb99a319eb6, type: 3}
+    - name: WalkVariation1
+      clip: {fileID: 8300000, guid: 9699cda7216c86a4c8b9ac3104b95d18, type: 3}
       hasVariations: 0
       variations: []
       audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
@@ -128,35 +128,35 @@ MonoBehaviour:
       pitch: 1
       source: {fileID: 0}
       loop: 0
-      is3D: 0
-    - name: Blobby Step 1
-      clip: {fileID: 8300000, guid: 1220429ae4174064097e086c7a449531, type: 3}
+      is3D: 1
+    - name: WalkVariation2
+      clip: {fileID: 8300000, guid: 59309e12d9e933641a93ac3fdfcb8372, type: 3}
       hasVariations: 0
       variations: []
       audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
-      volume: 0.1
+      volume: 0.07
       pitch: 1
       source: {fileID: 0}
       loop: 0
-      is3D: 0
-    - name: Blobby Step 1
-      clip: {fileID: 8300000, guid: de3ebb57426cc7f44b1d689d381193eb, type: 3}
-      hasVariations: 0
+      is3D: 1
+    - name: WalkVariation3
+      clip: {fileID: 8300000, guid: 1ad2bca219266ba458f83a59b9194427, type: 3}
+      hasVariations: 1
       variations: []
       audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
-      volume: 0.1
+      volume: 0.09
       pitch: 1
       source: {fileID: 0}
       loop: 0
-      is3D: 0
+      is3D: 1
     audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
-    volume: 0.3
+    volume: 0.046
     pitch: 1
     source: {fileID: 0}
     loop: 0
     is3D: 1
   - name: Death
-    clip: {fileID: 8300000, guid: 200bbe00d0adc9c4688bcd31857101e0, type: 3}
+    clip: {fileID: 8300000, guid: 3481d172e4da6aa4185b451d33215a86, type: 3}
     hasVariations: 0
     variations: []
     audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
@@ -325,3 +325,63 @@ MonoBehaviour:
     source: {fileID: 0}
     loop: 0
     is3D: 0
+  - name: RockImpact
+    clip: {fileID: 0}
+    hasVariations: 1
+    variations:
+    - name: RockImpact_V1
+      clip: {fileID: 8300000, guid: b9e7346a777e4734eb2e7a697aecd6d0, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 0}
+      volume: 0.8
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 1
+    - name: RockImpact_V2
+      clip: {fileID: 8300000, guid: d6161870d630d4e4c802bad0935c3cb0, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 0}
+      volume: 0.8
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 1
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.8
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: RockBreak
+    clip: {fileID: 8300000, guid: b7776f6079a8aa649be72f3f4d1aca39, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.6
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: FossilDigger
+    clip: {fileID: 8300000, guid: df71fdddca295fe438a99c66bf50e175, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.6
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: PlayerBurn
+    clip: {fileID: 8300000, guid: 914d3be5a37bfd141900389dec6f5c29, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.35
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
