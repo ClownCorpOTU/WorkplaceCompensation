@@ -393,7 +393,7 @@ MonoBehaviour:
   maxBatteryLife: 60
   _CurrentBattery: 0
   drainRate: 2
-  rechargeRate: 2.5
+  rechargeRate: 7
   heightOffset: 0.05
   arrowPivot: {fileID: 4526468191666176930}
   arrowRend: {fileID: 436781889046401407}
@@ -461,6 +461,7 @@ MonoBehaviour:
     m_NumColorKeys: 3
     m_NumAlphaKeys: 2
   batteryScalingAxis: 2
+  rechargeStation: {fileID: 0}
   tickDelayRange: {x: 0.01, y: 0.8}
   tickPitchRange: {x: 1, y: 1}
   tickVolumeRange: {x: 0.5, y: 1}

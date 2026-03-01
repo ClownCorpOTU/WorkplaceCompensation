@@ -116,6 +116,7 @@ public class NetworkFossilDigger : NetworkBehaviour
     {
         isDigging = true;
         pendingFossilIndex = fossilIndex;
+        fossilManager.RPC_ClearFossil(pendingFossilIndex); // Remove fossil as soon as someone starts digging to avoid double digs
         digProgressTimer = TickTimer.CreateFromSeconds(Runner, digTime);
         
         CurrentCharges--;
@@ -126,7 +127,7 @@ public class NetworkFossilDigger : NetworkBehaviour
     private void CompleteDig()
     {
         isDigging = false;
-        fossilManager.RPC_ClearFossil(pendingFossilIndex);
+        //fossilManager.RPC_ClearFossil(pendingFossilIndex);
         Runner.Spawn(fossilPrefab, fossilSpawnPos.position, Quaternion.identity);
         lastSeenFossilIndex = -1;
         
@@ -163,7 +164,7 @@ public class NetworkFossilDigger : NetworkBehaviour
 
             if (diggingVfx != null && !diggingVfx.isPlaying)
             {
-                RPC_Play("FossilDigger", transform.position);
+                if (audioManager != null) audioManager.Play("FossilDigger", transform.position);
                 diggingVfx.Play();
             }
             
