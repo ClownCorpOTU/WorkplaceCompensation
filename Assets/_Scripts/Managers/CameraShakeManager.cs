@@ -1,16 +1,25 @@
+using System;
+using Unity.Cinemachine;
 using UnityEngine;
 
 public class CameraShakeManager : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        
+    public static CameraShakeManager Instance;
+
+    private void Awake() {
+        if (Instance == null) {
+            Instance = this;
+        }
+        else {
+            Destroy(gameObject);
+            return;
+        }
+        //DontDestroyOnLoad(gameObject);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ApplyCameraShake(CinemachineImpulseSource impulseSource, Vector3 impulseVelocity, float impulseForce)
     {
-        
+        impulseSource.DefaultVelocity = impulseVelocity;
+        impulseSource.GenerateImpulseWithForce(impulseForce);
     }
 }

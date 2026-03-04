@@ -5065,6 +5065,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NetworkFlattenBlobby
   selfDestructTime: 12
   breakVfxPrefab: {fileID: 1556518787003821986, guid: be5200b4d83616e45941e08bb9350982, type: 3}
+  maxShakeDistance: 100
+  baseShakeForce: 0.8
 --- !u!114 &7736958871098956496
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5079,7 +5081,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseSource
   ImpulseDefinition:
     ImpulseChannel: 1
-    ImpulseShape: 2
+    ImpulseShape: 4
     CustomImpulseShape:
       serializedVersion: 2
       m_Curve: []
@@ -5087,7 +5089,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     ImpulseDuration: 0.2
-    ImpulseType: 0
+    ImpulseType: 1
     DissipationRate: 0.25
     RawSignal: {fileID: 0}
     AmplitudeGain: 1
@@ -5117,4 +5119,4 @@ MonoBehaviour:
     DissipationMode: 2
     DissipationDistance: 100
     PropagationSpeed: 343
-  DefaultVelocity: {x: 0, y: -1, z: 0}
+  DefaultVelocity: {x: 0, y: 0, z: 0}

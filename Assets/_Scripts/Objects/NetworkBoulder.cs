@@ -1,14 +1,18 @@
 using System;
 using System.Threading.Tasks;
 using Fusion;
+using Unity.Cinemachine;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class NetworkBoulder : NetworkBehaviour
 {
     [SerializeField] private float selfDestructTime = 12f;
     [SerializeField] private GameObject breakVfxPrefab;
+    [SerializeField] private float maxShakeDistance = 30f;
+    [SerializeField] private float baseShakeForce = 1.5f;
     
     [Networked] private byte breakSignal { get; set; } // Networked byte to signal the "Break" event
     [Networked] private byte collisionSignal { get; set; } // Networked byte to signal the collision events
@@ -18,12 +22,16 @@ public class NetworkBoulder : NetworkBehaviour
     private AudioManager audioManager;
     private bool isDespawning = false;
     private Vector3 boulderScale;
+    private CinemachineImpulseSource thisImpulseSource;
+    private CameraShakeManager camShakeManager;
 
     public override void Spawned()
     {
         audioManager = FindFirstObjectByType<AudioManager>();
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         boulderScale = transform.localScale;
+        thisImpulseSource = GetComponent<CinemachineImpulseSource>();
+        camShakeManager = CameraShakeManager.Instance;
         
         if (Object.HasStateAuthority) selfDestructTimer = TickTimer.CreateFromSeconds(Runner, selfDestructTime);
     }
@@ -43,8 +51,9 @@ public class NetworkBoulder : NetworkBehaviour
         {
             if (change == nameof(breakSignal) && breakSignal > 0)
                 TriggerBreakEffects();
+
             if (change == nameof(collisionSignal) && collisionSignal > 0)
-                if (audioManager != null) audioManager.Play("RockImpact", transform.position);
+                PlayCollisionEffects();
         }
     }
 
@@ -123,6 +132,34 @@ public class NetworkBoulder : NetworkBehaviour
             
             // Destroy the boulder
             Destroy(brokenBoulder, 5f);
+        }
+    }
+
+    private void PlayCollisionEffects()
+    {
+        // Play sound
+        if (audioManager != null) audioManager.Play("RockImpact", transform.position);
+        
+        // Shake camer
+        if (camShakeManager != null && thisImpulseSource != null && NetworkPlayer.Local != null)
+        {
+            // Using sqrMagnitude to avoid the expensive square root calculation
+            float sqrDistance = (transform.position - NetworkPlayer.Local.transform.position).sqrMagnitude;
+            float sqrMaxDist = maxShakeDistance * maxShakeDistance;
+            
+            if (sqrDistance < sqrMaxDist)
+            {
+                // Calculate attenuation (0 at maxDistance, 1 when boulder is right next to the player)
+                float linearAttenuation = Mathf.Clamp01(1f - (sqrDistance / sqrMaxDist));
+        
+                // Square it for a more "impactful" feel (Quadratic Falloff)
+                float finalAttenuation = linearAttenuation * linearAttenuation;
+
+                // Bias the shake slightly forward/down based on the boulder's drop
+                Vector3 shakeDir = (Vector3.down + Random.insideUnitSphere * 0.3f).normalized;
+        
+                camShakeManager.ApplyCameraShake(thisImpulseSource, shakeDir, baseShakeForce * finalAttenuation);
+            }
         }
     }
     
