@@ -133,7 +133,7 @@ MonoBehaviour:
     RotationDamping: {x: 1, y: 1, z: 1}
     QuaternionDamping: 1
   OrbitStyle: 0
-  Radius: 5
+  Radius: 4.5
   Orbits:
     Top:
       Radius: 2
@@ -159,11 +159,11 @@ MonoBehaviour:
   VerticalAxis:
     Value: 45
     Center: 25
-    Range: {x: 0, y: 80}
+    Range: {x: -15, y: 80}
     Wrap: 0
     Recentering:
       Enabled: 1
-      Wait: 1
+      Wait: 2
       Time: 2
     Restrictions: 0
   RadialAxis:

@@ -25,6 +25,7 @@ public class NetworkFossilScanner : NetworkBehaviour
     [SerializeField] private MeshRenderer batteryBarRend;
     [SerializeField] private Gradient batteryGradient;
     [SerializeField] private Axis batteryScalingAxis = Axis.Z;
+    [SerializeField] private Transform rechargeStation; 
     
     [Header("Audio Settings")]
     [SerializeField] private Vector2 tickDelayRange = new Vector2(0.1f, 1.5f);
@@ -55,10 +56,13 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         
+        /*
         if (IsInRechargeZone && !IsActive && CurrentBattery < maxBatteryLife)
         {
+            print("Charging!");
             CurrentBattery += Runner.DeltaTime * rechargeRate;
         }
+        */
         
         if (CurrentBattery > 0)
         {
@@ -66,15 +70,19 @@ public class NetworkFossilScanner : NetworkBehaviour
             {
                 CurrentBattery -= Runner.DeltaTime * drainRate;
                 
-                // Keep model grounded
-                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
+                /*
+                // Make scanner stick to ground (using) Vector3.back (0, 0, -1) because Z is the vertical axis on this model)
+                if (Physics.Raycast(transform.position, Vector3.back, out RaycastHit hit, 2f))
                 {
-                    float targetY = hit.point.y + heightOffset;
-                    transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
-                    
-                    // Align rotation to slope
-                    transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                    // Apply the offset to the Z axis instead of Y
+                    float targetZ = hit.point.z + heightOffset;
+                    transform.position = new Vector3(transform.position.x, transform.position.y, targetZ);
+    
+                    // Align the model's 'forward' (local Z) to the surface normal
+                    // We use transform.forward because that is the 'Up' axis for a Z-up model
+                    transform.rotation = Quaternion.FromToRotation(transform.forward, hit.normal) * transform.rotation;
                 }
+                */
             }
         }
         else
@@ -103,8 +111,6 @@ public class NetworkFossilScanner : NetworkBehaviour
 
             if (distance <= detectionRange)
             {
-                print($"Closest fossil is {distance} units away.");
-                
                 // Normalize distance (0 = at fossil; 1 = max range)
                 float t = Mathf.Clamp01(distance / detectionRange);
                 
@@ -122,6 +128,10 @@ public class NetworkFossilScanner : NetworkBehaviour
                 
                 // Lights
                 UpdateCompass(fossilPos, t);
+            }
+            else
+            {
+                SpinArrowAimlessly();
             }
         }
     }
@@ -162,10 +172,16 @@ public class NetworkFossilScanner : NetworkBehaviour
         }
         else
         {
-            arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
-            arrowRend.material.SetColor("_EmissionColor",
-                signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
+            SpinArrowAimlessly();
         }
+    }
+
+    private void SpinArrowAimlessly()
+    {
+        arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
+        arrowRend.material.SetColor("_BaseColor", signalGradient.Evaluate(0));
+        arrowRend.material.SetColor("_EmissionColor",
+            signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
     }
 
     private void UpdateBatteryVisuals()
@@ -205,7 +221,15 @@ public class NetworkFossilScanner : NetworkBehaviour
 
     private void OnBatteryDead()
     {
-        arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
+        // Create target rotation
+        rechargeStation.position = new Vector3(rechargeStation.position.x, 0f, rechargeStation.position.z);
+        Quaternion targetRot = Quaternion.LookRotation(rechargeStation.position);
+        
+        // Smoothly rotate the arrow towards the recharge station
+        arrowPivot.rotation = Quaternion.Slerp(arrowPivot.rotation, targetRot, Time.deltaTime * 5f);
+        
+        // Set colors
+        arrowRend.material.SetColor("_BaseColor", signalGradient.Evaluate(0));
         arrowRend.material.SetColor("_EmissionColor",
             signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
     }
@@ -220,5 +244,14 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (other.CompareTag("RechargeStation"))
             IsInRechargeZone = false;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!IsActive && CurrentBattery < maxBatteryLife)
+        {
+            print("Charging!");
+            CurrentBattery += Runner.DeltaTime * rechargeRate;
+        }
     }
 }

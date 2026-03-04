@@ -1,20 +1,25 @@
 using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
+
 public class DissolvingController : MonoBehaviour
 {
-    public SkinnedMeshRenderer skinnedMesh;
+    [SerializeField] private SkinnedMeshRenderer skinnedMesh;
+    [SerializeField] private Material dissolvingBlobbyMat;
+    [SerializeField] private ParticleSystem dissolveVFX;
+    [SerializeField] private Rigidbody vestRB;
+
     public float dissolveRate = 0.0125f;
     public float refreshRate = 0.025f;
-    public ParticleSystem dissolveVFX;
 
+    private Material originalMaterial;
     private Material[] skinnedMaterials; 
 
     void Start()
     {
         if (skinnedMesh != null)
         {
-            skinnedMaterials = skinnedMesh.materials; 
+            skinnedMaterials = skinnedMesh.materials;
+            originalMaterial = skinnedMaterials[0];
         }
     }
 
@@ -23,9 +28,35 @@ public class DissolvingController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.J))
         {
-            StartCoroutine(DissolveCo());
-            StartCoroutine(PlayVFXAfterDelay(0.5f));
+            ResetBurningFx();
+            //BeginFx();
         }
+    }
+
+    public void BeginFx()
+    {
+        var playerColor = skinnedMaterials[0].GetColor("_ChromaKeyColorReplacement");
+        
+        skinnedMaterials[0] = dissolvingBlobbyMat;
+        skinnedMesh.materials = skinnedMaterials;
+        skinnedMaterials = skinnedMesh.materials;
+        
+        skinnedMaterials[0].SetColor("_ChromaKeyColorReplacement", playerColor);
+        
+        StartCoroutine(DissolveCo());
+        StartCoroutine(PlayVFXAfterDelay(0.5f));
+    }
+
+    public void ResetBurningFx()
+    {
+        if (vestRB != null) vestRB.isKinematic = true;
+        skinnedMaterials[0].SetFloat("_DissolveAmount", 0);
+
+        skinnedMaterials[0] = originalMaterial;
+        skinnedMesh.materials = skinnedMaterials;
+        skinnedMaterials = skinnedMesh.materials;
+        
+        dissolveVFX.Stop();
     }
 
     IEnumerator DissolveCo()
@@ -49,6 +80,8 @@ public class DissolvingController : MonoBehaviour
     IEnumerator PlayVFXAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
+
+        if (vestRB != null) vestRB.isKinematic = false;
 
         if (dissolveVFX != null)
             dissolveVFX.Play();

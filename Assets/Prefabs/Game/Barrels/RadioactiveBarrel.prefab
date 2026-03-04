@@ -120,7 +120,7 @@ AudioSource:
   m_GameObject: {fileID: 3450874274107189285}
   m_Enabled: 1
   serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
+  OutputAudioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 8300000, guid: ee7800d5cb112324ea569750a69172dc, type: 3}
   m_PlayOnAwake: 1
@@ -269,7 +269,7 @@ MonoBehaviour:
   radiationStartDistance: 9
   radiationDeathDistance: 4
   radiationDeathDelay: 3
-  tickPitchRange: {x: 1, y: 1.2}
+  tickPitchRange: {x: 1, y: 1}
   tickDelayRange: {x: 0.8, y: 0.01}
   nextTickDelay: {x: 0.1, y: 0.6}
 --- !u!54 &8777950054800615025

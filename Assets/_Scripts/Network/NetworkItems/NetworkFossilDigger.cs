@@ -16,6 +16,13 @@ public class NetworkFossilDigger : NetworkBehaviour
     [SerializeField] private Transform fossilSpawnPos;
     [SerializeField] private MeshRenderer[] batteryLights;
     
+    [Header("Juice")]
+    [SerializeField] private ParticleSystem diggingVfx;
+    [SerializeField] private Transform drillBit;
+    [SerializeField] private float rotationSpeed = 2000f;
+    [SerializeField] private float bobSpeed = 20f;
+    [SerializeField] private float bobAmount = 0.05f;
+    
     [Networked] private TickTimer autoStartDigTimer { get; set; }
     [Networked] private TickTimer digProgressTimer { get; set; }
     [Networked] private NetworkBool isDigging { get; set; }
@@ -23,12 +30,20 @@ public class NetworkFossilDigger : NetworkBehaviour
     [Networked, HideInInspector] private int CurrentCharges { get; set; }
     
     private NetworkFossilManager fossilManager;
+    private AudioManager audioManager;
     private int lastSeenFossilIndex = -1;
-    
+    private Vector3 drillBitDefaultLocalPos;
+    private NetworkGameManager networkGameManager;
+    private GrabbedByTracker grabTracker;
     
     public override void Spawned()
     {
         fossilManager = FindFirstObjectByType<NetworkFossilManager>();
+        audioManager = FindFirstObjectByType<AudioManager>();
+        networkGameManager = FindFirstObjectByType<NetworkGameManager>();
+        grabTracker = GetComponent<GrabbedByTracker>();
+
+        if (drillBit != null) drillBitDefaultLocalPos = drillBit.localPosition;
         if (Object.HasStateAuthority) CurrentCharges = maxCharges;
     }
     
@@ -75,14 +90,12 @@ public class NetworkFossilDigger : NetworkBehaviour
             {
                 lastSeenFossilIndex = currentIndex;
                 autoStartDigTimer = TickTimer.CreateFromSeconds(Runner, autoDigDelay);
-                print("New fossil detected. Starting verification...");
             }
 
             // If the timer isn't running and hasn't expired yet, start it (when you get in range initially)
             else if (autoStartDigTimer.IsRunning == false && autoStartDigTimer.Expired(Runner) == false)
             {
                 autoStartDigTimer = TickTimer.CreateFromSeconds(Runner, autoDigDelay);
-                print("Auto dig verifying...");
             }
 
             // Only start digging if the timer is finished
@@ -101,10 +114,9 @@ public class NetworkFossilDigger : NetworkBehaviour
     
     private void StartDigging(int fossilIndex)
     {
-        print("Starting the 2 second dig process..");
-        
         isDigging = true;
         pendingFossilIndex = fossilIndex;
+        fossilManager.RPC_ClearFossil(pendingFossilIndex); // Remove fossil as soon as someone starts digging to avoid double digs
         digProgressTimer = TickTimer.CreateFromSeconds(Runner, digTime);
         
         CurrentCharges--;
@@ -114,11 +126,12 @@ public class NetworkFossilDigger : NetworkBehaviour
 
     private void CompleteDig()
     {
-        print("Done!");
         isDigging = false;
-        fossilManager.RPC_ClearFossil(pendingFossilIndex);
+        //fossilManager.RPC_ClearFossil(pendingFossilIndex);
         Runner.Spawn(fossilPrefab, fossilSpawnPos.position, Quaternion.identity);
         lastSeenFossilIndex = -1;
+        
+        networkGameManager.AddScore(grabTracker.LastHeldBy, 1);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -148,6 +161,31 @@ public class NetworkFossilDigger : NetworkBehaviour
             // While digging, change color to something else
             chargeColor0 = Color.white;
             chargeColor1 = Color.white;
+
+            if (diggingVfx != null && !diggingVfx.isPlaying)
+            {
+                if (audioManager != null) audioManager.Play("FossilDigger", transform.position);
+                diggingVfx.Play();
+            }
+            
+            // Juice
+            if (drillBit != null)
+            {
+                // Rotation (On forward instead of up due to Blender -> Unity rotation)
+                drillBit.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
+                
+                // Up/down bobbing
+                float newY = drillBitDefaultLocalPos.y + (Mathf.Sin(Time.time * bobSpeed) * bobAmount);
+                drillBit.localPosition = new Vector3(drillBitDefaultLocalPos.x, newY, drillBitDefaultLocalPos.z);
+            }
+        }
+        else
+        {
+            if (diggingVfx != null && diggingVfx.isPlaying) diggingVfx.Stop();
+            
+            // Reset drill position when not digging
+            if (drillBit != null)
+                drillBit.localPosition = Vector3.Lerp(drillBit.localPosition, drillBitDefaultLocalPos, Time.deltaTime * 5f);
         }
 
         // 3. Apply the colors
@@ -159,5 +197,12 @@ public class NetworkFossilDigger : NetworkBehaviour
     {
         rend.material.SetColor("_BaseColor", col);
         rend.material.SetColor("_EmissionColor", col * 3f); // Brighter for visibility
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        print("Playing!");
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 }

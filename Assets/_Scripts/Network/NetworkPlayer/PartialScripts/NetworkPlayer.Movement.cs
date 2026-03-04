@@ -33,7 +33,7 @@ public partial class NetworkPlayer
             if (NetworkedMovementSpeed < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
-                audioManager.Play("Walk", transform.position);
+                if (IsGrounded) audioManager.Play("Walk", transform.position);
             }
         }
         

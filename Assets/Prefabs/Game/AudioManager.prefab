@@ -15,7 +15,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &6184244050482065937
 Transform:
@@ -47,6 +47,59 @@ MonoBehaviour:
   sounds:
   - name: BoxDrop
     clip: {fileID: 8300000, guid: 67673aaee1be76747ace5496548b6ea3, type: 3}
+    hasVariations: 0
+    variations:
+    - name: Box Drop 1
+      clip: {fileID: 8300000, guid: 67673aaee1be76747ace5496548b6ea3, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.5
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 0
+    - name: Box Drop 2
+      clip: {fileID: 8300000, guid: 3259f79d336f00e47a5ce975b41ef3cb, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.5
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 0
+    - name: Box Drop 3
+      clip: {fileID: 8300000, guid: 6eda0ada5da791046b0ff13436688243, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.5
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 0
+    - name: Box Drop 4
+      clip: {fileID: 8300000, guid: 01976fb6e429c2a49bb1bc5f94d4e18b, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.5
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 0
+    - name: Box Drop 5
+      clip: {fileID: 8300000, guid: 835b8ed63e58d2245aba74979ab46612, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.5
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 0
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.1
     pitch: 1
     source: {fileID: 0}
@@ -54,20 +107,59 @@ MonoBehaviour:
     is3D: 0
   - name: Ragdoll
     clip: {fileID: 8300000, guid: be1d2a3287edf4b4db6b0ca9fe83561b, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.4
     pitch: 1
     source: {fileID: 0}
     loop: 0
     is3D: 1
   - name: Walk
-    clip: {fileID: 8300000, guid: 7f53201a134c44d439d3a19e758f9b32, type: 3}
-    volume: 0.3
+    clip: {fileID: 0}
+    hasVariations: 1
+    variations:
+    - name: WalkVariation1
+      clip: {fileID: 8300000, guid: 9699cda7216c86a4c8b9ac3104b95d18, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.1
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 1
+    - name: WalkVariation2
+      clip: {fileID: 8300000, guid: 59309e12d9e933641a93ac3fdfcb8372, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.07
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 1
+    - name: WalkVariation3
+      clip: {fileID: 8300000, guid: 1ad2bca219266ba458f83a59b9194427, type: 3}
+      hasVariations: 1
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.09
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 1
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.046
     pitch: 1
     source: {fileID: 0}
     loop: 0
     is3D: 1
   - name: Death
-    clip: {fileID: 8300000, guid: 200bbe00d0adc9c4688bcd31857101e0, type: 3}
+    clip: {fileID: 8300000, guid: 3481d172e4da6aa4185b451d33215a86, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.5
     pitch: 1
     source: {fileID: 0}
@@ -75,6 +167,9 @@ MonoBehaviour:
     is3D: 1
   - name: Jump
     clip: {fileID: 8300000, guid: 1190060988bd66c43b072160ae2c2698, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.1
     pitch: 0.8
     source: {fileID: 0}
@@ -82,6 +177,9 @@ MonoBehaviour:
     is3D: 1
   - name: ButtonPress
     clip: {fileID: 8300000, guid: 460c40a2e5730a2439230d59f28c8065, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.1
     pitch: 1
     source: {fileID: 0}
@@ -89,6 +187,9 @@ MonoBehaviour:
     is3D: 1
   - name: FlickLever
     clip: {fileID: 8300000, guid: 5e0c679932ecf9e4cb15f0257da35d36, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.15
     pitch: 1
     source: {fileID: 0}
@@ -96,6 +197,9 @@ MonoBehaviour:
     is3D: 1
   - name: AcidMelt
     clip: {fileID: 8300000, guid: 28c1ddc3c66ff2a4289c2a953a659efd, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -103,6 +207,9 @@ MonoBehaviour:
     is3D: 1
   - name: Processor
     clip: {fileID: 8300000, guid: d3de15230e3bae34eba85e936ab78bb8, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -110,6 +217,9 @@ MonoBehaviour:
     is3D: 1
   - name: Suction
     clip: {fileID: 8300000, guid: 24fdc5265f7b40546bbe2ce8cc5f891a, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -117,6 +227,9 @@ MonoBehaviour:
     is3D: 1
   - name: UI_ButtonHover
     clip: {fileID: 8300000, guid: ae54f0722bc5d5e4da04a439751dc649, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -124,6 +237,9 @@ MonoBehaviour:
     is3D: 0
   - name: UI_ButtonClick
     clip: {fileID: 8300000, guid: 31ba8e87d3749c347a78de77fa70c0c9, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -131,6 +247,9 @@ MonoBehaviour:
     is3D: 0
   - name: FireworksExplosion
     clip: {fileID: 8300000, guid: b5b23f38c491c4a4786329d7a1eb5497, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 1
     pitch: 1
     source: {fileID: 0}
@@ -138,13 +257,19 @@ MonoBehaviour:
     is3D: 1
   - name: FireworksHighPitch
     clip: {fileID: 8300000, guid: 4ae2c8a13b16fb541a4ae64d3379db11, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 0}
     volume: 1
-    pitch: 1
+    pitch: 0.9
     source: {fileID: 0}
     loop: 0
     is3D: 1
   - name: SpringTrap
     clip: {fileID: 8300000, guid: 0ba54f39aef82b14fb5bae95ad656645, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 1
     pitch: 1
     source: {fileID: 0}
@@ -152,6 +277,9 @@ MonoBehaviour:
     is3D: 1
   - name: MainHubInstructions
     clip: {fileID: 8300000, guid: 50cceca91b28f0e42bf067956f57a21c, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -159,6 +287,9 @@ MonoBehaviour:
     is3D: 1
   - name: StorageInstructions
     clip: {fileID: 8300000, guid: 1a60d285652b02444b8fb73b536b9e7e, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -166,6 +297,9 @@ MonoBehaviour:
     is3D: 1
   - name: ProcessingInstructions
     clip: {fileID: 8300000, guid: a53894a2d194b8f4d89695757cccd0da, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -173,6 +307,9 @@ MonoBehaviour:
     is3D: 1
   - name: MixingInstructions
     clip: {fileID: 8300000, guid: 9e04569a25faf0b43b5ed29be0ddfdda, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
@@ -180,8 +317,71 @@ MonoBehaviour:
     is3D: 1
   - name: UI_Screenshot
     clip: {fileID: 8300000, guid: 44c191c25b80fd441aca3e7f7b037e28, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
     volume: 0.8
     pitch: 1
     source: {fileID: 0}
     loop: 0
     is3D: 0
+  - name: RockImpact
+    clip: {fileID: 0}
+    hasVariations: 1
+    variations:
+    - name: RockImpact_V1
+      clip: {fileID: 8300000, guid: b9e7346a777e4734eb2e7a697aecd6d0, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 0}
+      volume: 0.8
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 1
+    - name: RockImpact_V2
+      clip: {fileID: 8300000, guid: d6161870d630d4e4c802bad0935c3cb0, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 0}
+      volume: 0.8
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 1
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.8
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: RockBreak
+    clip: {fileID: 8300000, guid: b7776f6079a8aa649be72f3f4d1aca39, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.6
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: FossilDigger
+    clip: {fileID: 8300000, guid: df71fdddca295fe438a99c66bf50e175, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.6
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: PlayerBurn
+    clip: {fileID: 8300000, guid: 914d3be5a37bfd141900389dec6f5c29, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.35
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1

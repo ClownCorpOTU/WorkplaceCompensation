@@ -52,6 +52,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkGameManager networkGameManager;
     private LocalPlayerUIManager localPlayerUIManager;
     private AudioListener audioListener; // This is on the main camera
+    private DissolvingController dissolvingController;
     
     // Input
     private NetworkInputData networkInputData;
@@ -90,6 +91,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         inputReader = GetComponent<InputReader>();
         audioManager = FindFirstObjectByType<AudioManager>();
         themeSong = FindFirstObjectByType<ThemeSong>();
+        dissolvingController = GetComponent<DissolvingController>();
         
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
     }
@@ -100,7 +102,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerRespawn = GetComponent<NetworkPlayerRespawn>();
         if (playerRespawn == null)
             playerRespawn = gameObject.AddComponent<NetworkPlayerRespawn>();
-        playerRespawn.Initialize(this, networkRB);
+        playerRespawn.Initialize(this, networkRB, dissolvingController);
         
         // SubSystem Setup: Player Camera
         playerCamera = GetComponent<NetworkPlayerCamera>();
@@ -190,14 +192,14 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerNumberText.color = color;
         
         // Update player body color to be the same as their name
-        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);;
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);
         
         // Update rim color to complement their body color
         Color.RGBToHSV(color, out float h, out float s, out float v);
         float rimV = Mathf.Clamp01(1.2f - v); // brighter rims on darker colors
         Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
         
-        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);;
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
     public void RemovePlayerInputAuthority()
