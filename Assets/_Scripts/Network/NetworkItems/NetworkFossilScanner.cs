@@ -56,11 +56,13 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         
+        /*
         if (IsInRechargeZone && !IsActive && CurrentBattery < maxBatteryLife)
         {
             print("Charging!");
             CurrentBattery += Runner.DeltaTime * rechargeRate;
         }
+        */
         
         if (CurrentBattery > 0)
         {
@@ -242,5 +244,14 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (other.CompareTag("RechargeStation"))
             IsInRechargeZone = false;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!IsActive && CurrentBattery < maxBatteryLife)
+        {
+            print("Charging!");
+            CurrentBattery += Runner.DeltaTime * rechargeRate;
+        }
     }
 }

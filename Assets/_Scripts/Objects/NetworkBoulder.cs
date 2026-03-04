@@ -10,6 +10,7 @@ public class NetworkBoulder : NetworkBehaviour
     [SerializeField] private GameObject breakVfxPrefab;
     
     [Networked] private byte breakSignal { get; set; } // Networked byte to signal the "Break" event
+    [Networked] private byte collisionSignal { get; set; } // Networked byte to signal the collision events
     [Networked] private TickTimer selfDestructTimer { get; set; }
 
     private ChangeDetector changes;
@@ -41,6 +42,8 @@ public class NetworkBoulder : NetworkBehaviour
         {
             if (change == nameof(breakSignal) && breakSignal > 0)
                 TriggerBreakEffects();
+            if (change == nameof(collisionSignal) && collisionSignal > 0)
+                if (audioManager != null) audioManager.Play("RockImpact", transform.position);
         }
     }
 
@@ -48,7 +51,8 @@ public class NetworkBoulder : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         
-        RPC_Play("RockImpact", transform.position);
+        //RPC_Play("RockImpact", transform.position);
+        collisionSignal++;
 
         if (other.gameObject.CompareTag("Player"))
         {
@@ -100,11 +104,14 @@ public class NetworkBoulder : NetworkBehaviour
             Rigidbody[] chunks = brokenBoulder.GetComponentsInChildren<Rigidbody>();
             foreach (var chunkRb in chunks)
             {
-                chunkRb.isKinematic = false; // Force physics back on
-                chunkRb.WakeUp();            // Ensure the physics engine is looking at it
+                // Ensure they aren't on a layer that ignores physics or collides with the old boulder
+                chunkRb.isKinematic = false;
             
-                // Give it the boulder's momentum + a little random 'pop'
-                chunkRb.linearVelocity = currentVelocity + UnityEngine.Random.insideUnitSphere * 2f;
+                // Inherit the boulder's momentum + a random burst
+                chunkRb.AddForce(currentVelocity + UnityEngine.Random.insideUnitSphere * 5f, ForceMode.VelocityChange);
+            
+                // Add some random spin to make it look "alive"
+                chunkRb.angularVelocity = UnityEngine.Random.insideUnitSphere * 10f;
             }
             
             // Destroy the boulder
