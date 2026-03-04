@@ -2,12 +2,14 @@ using System;
 using System.Threading.Tasks;
 using Fusion;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.Serialization;
 
 public class NetworkBoulder : NetworkBehaviour
 {
     [SerializeField] private float selfDestructTime = 12f;
     [SerializeField] private GameObject breakVfxPrefab;
+    [SerializeField] private GameObject testPrefab;
     
     [Networked] private byte breakSignal { get; set; } // Networked byte to signal the "Break" event
     [Networked] private byte collisionSignal { get; set; } // Networked byte to signal the collision events
@@ -91,7 +93,16 @@ public class NetworkBoulder : NetworkBehaviour
         if (breakVfxPrefab != null)
         {
             var brokenBoulder = Instantiate(breakVfxPrefab, transform.position, transform.rotation);
+            var test = Instantiate(testPrefab, transform.position + new Vector3(0,5f,0), transform.rotation);
+            
             brokenBoulder.transform.localScale = boulderScale;
+
+            // Moves the local object into the Runner's physics scene
+            if (Runner != null)
+            {
+                SceneManager.MoveGameObjectToScene(brokenBoulder, Runner.SimulationUnityScene);
+                SceneManager.MoveGameObjectToScene(test, Runner.SimulationUnityScene);
+            }
             
             // Get the velocity of the current networked boulder to pass it to the chunks
             Vector3 currentVelocity = Vector3.zero;
