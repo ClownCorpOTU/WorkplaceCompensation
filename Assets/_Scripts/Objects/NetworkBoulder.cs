@@ -16,7 +16,9 @@ public class NetworkBoulder : NetworkBehaviour
     
     [Networked] private byte breakSignal { get; set; } // Networked byte to signal the "Break" event
     [Networked] private byte collisionSignal { get; set; } // Networked byte to signal the collision events
+    [Networked] private byte flattenSignal { get; set; } // Networked byte to signal the collision events
     [Networked] private TickTimer selfDestructTimer { get; set; }
+    [Networked] private NetworkPlayer lastHitPlayer { get; set; }
 
     private ChangeDetector changes;
     private AudioManager audioManager;
@@ -54,6 +56,17 @@ public class NetworkBoulder : NetworkBehaviour
 
             if (change == nameof(collisionSignal) && collisionSignal > 0)
                 PlayCollisionEffects();
+
+            if (change == nameof(lastHitPlayer))
+            {
+                if (lastHitPlayer != null)
+                    Debug.Log($"[Render] Flattening: {lastHitPlayer.Object.Id}");
+            }
+
+            if (lastHitPlayer != null && change == nameof(flattenSignal) && flattenSignal > 0)
+            {
+                lastHitPlayer.FlattenAndMakeRagdoll();
+            }
         }
     }
 
@@ -69,11 +82,13 @@ public class NetworkBoulder : NetworkBehaviour
             // Look in the object OR its parents for the NetworkPlayer script
             if (other.gameObject.TryGetComponent<NetworkPlayer>(out var player))
             {
-                player.FlattenAndMakeRagdoll();
+                lastHitPlayer = player;
+                flattenSignal++;
             }
             else if (other.transform.root.TryGetComponent<NetworkPlayer>(out var rootPlayer))
             {
-                rootPlayer.FlattenAndMakeRagdoll();
+                lastHitPlayer = rootPlayer;
+                flattenSignal++;
             }
             else
             {
@@ -140,7 +155,7 @@ public class NetworkBoulder : NetworkBehaviour
         // Play sound
         if (audioManager != null) audioManager.Play("RockImpact", transform.position);
         
-        // Shake camer
+        // Shake camera
         if (camShakeManager != null && thisImpulseSource != null && NetworkPlayer.Local != null)
         {
             // Using sqrMagnitude to avoid the expensive square root calculation
@@ -161,11 +176,5 @@ public class NetworkBoulder : NetworkBehaviour
                 camShakeManager.ApplyCameraShake(thisImpulseSource, shakeDir, baseShakeForce * finalAttenuation);
             }
         }
-    }
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
-    private void RPC_Play(string audioName, Vector3 position)
-    {
-        if (audioManager != null) audioManager.Play(audioName, position);
     }
 }
