@@ -25,6 +25,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private TextMeshProUGUI playerNumberText;
     [SerializeField] private Animator animatedModel;
     [SerializeField] private SkinnedMeshRenderer bodyMeshRenderer;
+    [SerializeField] private Transform playerVest;
+    [SerializeField] private GameObject burntPlayerVest;
     
     [Header("Juice - Dust Trail")]
     [SerializeField] private ParticleSystem dustFXParticles;
@@ -32,7 +34,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Vector2 startSizeRange = new Vector2(0.1f, 0.4f);
     [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
     
-    [Networked] public float NetworkedMovementSpeed { get; set; }
+    [Networked, HideInInspector] public float NetworkedMovementSpeed { get; set; }
+    [Networked, HideInInspector] public NetworkBool IsBurned { get; set; } 
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -307,6 +310,17 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         networkGameManager.ScoreText.text = newScore.ToString();
     }
+    #endregion
+
+    #region Other functions
+
+    public void SpawnVestAfterBurning()
+    {
+        var vest = Runner.Spawn(burntPlayerVest, playerVest.position, playerVest.localRotation);
+        vest.transform.parent = playerVest.transform.parent;
+        playerVest.gameObject.SetActive(false);
+    }
+
     #endregion
     
     #region Network Functions

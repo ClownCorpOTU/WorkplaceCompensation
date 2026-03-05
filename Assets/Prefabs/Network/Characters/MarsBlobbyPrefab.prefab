@@ -1053,6 +1053,8 @@ MonoBehaviour:
   playerNumberText: {fileID: 8147775968080432533}
   animatedModel: {fileID: 7472857685010095792}
   bodyMeshRenderer: {fileID: 4333917622565004356}
+  playerVest: {fileID: 6060855926793365419}
+  burntPlayerVest: {fileID: 7434201128145017883, guid: ff3215d6ba1e37d4982f126118600dd1, type: 3}
   dustFXParticles: {fileID: 1364954352839778381}
   rateOverDistanceRange: {x: 2, y: 15}
   startSizeRange: {x: 0.2, y: 1}
@@ -6837,6 +6839,11 @@ MonoBehaviour:
   knockoutThreshold: 15
   knockbackForceMultiplier: 5
   maxKnockbackForce: 30
+--- !u!4 &6060855926793365419 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -1509766803305540308, guid: e6a998ea26bfe5441b68d62ab83c4e68, type: 3}
+  m_PrefabInstance: {fileID: 4544210424016220807}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &5331904115146132612
 PrefabInstance:
   m_ObjectHideFlags: 0
