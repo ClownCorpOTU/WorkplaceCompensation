@@ -111,13 +111,6 @@ public partial class NetworkPlayer
         }
     }
 
-    private void OnCollisionEnter(Collision other)
-    {
-        //print(other.gameObject.name);
-        //print(other.gameObject.GetComponent<NetworkBoulder>());
-        //if (other.gameObject.TryGetComponent(out NetworkBoulder boulder)) flattenSignal++;
-    }
-
     private void ToggleRagdollComponents()
     {
         if (mainCollider != null) mainCollider.enabled = IsActiveRagdoll;

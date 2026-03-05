@@ -72,11 +72,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private bool isLiftingActive = false;
     public bool IsLiftingActive => isLiftingActive;
     
-    
-    // testing
-    [Networked] private byte flattenSignal { get; set; } // Networked byte to signal the collision events
-    private ChangeDetector changes;
-    
     #endregion
     
     #region Setup
@@ -137,7 +132,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
         transform.name = $"Player_{Object.Id}";
-        changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
 
 
         if (Object.HasInputAuthority)
@@ -356,14 +350,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public override void Render()
     {
-        foreach (var change in changes.DetectChanges(this))
-        {
-            if (change == nameof(flattenSignal) && flattenSignal > 0)
-            {
-                FlattenAndMakeRagdoll();
-            }
-        }
-        
         // This should only run on clients, not the host
         if (!Object.HasStateAuthority)
         {

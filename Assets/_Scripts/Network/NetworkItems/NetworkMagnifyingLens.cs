@@ -42,12 +42,10 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     private void HitPlayer(Collider other)
     {
         hasHitPlayer = true;
-        print("hits");
         
         if (other.transform.root.TryGetComponent(out NetworkPlayer networkPlayer))
         {
-            networkPlayer.GetComponent<DissolvingController>().BeginFx();
-            RPC_Play("PlayerBurn", networkPlayer.transform.position);
+            RPC_BurnPlayer(networkPlayer);
             networkPlayer.MakeRagdoll();
             hasHitPlayer = false;
         }
@@ -73,5 +71,12 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     {
         print("Playing!");
         if (audioManager != null) audioManager.Play(audioName, position);
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_BurnPlayer(NetworkPlayer networkPlayer)
+    {
+        networkPlayer.GetComponent<DissolvingController>().BeginFx();
+        if (audioManager != null) audioManager.Play("PlayerBurn", networkPlayer.transform.position);
     }
 }
