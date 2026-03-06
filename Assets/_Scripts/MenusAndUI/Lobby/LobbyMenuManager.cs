@@ -70,6 +70,8 @@ public class LobbyMenuManager : MonoBehaviour
         }*/
         
         newLobbyPopUp.SetActive(false);
+
+        networkRunnerHandler.OnJoinLobby("MainLobbyList");
     }
 
     public void ClearLobbyDisplay()

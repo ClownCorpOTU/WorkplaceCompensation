@@ -102,20 +102,7 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        if (SceneManager.GetActiveScene().name == "Lobby")
-        {
-            return;
-        }
-
-        if (sessionList.Count != 0)
-        {
-            lobbyManager.ClearLobbyDisplay();
-
-            foreach (SessionInfo sessionInfo in sessionList)
-            {
-                lobbyManager.CreateEntry(sessionInfo);
-            }
-        }
+        
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
