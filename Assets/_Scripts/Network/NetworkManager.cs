@@ -13,7 +13,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
-
+    [SerializeField] private LobbyMenuManager lobbyMenuManager;
 
     void Awake()
     {
@@ -116,6 +116,19 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        throw new NotImplementedException();
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            return;
+        }
+
+        if (sessionList.Count != 0)
+        {
+            lobbyMenuManager.ClearLobbyDisplay();
+
+            foreach (SessionInfo sessionInfo in sessionList)
+            {
+                lobbyMenuManager.CreateEntry(sessionInfo);
+            }
+        }
     }
 }

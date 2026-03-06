@@ -1076,6 +1076,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkManager
   networkRunnerPrefab: {fileID: 548566944644215969, guid: 5ebb32773a8cccf4fa5c6eeb677211c2, type: 3}
+  lobbyMenuManager: {fileID: 54624160}
 --- !u!4 &270776167
 Transform:
   m_ObjectHideFlags: 0
@@ -1106,6 +1107,7 @@ MonoBehaviour:
   networkRunnerPrefab: {fileID: 548566944644215969, guid: 5ebb32773a8cccf4fa5c6eeb677211c2, type: 3}
   spawnPoint: {x: 0, y: 0, z: 0}
   shouldStartInSinglePlayer: 1
+  defaultSessionPlayerCap: 4
 --- !u!1 &288529854
 GameObject:
   m_ObjectHideFlags: 0
@@ -1695,8 +1697,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 152, y: 7.5}
-  m_SizeDelta: {x: 564, y: 35}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &555452947
 MonoBehaviour:
@@ -3724,7 +3726,7 @@ MonoBehaviour:
   m_HandleRect: {fileID: 459108941}
   m_Direction: 2
   m_Value: 0
-  m_Size: 0.5
+  m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -5608,9 +5610,9 @@ SceneRoots:
   m_Roots:
   - {fileID: 236661637}
   - {fileID: 891805755}
-  - {fileID: 54624159}
   - {fileID: 1599224539}
   - {fileID: 1494980943}
+  - {fileID: 54624159}
   - {fileID: 270776167}
   - {fileID: 1421078722}
   - {fileID: 470529985}

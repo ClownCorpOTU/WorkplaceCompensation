@@ -12,17 +12,17 @@ public class LobbyEntry : MonoBehaviour
     [Header("Lobby Entry UI Info")]
     [SerializeField] TextMeshProUGUI lobbyName, playerCount;
     public Button joinButton;
-    public int currentPlayerCount = 0, maxPlayerCount = 0;
+    public int currentPlayerCount = 0, maxPlayerCount = 1;
 
     [Header("Session")]
     SessionInfo sessionInfo;
     public event Action<SessionInfo> OnJoinSession;
 
-    public LobbyEntry(LobbyMenuManager lobbyMenuManager)
+    void Awake()
     {
-        if (lobbyMenuManager != null)
+        if (lobbyManager != null)
         {
-            lobbyManager = lobbyMenuManager;
+            lobbyManager = GameObject.FindFirstObjectByType<LobbyMenuManager>();
         }    
     }
 
@@ -33,19 +33,25 @@ public class LobbyEntry : MonoBehaviour
     /// <param name="playerInLobby">Number of players in the lobby, currently.</param>
     /// <param name="playerCap">Maximum players allowed in the lobby.</param>
     /// <param name="map">String of the scene's name that the player will see.</param>
-    public void UpdateEntryInfo(string name, int playerInLobby, int playerCap, string map = null)
+    public void UpdateEntryInfo(string name, SessionInfo info, string map = null)
     {
         lobbyName.text = name;
-        currentPlayerCount = playerInLobby;
-        maxPlayerCount = playerCap;
+        sessionInfo = info;
 
-        UpdatePlayerCount();
+        UpdatePlayerCount(sessionInfo);
     }
     /// <summary>
     /// Update the player count text to match the current player count.
     /// </summary>
-    public void UpdatePlayerCount()
+    public void UpdatePlayerCount(SessionInfo info)
     {
+        currentPlayerCount = info.PlayerCount;
+        
+        if (maxPlayerCount <= 0)
+        {
+            maxPlayerCount = 1;
+        }
+
         playerCount.text = $"{currentPlayerCount}/{maxPlayerCount}";
     }
 
@@ -53,14 +59,14 @@ public class LobbyEntry : MonoBehaviour
     {
         this.sessionInfo = info;
 
-        UpdateEntryInfo(info.Name, info.PlayerCount, info.MaxPlayers);
+        UpdateEntryInfo(info.Name, info);
 
         bool canPlayerJoin = true;
         if (currentPlayerCount >= maxPlayerCount)
         {
             canPlayerJoin = false;
         }
-        joinButton.gameObject.SetActive(canPlayerJoin);
+        //joinButton.gameObject.SetActive(canPlayerJoin);
     }
 
     public void OnJoinRoomClick()
@@ -71,13 +77,12 @@ public class LobbyEntry : MonoBehaviour
             return;
         }
 
-        currentPlayerCount++;
-
-        UpdatePlayerCount();
+        UpdatePlayerCount(sessionInfo);
 
         NetworkRunnerHandler networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
 
-        networkRunnerHandler.OnJoinLobby(lobbyName.text);
+        //networkRunnerHandler.OnJoinLobby("MainLobbyList");
+        networkRunnerHandler.JoinGame(sessionInfo);
     }
 
     public void OnClick()
@@ -87,7 +92,6 @@ public class LobbyEntry : MonoBehaviour
 
     public void ExitRoom()
     {
-        currentPlayerCount--;
-        UpdatePlayerCount();
+        UpdatePlayerCount(sessionInfo);
     }
 }

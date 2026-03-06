@@ -21,6 +21,8 @@ public class NetworkRunnerHandler : MonoBehaviour
     
     public Vector3 SpawnPoint => spawnPoint;
 
+    [SerializeField] int defaultSessionPlayerCap = 4;
+
     private void Awake()
     {
         QualitySettings.vSyncCount = 0;
@@ -51,7 +53,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
-            var clientTask = InitializeNetworkRunner(networkRunner, mode, sessionName, 
+            var clientTask = InitializeNetworkRunner(networkRunner, mode, sessionName, defaultSessionPlayerCap, 
                 NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
         }
     }
@@ -66,7 +68,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         return sceneManager ?? runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
     }
 
-    protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, string sessionName,
+    protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, string sessionName, int lobbyCap,
         NetAddress address, SceneRef scene, Action<NetworkRunner> initialized)
     {
         INetworkSceneManager sceneManager = GetSceneManager(runner);
@@ -78,8 +80,11 @@ public class NetworkRunnerHandler : MonoBehaviour
             Address = address,
             Scene = scene,
             SessionName = sessionName,
-            CustomLobbyName = sessionName,
-            SceneManager = sceneManager
+            CustomLobbyName = "MainLobbyList",
+            SceneManager = sceneManager,
+            PlayerCount = lobbyCap,
+            IsOpen = true,
+            IsVisible = true
         });
     }
 
@@ -88,27 +93,27 @@ public class NetworkRunnerHandler : MonoBehaviour
         var clientTask = JoinLobby(lobbyName);
     }
 
-    private async Task JoinLobby(string lobbyID)
+    private async Task JoinLobby(string lobbyListID = "MainLobbyList")
     {
-        var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, lobbyID);
+        var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, lobbyListID);
 
         if (!result.Ok)
         {
-            UnityEngine.Debug.LogError($"Unable to join lobby {lobbyID}.");
+            UnityEngine.Debug.LogError($"Unable to join lobby {lobbyListID}.");
         }
     }
 
-    public void CreateGame (string sessionName, string scenePath)
+    public void CreateGame (string sessionName, int lobbyCap, string scenePath)
     {
         int buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
 
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Host, sessionName, 
+        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Host, sessionName, lobbyCap,
             NetAddress.Any(), SceneRef.FromIndex(buildIndex), null);
     }
 
     public void JoinGame (SessionInfo sessionInfo)
     {
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Client, sessionInfo.Name, 
+        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Client, sessionInfo.Name, sessionInfo.MaxPlayers,
             NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
     }
 }

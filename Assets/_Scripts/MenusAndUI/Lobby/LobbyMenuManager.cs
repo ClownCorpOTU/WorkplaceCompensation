@@ -80,12 +80,6 @@ public class LobbyMenuManager : MonoBehaviour
         }
     }
 
-    public void AddToList(SessionInfo info)
-    {
-        LobbyEntry newLobbyEntry = Instantiate(lobbyEntryPrefab, lobbyDisplay.transform).GetComponent<LobbyEntry>();
-        newLobbyEntry.SessionInformation(info);
-    }
-
     public void OnCreateNewLobby()
     {
         if (newLobbyPopUp.activeSelf == false)
@@ -100,15 +94,12 @@ public class LobbyMenuManager : MonoBehaviour
 
         string lobbyName = lobbyNameInput.text;
 
-        AddToList(NetworkManager._runnerInstance.SessionInfo);
+        networkRunnerHandler.CreateGame(lobbyName, maxLobbySize, SelectMap());
 
-        networkRunnerHandler.CreateGame(lobbyName, SelectMap());
-
-        CreateEntry(lobbyName, NetworkManager._runnerInstance.SessionInfo);
+        //CreateEntry(NetworkManager._runnerInstance.SessionInfo);
 
         newLobbyPopUp.SetActive(false); // Hide Popup.
     }
-
 
     /// <summary>
     /// Gets the scene for the level chosen in the lobby creation menu.
@@ -134,59 +125,14 @@ public class LobbyMenuManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Checks if the lobby is in session. If not, the lobby will be removed from the UI and Dictionary.
-    /// </summary>
-    /// <param name="sessionList"></param>
-    void DeleteEntry(List<SessionInfo> sessionList)
-    {
-        bool isInSession = false;
-        GameObject entryToDelete = null;
-
-        // Check LobbyEntries for lobbies that are no longer in session list
-        foreach (KeyValuePair<string, GameObject> kvp in lobbyEntriesDictionary)
-        {
-            string lobbyName = kvp.Key;
-            foreach (SessionInfo sessionInfo in sessionList)
-            {
-                if (sessionInfo.Name == lobbyName)
-                {
-                    isInSession = true;
-                    break;
-                }
-            }
-
-            if (!isInSession)
-            {
-                entryToDelete = kvp.Value;
-                lobbyEntriesDictionary.Remove(lobbyName); // Remove Lobby from entry
-                Destroy(entryToDelete); // Delete lobby
-            }
-        }
-    }
-
-    void CompareEntries(List<SessionInfo> sessionList)
-    {
-        foreach (SessionInfo session in sessionList)
-        {
-            if (lobbyEntriesDictionary.ContainsKey(session.Name))
-            {
-                UpdateEntry(session);
-            }
-            else
-            {
-                CreateEntry(session.Name, session);
-            }
-        }
-    }
-
-    /// <summary>
     /// Create new lobby entry and display it on the lobby UI.
     /// </summary>
     /// <param name="session"></param>
-    public void CreateEntry(string name, SessionInfo session)
+    public void CreateEntry(SessionInfo session)
     {
         GameObject newEntry = GameObject.Instantiate(lobbyEntryPrefab, lobbyDisplay.transform);
-        lobbyEntriesDictionary.Add(name, newEntry);
+        lobbyEntriesDictionary.Add(session.Name, newEntry);
+
 
         UpdateEntry(session, newEntry);
     }
@@ -197,12 +143,7 @@ public class LobbyMenuManager : MonoBehaviour
     /// <param name="session"></param>
     /// <param name="entry">The new entry UI prefab that will be updated. If it is null, get the existing entry from the dictionary and update it.</param>
     void UpdateEntry(SessionInfo session, GameObject entry = null)
-    {
-        if (entry == null)
-        {
-            lobbyEntriesDictionary.TryGetValue(session.Name, out entry);
-        }
-        
+    {        
         LobbyEntry entryScript = entry.GetComponent<LobbyEntry>();
 
         entryScript.SessionInformation(session);

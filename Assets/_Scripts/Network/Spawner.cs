@@ -113,9 +113,8 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
             foreach (SessionInfo sessionInfo in sessionList)
             {
-                lobbyManager.AddToList(sessionInfo);
+                lobbyManager.CreateEntry(sessionInfo);
             }
-
         }
     }
 
