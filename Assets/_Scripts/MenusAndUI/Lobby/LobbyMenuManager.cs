@@ -56,21 +56,27 @@ public class LobbyMenuManager : MonoBehaviour
         {
             newLobbyPopUp = GameObject.Find("NewLobbyPopUp");
         }
+
         if (lobbyNameInput == null)
         {
             lobbyNameInput = GameObject.Find("LobbyNameInput").GetComponent<TMP_InputField>();
         }
+
         if (mapSelection == null)
         {
             mapSelection = GameObject.Find("MapOptions").GetComponent<TMP_Dropdown>();
         }
+        
         /*if (lobbySizeInput == null)
         {
             lobbySizeInput = GameObject.Find("LobbySizeInput").GetComponent<TMP_InputField>();
         }*/
         
         newLobbyPopUp.SetActive(false);
+    }
 
+    void Start()
+    {
         networkRunnerHandler.OnJoinLobby("MainLobbyList");
     }
 
