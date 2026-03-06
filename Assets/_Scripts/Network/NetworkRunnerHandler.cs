@@ -88,9 +88,9 @@ public class NetworkRunnerHandler : MonoBehaviour
         });
     }
 
-    public void OnJoinLobby(string lobbyName)
+    public void OnJoinLobby(string lobbyListName)
     {
-        var clientTask = JoinLobby(lobbyName);
+        var clientTask = JoinLobby(lobbyListName);
     }
 
     private async Task JoinLobby(string lobbyListID = "MainLobbyList")
@@ -100,6 +100,10 @@ public class NetworkRunnerHandler : MonoBehaviour
         if (!result.Ok)
         {
             UnityEngine.Debug.LogError($"Unable to join lobby {lobbyListID}.");
+        }
+        else
+        {
+            UnityEngine.Debug.Log($"Joined lobby list of {lobbyListID}.");
         }
     }
 

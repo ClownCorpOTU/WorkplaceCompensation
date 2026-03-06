@@ -27,7 +27,7 @@ public class LobbyMenuManager : MonoBehaviour
     [SerializeField] TMP_Dropdown mapSelection;
 
     [Header ("Lobby")]
-    public Dictionary<string, GameObject> lobbyEntriesDictionary = new Dictionary<string, GameObject>();
+    SessionInfo testingInfo;
     int maxLobbySize = 4;
 
     void Awake()
@@ -139,10 +139,10 @@ public class LobbyMenuManager : MonoBehaviour
     public void CreateEntry(SessionInfo session)
     {
         GameObject newEntry = GameObject.Instantiate(lobbyEntryPrefab, lobbyDisplay.transform);
-        lobbyEntriesDictionary.Add(session.Name, newEntry);
-
 
         UpdateEntry(session, newEntry);
+
+        testingInfo = session;
     }
 
     /// <summary>
@@ -159,5 +159,17 @@ public class LobbyMenuManager : MonoBehaviour
         entryScript.joinButton.interactable = session.IsOpen;
 
         entry.SetActive(session.IsValid);
+    }
+
+    public void JoinLobbyByName(string roomName)
+    {
+        if (roomName == testingInfo.Name)
+        {
+            networkRunnerHandler.JoinGame(testingInfo);
+        }
+        else
+        {
+            Debug.LogError($"{roomName} is not a session.");
+        }
     }
 }
