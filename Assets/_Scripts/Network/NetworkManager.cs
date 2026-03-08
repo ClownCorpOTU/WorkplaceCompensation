@@ -21,6 +21,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             _runnerInstance = Instantiate(networkRunnerPrefab);
         }
+
+        _runnerInstance.AddCallbacks(this);
         
         //_runnerInstance = gameObject.GetComponent<NetworkRunner>();
     }
@@ -116,10 +118,12 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        if (SceneManager.GetActiveScene().name == "Lobby")
+        if (SceneManager.GetActiveScene().name != "Lobby")
         {
             return;
         }
+
+        Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
 
         if (sessionList.Count != 0)
         {
@@ -127,6 +131,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
             foreach (SessionInfo sessionInfo in sessionList)
             {
+                Debug.Log($"{sessionInfo.Properties}");
                 lobbyMenuManager.CreateEntry(sessionInfo);
             }
         }

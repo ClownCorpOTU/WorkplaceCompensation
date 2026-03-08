@@ -102,7 +102,7 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        
+        // Debug.Log("Session list (Spawner) updated: " + sessionList.Count);
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
