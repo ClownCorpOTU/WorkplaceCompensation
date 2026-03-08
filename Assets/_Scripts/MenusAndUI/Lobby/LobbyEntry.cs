@@ -46,6 +46,7 @@ public class LobbyEntry : MonoBehaviour
     public void UpdatePlayerCount(SessionInfo info)
     {
         currentPlayerCount = info.PlayerCount;
+        maxPlayerCount = info.MaxPlayers;
         
         if (maxPlayerCount <= 0)
         {

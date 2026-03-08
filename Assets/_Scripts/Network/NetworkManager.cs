@@ -131,7 +131,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
             foreach (SessionInfo sessionInfo in sessionList)
             {
-                Debug.Log($"{sessionInfo.Properties}");
                 lobbyMenuManager.CreateEntry(sessionInfo);
             }
         }

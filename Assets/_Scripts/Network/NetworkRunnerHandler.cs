@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.NetworkInformation;
@@ -84,7 +85,14 @@ public class NetworkRunnerHandler : MonoBehaviour
             SceneManager = sceneManager,
             PlayerCount = lobbyCap,
             IsOpen = true,
-            IsVisible = true
+            IsVisible = true,
+
+            /*SessionProperties = new Dictionary<string, SessionProperty>()
+            {
+                {
+                    "MaxPlayers", lobbyCap
+                }
+            }*/
         });
     }
 
