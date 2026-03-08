@@ -80,6 +80,9 @@ public class LobbyMenuManager : MonoBehaviour
         networkRunnerHandler.OnJoinLobby("MainLobbyList");
     }
 
+    /// <summary>
+    /// Clears the Parent transform holding all lobby entries.
+    /// </summary>
     public void ClearLobbyDisplay()
     {
         foreach (Transform child in lobbyDisplay.transform)
@@ -88,6 +91,9 @@ public class LobbyMenuManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// OnClick function. Enables the popup menu to create a lobby.
+    /// </summary>
     public void OnCreateNewLobby()
     {
         if (newLobbyPopUp.activeSelf == false)
@@ -96,6 +102,9 @@ public class LobbyMenuManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// Handles getting the data from the popup menu passes it to NetworkRunnerHandler to create the room.
+    /// </summary>
     public void CreateLobbySession()
     {
         //int.TryParse(lobbySizeInput.text, out int lobbySize);
@@ -146,9 +155,9 @@ public class LobbyMenuManager : MonoBehaviour
     }
 
     /// <summary>
-    /// Updates lobby entry.
+    /// Updates lobby entry in the UI using the SessionInfo.
     /// </summary>
-    /// <param name="session"></param>
+    /// <param name="session">Information about the current session/lobby.</param>
     /// <param name="entry">The new entry UI prefab that will be updated. If it is null, get the existing entry from the dictionary and update it.</param>
     void UpdateEntry(SessionInfo session, GameObject entry = null)
     {        
@@ -161,6 +170,10 @@ public class LobbyMenuManager : MonoBehaviour
         entry.SetActive(session.IsValid);
     }
 
+    /// <summary>
+    /// DELETE. Testing Join function. Overrides the entry UI's join button.
+    /// </summary>
+    /// <param name="roomName"></param>
     public void JoinLobbyByName(string roomName)
     {
         if (roomName == testingInfo.Name)

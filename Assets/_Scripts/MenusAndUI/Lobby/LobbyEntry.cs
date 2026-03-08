@@ -40,6 +40,7 @@ public class LobbyEntry : MonoBehaviour
 
         UpdatePlayerCount(sessionInfo);
     }
+
     /// <summary>
     /// Update the player count text to match the current player count.
     /// </summary>
@@ -56,6 +57,10 @@ public class LobbyEntry : MonoBehaviour
         playerCount.text = $"{currentPlayerCount}/{maxPlayerCount}";
     }
 
+    /// <summary>
+    /// Gets the session information.
+    /// </summary>
+    /// <param name="info"></param>
     public void SessionInformation(SessionInfo info)
     {
         this.sessionInfo = info;
@@ -70,6 +75,9 @@ public class LobbyEntry : MonoBehaviour
         //joinButton.gameObject.SetActive(canPlayerJoin);
     }
 
+    /// <summary>
+    /// Handles players joining lobbies.
+    /// </summary>
     public void OnJoinRoomClick()
     {
         if (currentPlayerCount >= maxPlayerCount)
