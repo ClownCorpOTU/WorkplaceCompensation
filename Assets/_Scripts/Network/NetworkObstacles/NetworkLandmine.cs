@@ -69,7 +69,8 @@ public class NetworkLandmine : NetworkBehaviour
         AudioManager.instance.Play("FireworksExplosion", transform.position);
         
         // VFx
-        // Instantiate something
+        FullScreenEffectsManager.Instance.TriggerImpactFlash(12);
+        // Also spawn explosion particles and debris later
         
         // Camera Shake
         float distance = Vector3.Distance(NetworkPlayer.Local.transform.position, transform.position);
