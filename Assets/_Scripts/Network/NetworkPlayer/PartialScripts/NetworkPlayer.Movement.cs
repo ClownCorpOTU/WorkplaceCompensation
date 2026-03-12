@@ -8,14 +8,19 @@ public partial class NetworkPlayer
     [SerializeField] private float acceleration = 30f;
     [SerializeField] private float rotationAngle = 300f;
     [SerializeField] private float jumpForce = 20f;
-    
+    [SerializeField] private float jumpHeight = 1.5f;
+
     private Vector2 moveInputVector = Vector2.zero;
     public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
-    private TickTimer jumpBuffer;
-    private bool jumpConsumed = false;
+    //private TickTimer jumpBuffer;
+    //private bool jumpConsumed = false;
     
-    private void HandleMovement(float localForwardVelocity)
+    [Networked] private TickTimer jumpCooldown { get; set; }
+    [Networked, OnChangedRender(nameof(OnJumpTriggered))] private int jumpCount { get; set; }
+    
+    
+    private void HandleMovement()
     {
         float inputMagnitude = networkInputData.RawInput.magnitude;
         Vector3 moveDir = networkInputData.MoveDirection;
@@ -25,10 +30,10 @@ public partial class NetworkPlayer
             ApplyRotation(moveDir);
             
             // Apply movement (host handles physics)
-            if (localForwardVelocity < maxSpeed)
+            if (NetworkedMovementSpeed < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
-                audioManager.Play("Walk");
+                if (IsGrounded) audioManager.Play("Walk", transform.position);
             }
         }
         
@@ -48,58 +53,126 @@ public partial class NetworkPlayer
             Quaternion.RotateTowards(mainJoint.targetRotation, desiredRotation, Runner.DeltaTime * rotationAngle);
     }
 
+    private void HandleJump()
+    {
+        if (!Object.HasStateAuthority) return;
+
+        if (networkInputData.IsJumpPressed && IsGrounded && jumpCooldown.ExpiredOrNotRunning(Runner))
+        {
+            if (CurrentStamina >= 3f) ExecuteJump();
+        }
+    }
+
+    private void ExecuteJump()
+    {
+        CurrentStamina -= 3f;
+        
+        jumpCooldown = TickTimer.CreateFromSeconds(Runner, 0.35f);
+        jumpCount++;
+
+        Vector3 jumpDir = (networkInputData.MoveDirection + Vector3.up).normalized;
+        rb.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
+
+        IsGrounded = false;
+        lastActivityTime = Runner.SimulationTime;
+    }
+
+    private void OnJumpTriggered()
+    {
+        audioManager.Play("Jump", transform.position);
+    }
+    
+    
     /*
     private void HandleJump()
     {
         if (!Object.HasStateAuthority) return;
-
-        if (networkInputData.IsJumpPressed)
-            jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
-
-        // Execute jump only once per liftoff
-        if (isGrounded && jumpBuffer.IsRunning)
-        {
-            jumpBuffer = TickTimer.None;
-
-            //animatedModel.Play("Isis_Jump");
-            ReduceStamina(3f);
-
-            Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
-            rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
-        }
-    }
-    */
-    
-    private void HandleJump()
-    {
-        if (!Object.HasStateAuthority) return;
         
+        // Buffer input (150ms coyote time)
+        if (networkInputData.IsJumpPressed)
+            jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f);
+        
+        // Only jump if grounded, buffer is active, and we haven't consumed it yet
+        if (IsGrounded && jumpBuffer.IsRunning && !jumpConsumed)
+        {
+            // Check stamina before allowing jump
+            if (CurrentStamina >= 3f)
+            {
+                jumpConsumed = true;
+                jumpBuffer = TickTimer.None;
+                PerformJump();
+            }
+        }
+        
+        // Reset jump consumption once we have landed
+        if (IsGrounded && !jumpBuffer.IsRunning)
+            jumpConsumed = false;
+
+        /*
+        if (!Object.HasStateAuthority) return;
+
         // Buffer jump input
         if (networkInputData.IsJumpPressed)
             jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
 
         // Execute jump once per liftoff
-        if (isGrounded && jumpBuffer.IsRunning && !jumpConsumed)
+        if (IsGrounded && jumpBuffer.IsRunning && !jumpConsumed)
         {
             jumpBuffer = TickTimer.None;
             jumpConsumed = true;
-            
+
             PerformJump(); // separate function for clarity
         }
 
-        if (isGrounded && !jumpBuffer.IsRunning)
+        if (IsGrounded && !jumpBuffer.IsRunning)
         {
-            print("Jump consumed = false");
+            //print("Jump consumed = false");
             jumpConsumed = false;
         }
+        *\
     }
 
     private void PerformJump()
     {
+        // Runner.IsForward is true only when this is a new tick. Prevents audio from playing multiple times
+        if (Runner.IsForward)
+        {
+            audioManager.Play("Jump", transform.position);
+            CurrentStamina -= 3f;
+        }
+        
+        // Calculate velocity
+        Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
+        rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
+        
+        // Set variables
+        IsGrounded = false;
+        lastActivityTime = Runner.SimulationTime;
+
+        /*
         if (CurrentStamina < 3f) return; // not enough energy
 
-        print("Jumping!");
-        
+        // ONLY play audio if this is the "Forward" (first) execution of this tick
+        if (Runner.IsForward)
+        {
+            audioManager.Play("Jump", transform.position);
+        }
+
+        float gravityMagnitude = Mathf.Abs(Physics.gravity.y);
+
+        float gravityRatio = 9.81f / gravityMagnitude;
+        float adjustedHeight = jumpHeight * gravityRatio;
+
+        float requiredVelocity = Mathf.Sqrt(2f * adjustedHeight * gravityMagnitude);
+        float totalImpulse = requiredVelocity * rb.mass;
+
+        Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
+        //rb.AddForce(launchDir * totalImpulse, ForceMode.Impulse);
+        rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
+
+        lastActivityTime = Runner.SimulationTime;
+
+        // Even older
         // Drain once
         //CurrentStamina = Mathf.Max(0f, CurrentStamina - 3f);
 
@@ -109,5 +182,7 @@ public partial class NetworkPlayer
 
         // Reset regen timer
         lastActivityTime = Runner.SimulationTime;
+        *\
     }
+    */
 }

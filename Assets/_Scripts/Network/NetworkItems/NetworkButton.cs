@@ -36,7 +36,7 @@ public class NetworkButton : NetworkBehaviour, ICollisionReceiver
 
         IsButtonPressed = true;
         targetLocalPos = initialLocalPos - pressDepth;
-        AudioManager.instance.Play("ButtonPress"); // Can I just use the instance?
+        AudioManager.instance.Play("ButtonPress", transform.position); // Can I just use the instance?
     }
     
     public void OnChildCollisionExit(Collision collision)

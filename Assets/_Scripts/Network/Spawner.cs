@@ -10,8 +10,13 @@ using UnityEngine;
 public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPlayer networkPlayerPrefab;
-    [SerializeField] private Vector3 spawnPoint;
+    
+    private Vector3 spawnPoint;
 
+    public void Initialize(Vector3 pos)
+    {
+        spawnPoint = pos;
+    }
     
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {

@@ -40,6 +40,8 @@ public class NetworkOutputReceiver : NetworkBehaviour
             
             // Play juice
             RPC_PlayWind();
+            AudioManager.instance.Play("Suction", transform.position);
+            
             
             // Record the vial object and start the first timer
             vialToDespawn = vial.Object;
@@ -56,7 +58,6 @@ public class NetworkOutputReceiver : NetworkBehaviour
         {
             if (vialToDespawn.TryGetComponent(out Rigidbody rb))
             {
-                AudioManager.instance.Play("Suction", transform.position);
                 rb.AddForce(Vector3.up * flySpeed, ForceMode.Impulse);
             }
 

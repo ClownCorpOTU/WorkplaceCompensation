@@ -16,4 +16,9 @@ public class Vial : NetworkBehaviour
     {
         LastHeldBy = player.Object.InputAuthority;
     }
+
+    private void OnCollisionEnter(Collision other)
+    {
+        AudioManager.instance.Play("BoxDrop");
+    }
 }

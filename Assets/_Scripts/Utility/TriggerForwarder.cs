@@ -1,9 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
+public enum TriggerType
+{
+    Left,
+    Right
+}
+
 public class TriggerForwarder : MonoBehaviour
 {
     [SerializeField] private MonoBehaviour receiver;
+    [SerializeField] private TriggerType triggerType = TriggerType.Left;
+    
     private ITriggerReceiver triggerReceiver;
 
     private void Awake()
@@ -16,11 +24,11 @@ public class TriggerForwarder : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        triggerReceiver?.OnChildTriggerEnter(other);
+        triggerReceiver?.OnChildTriggerEnter(other, triggerType);
     }
 
     private void OnTriggerExit(Collider other)
     {
-        triggerReceiver?.OnChildTriggerExit(other);
+        triggerReceiver?.OnChildTriggerExit(other, triggerType);
     }
 }
