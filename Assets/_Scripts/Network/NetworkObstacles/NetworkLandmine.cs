@@ -7,34 +7,62 @@ using Random = UnityEngine.Random;
 
 public class NetworkLandmine : NetworkBehaviour
 {
+    [SerializeField] private float explosionWaitTime = 0.1f;
     [SerializeField] private float explosionRadius = 5f;
     [SerializeField] private float explosionForce = 1000f;
     [SerializeField] private float camShakeForce = 1.5f;
     
-    [Networked] private NetworkBool hasExploded { get; set; }
+    [Networked] private NetworkBool hasActivated { get; set; } // The "fuse"
+    [Networked] private NetworkBool physicsTriggered { get; set; } // The "boom"
+    [Networked] private NetworkBool hasExploded { get; set; } // The after-effects
+    [Networked] private TickTimer explosionTimer { get; set; }
+    [Networked] private TickTimer flashbangSFxTimer { get; set; }
+    [Networked] private TickTimer despawnTimer { get; set; }
+    
     private ChangeDetector changes;
     private CinemachineImpulseSource thisImpulseSource;
-
+    private FullScreenEffectsManager fullScreenEffectsManager;
+    private AudioManager audioManager;
+    
 
     public override void Spawned()
     {
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         thisImpulseSource = GetComponent<CinemachineImpulseSource>();
+        fullScreenEffectsManager = FindFirstObjectByType<FullScreenEffectsManager>();
+        audioManager = FindFirstObjectByType<AudioManager>();
     }
     
-    private async void OnCollisionEnter(Collision other)
+    private void OnCollisionEnter(Collision other)
     {
         if (!Object.HasStateAuthority) return;
-        if (hasExploded || other.gameObject.CompareTag("Ground")) return;
+        if (hasActivated || other.gameObject.CompareTag("Ground")) return;
 
-        await Task.Delay(250); // Little delay so it doesn't feel instantaneous
-        
-        hasExploded = true;
-        Explode();
+        hasActivated = true;
+        explosionTimer = TickTimer.CreateFromSeconds(Runner, explosionWaitTime);
     }
 
-    private async void Explode()
+    public override void FixedUpdateNetwork()
     {
+        if (explosionTimer.Expired(Runner))
+        {
+            explosionTimer = TickTimer.None;
+            physicsTriggered = true;
+            Explode();
+
+            despawnTimer = TickTimer.CreateFromSeconds(Runner, 0.25f);
+        }
+
+        if (flashbangSFxTimer.Expired(Runner))
+            hasExploded = true;
+        
+        if (despawnTimer.Expired(Runner))
+            Runner.Despawn(Object);
+    }
+
+    private void Explode()
+    {
+        // Explode landmine
         Collider[] colliders = new Collider[10];
         int numFound = Runner.GetPhysicsScene().OverlapSphere(transform.position, explosionRadius, colliders, ~0, QueryTriggerInteraction.Collide);
 
@@ -49,8 +77,7 @@ public class NetworkLandmine : NetworkBehaviour
                 player.MakeRagdoll();
         }
         
-        await Task.Delay(150);
-        Runner.Despawn(Object);
+        flashbangSFxTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
     }
     
     public override void Render()
@@ -58,18 +85,23 @@ public class NetworkLandmine : NetworkBehaviour
         // This detects the change on both Host and Client
         foreach (var change in changes.DetectChanges(this))
         {
+            if (change == nameof(hasActivated) && hasActivated)
+                audioManager.Play("BombCountdown", transform.position);
+            if (change == nameof(physicsTriggered) && physicsTriggered)
+                TriggerExplosionEffects();
             if (change == nameof(hasExploded) && hasExploded)
-                TriggerExplosion();
+                audioManager.Play("Flashbanged");
         }
     }
 
-    private void TriggerExplosion()
+    private void TriggerExplosionEffects()
     {
         // Audio
-        AudioManager.instance.Play("FireworksExplosion", transform.position);
+        audioManager.Play("LandmineExplosion", transform.position);
         
         // VFx
-        FullScreenEffectsManager.Instance.TriggerImpactFlash(12);
+        fullScreenEffectsManager.TriggerTimeStop(0.1f);
+        fullScreenEffectsManager.TriggerImpactFlash(10);
         // Also spawn explosion particles and debris later
         
         // Camera Shake

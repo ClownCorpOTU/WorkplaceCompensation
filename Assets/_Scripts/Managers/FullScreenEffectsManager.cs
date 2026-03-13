@@ -11,6 +11,8 @@ public class FullScreenEffectsManager : MonoBehaviour
     [SerializeField] private string impactFrameFeatureName = "FS_ImpactFrame";
 
     private ScriptableRendererFeature impactFeature;
+    private Coroutine impactFlashCoroutine;
+    private Coroutine timeStopCoroutine;
 
     private void Awake()
     {
@@ -21,8 +23,14 @@ public class FullScreenEffectsManager : MonoBehaviour
 
     public void TriggerImpactFlash(int frameCount)
     {
-        StopAllCoroutines();
-        StartCoroutine(FlashRoutine(frameCount));
+        if (impactFlashCoroutine != null) StopCoroutine(impactFlashCoroutine);
+        impactFlashCoroutine = StartCoroutine(FlashRoutine(frameCount));
+    }
+
+    public void TriggerTimeStop(float duration)
+    {
+        if (timeStopCoroutine != null) StopCoroutine(timeStopCoroutine);
+        timeStopCoroutine = StartCoroutine(TimeStopRoutine(duration));
     }
 
     private IEnumerator FlashRoutine(int frameCount)
@@ -35,5 +43,16 @@ public class FullScreenEffectsManager : MonoBehaviour
         }
         
         impactFeature.SetActive(false);
+        impactFlashCoroutine = null;
+    }
+
+    private IEnumerator TimeStopRoutine(float duration)
+    {
+        Time.timeScale = 0.01f;
+
+        yield return new WaitForSecondsRealtime(duration);
+
+        Time.timeScale = 1.0f;
+        timeStopCoroutine = null;
     }
 }
