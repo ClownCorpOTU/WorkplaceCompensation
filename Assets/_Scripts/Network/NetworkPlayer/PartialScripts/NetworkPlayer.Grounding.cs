@@ -65,7 +65,8 @@ public partial class NetworkPlayer
             float gravityMultiplier = Mathf.Abs(Physics.gravity.y) / 9.81f;
         
             // Apply scaled extra gravity
-            rb.AddForce(Vector3.down * (extraGravity * gravityMultiplier), ForceMode.Acceleration);
+            //rb.AddForce(Vector3.down * (extraGravity * gravityMultiplier), ForceMode.Acceleration);
+            rb.AddForce(Vector3.down * (extraGravity), ForceMode.Acceleration);
         }
 
         Debug.DrawRay(origin, Vector3.down * groundCheckDistance, IsGrounded ? Color.green : Color.red);

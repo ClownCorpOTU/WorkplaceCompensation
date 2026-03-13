@@ -125,6 +125,8 @@ public partial class NetworkPlayer
         if (IsActiveRagdoll)
         {
             transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, 1f);
+            playerVest.gameObject.SetActive(true);
+            IsBurned = false;
             themeSong.EnableLowPassFilter(false);
             
             foreach (SyncPhysicsObject syncedObject in syncPhysicsObjects)
