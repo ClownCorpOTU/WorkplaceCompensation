@@ -28315,7 +28315,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1727549998
 RectTransform:
   m_ObjectHideFlags: 0
@@ -29835,6 +29835,10 @@ PrefabInstance:
       propertyPath: spawnPoint.z
       value: -6
       objectReference: {fileID: 0}
+    - target: {fileID: 8891226003504963330, guid: 8b8bd08281a984548b139cb8b90ee167, type: 3}
+      propertyPath: networkPlayerPrefabOverride
+      value: 
+      objectReference: {fileID: 4792794702188045732, guid: 8787e67fe77f7e84b9feb3389685601c, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -34088,7 +34092,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2059470614}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
   m_Name: 
@@ -35208,7 +35212,7 @@ PrefabInstance:
       objectReference: {fileID: 1741025106}
     - target: {fileID: 6670979873507697362, guid: 8385f3c967b0821419d565271bbbcf39, type: 3}
       propertyPath: gameRuntime
-      value: 7
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 6670979873507697362, guid: 8385f3c967b0821419d565271bbbcf39, type: 3}
       propertyPath: gameOverPanel

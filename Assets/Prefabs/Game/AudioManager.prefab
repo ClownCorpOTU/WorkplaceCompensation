@@ -104,7 +104,7 @@ MonoBehaviour:
     pitch: 1
     source: {fileID: 0}
     loop: 0
-    is3D: 0
+    is3D: 1
   - name: Ragdoll
     clip: {fileID: 8300000, guid: be1d2a3287edf4b4db6b0ca9fe83561b, type: 3}
     hasVariations: 0
@@ -385,3 +385,33 @@ MonoBehaviour:
     source: {fileID: 0}
     loop: 0
     is3D: 1
+  - name: BombCountdown
+    clip: {fileID: 8300000, guid: ec9408e7f4333f841bdbd0bae352eb76, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.35
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: LandmineExplosion
+    clip: {fileID: 8300000, guid: 9dc0927990820d04e9d3697ff461b42b, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.35
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+  - name: Flashbanged
+    clip: {fileID: 8300000, guid: 2f12742440d30954889d1b9031d1b2ff, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.25
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 0

@@ -15,13 +15,15 @@ public partial class NetworkPlayer
     
     private float staminaDrainRate = 1f;
     private float lastActivityTime = 0f;
+    private bool isUsingStamina;
+    public bool IsUsingStamina => isUsingStamina;
 
     
     private void HandleStamina()
     {
         if (!Object.HasStateAuthority) return;
 
-        bool isUsingStamina = false;
+        isUsingStamina = false;
 
         // Reduce stamina while grabbing
         if ((IsGrabbingActive || IsLeftHandGrabbingActive || IsRightHandGrabbingActive) && playerGrab.CurrentlyGrabbedRigidbody != null)

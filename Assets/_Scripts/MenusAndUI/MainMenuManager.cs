@@ -32,9 +32,9 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene(gameplayScene);
     }
 
-    public void ABTestingPlay(bool isA)
+    public void PlayLevel(string levelName)
     {
-        SceneManager.LoadScene(isA ? testA_EarthCanyon : testB_MarsCanyon);
+        SceneManager.LoadScene(levelName);
     }
 
     public void GoToLobbyMenu()
