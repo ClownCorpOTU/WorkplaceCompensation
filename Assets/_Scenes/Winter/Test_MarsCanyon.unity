@@ -15,7 +15,7 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
   m_Fog: 1
-  m_FogColor: {r: 0.5188679, g: 0.009858818, b: 0, a: 1}
+  m_FogColor: {r: 0.5471698, g: 0.0124356765, b: 0, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
   m_LinearFogStart: 0
@@ -25,7 +25,7 @@ RenderSettings:
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
   m_AmbientIntensity: 1
   m_AmbientMode: 0
-  m_SubtractiveShadowColor: {r: 0.28635636, g: 0.35216144, b: 0.5188679, a: 1}
+  m_SubtractiveShadowColor: {r: 0.509434, g: 0.105071865, b: 0, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 3930fc89a28b29746bde6a2389a513e0, type: 2}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
@@ -3607,6 +3607,48 @@ Transform:
   - {fileID: 5396522}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: -75, z: 0}
+--- !u!1 &611225224 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 77e8ac0b8e956684c99fa5277f01415a, type: 3}
+  m_PrefabInstance: {fileID: 849633319}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &611225228
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611225224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 4075021660
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 611225229}
+  ForceRemoteRenderTimeframe: 0
+--- !u!114 &611225229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 611225224}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d251c84f5326b96479791450aa32e12d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::RadiationZone
+  radiationStartDistance: 15
+  radiationDeathDistance: 5
+  radiationDeathDelay: 3
+  tickPitchRange: {x: 1, y: 1.2}
+  tickDelayRange: {x: 0.6, y: 0.01}
+  nextTickDelay: {x: 0.1, y: 0.6}
 --- !u!1 &617093439
 GameObject:
   m_ObjectHideFlags: 0
@@ -4193,6 +4235,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 77e8ac0b8e956684c99fa5277f01415a, type: 3}
       propertyPath: m_Name
       value: UFO
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 77e8ac0b8e956684c99fa5277f01415a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5859,10 +5905,20 @@ PrefabInstance:
       propertyPath: m_Name
       value: UFO (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 77e8ac0b8e956684c99fa5277f01415a, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 77e8ac0b8e956684c99fa5277f01415a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 611225229}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 77e8ac0b8e956684c99fa5277f01415a, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 611225228}
   m_SourcePrefab: {fileID: 100100000, guid: 77e8ac0b8e956684c99fa5277f01415a, type: 3}
 --- !u!1001 &869138784
 PrefabInstance:
@@ -5931,6 +5987,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c7f58e3afc338f84d95fbf458f2cf96e, type: 3}
       propertyPath: m_Name
       value: Tent (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c7f58e3afc338f84d95fbf458f2cf96e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -10699,13 +10759,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878844169}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.016084367, y: -0.71660125, z: 0.6194348, w: 0.3201945}
+  m_LocalRotation: {x: 0.7010577, y: 0.09229618, z: 0.09229593, w: 0.70105714}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 116.093994, y: -273.591, z: -121.847}
+  m_LocalEulerAnglesHint: {x: 75, y: 90, z: 90}
 --- !u!114 &1878844172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10950,6 +11010,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: c7f58e3afc338f84d95fbf458f2cf96e, type: 3}
       propertyPath: m_Name
       value: Tent
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c7f58e3afc338f84d95fbf458f2cf96e, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -12207,7 +12271,7 @@ MonoBehaviour:
   pausePanel: {fileID: 2100056860}
   staminaBarImage: {fileID: 1993208451}
   fakeLoadingScreen: {fileID: 0}
-  radiationScreenMat: {fileID: 0}
+  radiationScreenMat: {fileID: 2100000, guid: 8ae2625dae06a0346aab1d5a30ae1da8, type: 2}
 --- !u!4 &2035403211
 Transform:
   m_ObjectHideFlags: 0
