@@ -45,8 +45,7 @@ public class NetworkMeteorGenerator : NetworkBehaviour
         if (!Object.HasStateAuthority) return;
         
         //print(spawnDelayTimer.RemainingTime(Runner));
-        //if (spawnDelayTimer.ExpiredOrNotRunning(Runner))
-        if (Input.GetKeyDown(KeyCode.L))
+        if (spawnDelayTimer.ExpiredOrNotRunning(Runner))
             SpawnMeteor();
     }
 

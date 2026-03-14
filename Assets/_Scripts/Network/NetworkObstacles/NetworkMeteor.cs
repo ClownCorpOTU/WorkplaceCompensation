@@ -33,6 +33,7 @@ public class NetworkMeteor : NetworkBehaviour
     {
         networkedVelocity = finalSpeed;
         targetPos = targetLandingPos;
+        print(targetPos);
     }
 
     public override void Spawned()
@@ -46,21 +47,27 @@ public class NetworkMeteor : NetworkBehaviour
         {
             selfDestructTimer = TickTimer.CreateFromSeconds(Runner, selfDestructTime);
         }
-        
-        // This is local to every client
-        if (landingWarningPrefab != null)
-        {
-            localWarningCircle = Instantiate(landingWarningPrefab, targetPos + new Vector3(0, 0.1f, 0), Quaternion.identity);
-        }
     }
     
     public override void FixedUpdateNetwork()
     {
         if (isDespawning) return;
 
-        transform.position += networkedVelocity * Runner.DeltaTime;
-        transform.Rotate(Vector3.up, 90f * Runner.DeltaTime);
+        Vector3 displacement = networkedVelocity * Runner.DeltaTime;
         
+        // Check if we are about to hit something
+        if (Physics.Raycast(transform.position, networkedVelocity.normalized, out RaycastHit hit,
+                displacement.magnitude + 0.1f))
+        {
+            transform.position = hit.point; // Snap to hit point for cleaner impact
+            TriggerImpact();
+            return;
+        }
+        
+        // If not hit, move normally
+        transform.position += displacement;
+        transform.Rotate(Vector3.up, 90f * Runner.DeltaTime);
+
         // Safety despawn if it misses the world or lingers too long
         if (Object.HasStateAuthority && selfDestructTimer.Expired(Runner))
         {
@@ -75,6 +82,9 @@ public class NetworkMeteor : NetworkBehaviour
             if (change == nameof(impactSignal) && impactSignal > 0)
                 PlayImpactEffects();
         }
+        
+        if (!isDespawning)
+            UpdateLandingWarning();
     }
 
     private void OnCollisionEnter(Collision other)
@@ -160,5 +170,26 @@ public class NetworkMeteor : NetworkBehaviour
     {
         // Extra safety to ensure the circle is destroyed if the meteor is despawned abruptly
         if (localWarningCircle != null) Destroy(localWarningCircle);
+    }
+
+    private void UpdateLandingWarning()
+    {
+        // Go 50 units above the targetPos, and raycast 100 units down to find any points on the terrain
+        if (Physics.Raycast(targetPos + Vector3.up * 50f, Vector3.down, out RaycastHit hit, 100f))
+        {
+            if (localWarningCircle == null && landingWarningPrefab != null)
+            {
+                localWarningCircle = Instantiate(landingWarningPrefab, hit.point + (hit.normal * 0.05f), 
+                    Quaternion.LookRotation(hit.normal));
+            }
+
+            if (localWarningCircle != null)
+            {
+                // Growing shadow
+                float distanceToGround = Vector3.Distance(transform.position, hit.point);
+                float scaleFactor = Mathf.Clamp01(1.0f - (distanceToGround / 100f));
+                localWarningCircle.transform.localScale = Vector3.one * (scaleFactor * 10f);
+            }
+        }
     }
 }
