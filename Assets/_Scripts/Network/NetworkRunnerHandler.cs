@@ -70,29 +70,30 @@ public class NetworkRunnerHandler : MonoBehaviour
     }
 
     protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, string sessionName, int lobbyCap,
-        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized)
+        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, int codeLen = 6)
     {
         INetworkSceneManager sceneManager = GetSceneManager(runner);
         runner.ProvideInput = true;
+
+        string joinCode = GenerateLobbyCode(codeLen);
+        string uniqueName = $"Room_{System.Guid.NewGuid()}_{sessionName}";
 
         return runner.StartGame(new StartGameArgs()
         {
             GameMode = gameMode,
             Address = address,
             Scene = scene,
-            SessionName = sessionName,
+            SessionName = uniqueName,
             CustomLobbyName = "MainLobbyList",
             SceneManager = sceneManager,
             PlayerCount = lobbyCap,
             IsOpen = true,
             IsVisible = true,
-
-            /*SessionProperties = new Dictionary<string, SessionProperty>()
+            SessionProperties = new Dictionary<string, SessionProperty>()
             {
-                {
-                    "MaxPlayers", lobbyCap
-                }
-            }*/
+                {"displayName", sessionName},
+                {"code", joinCode}
+            }
         });
     }
 
@@ -115,7 +116,13 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
     }
 
-    public void CreateGame (string sessionName, int lobbyCap, string scenePath)
+        public void JoinGame (SessionInfo sessionInfo)
+    {
+        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Client, sessionInfo.Name, sessionInfo.MaxPlayers,
+            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
+    }
+
+    public void CreateGame(string sessionName, int lobbyCap, string scenePath)
     {
         int buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
 
@@ -123,9 +130,11 @@ public class NetworkRunnerHandler : MonoBehaviour
             NetAddress.Any(), SceneRef.FromIndex(buildIndex), null);
     }
 
-    public void JoinGame (SessionInfo sessionInfo)
+    public string GenerateLobbyCode(int length = 6)
     {
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Client, sessionInfo.Name, sessionInfo.MaxPlayers,
-            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
+        const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+        System.Random randomize = new System.Random();
+
+        return new string(Enumerable.Repeat(chars, length).Select(s => s[randomize.Next(s.Length)]).ToArray());
     }
 }

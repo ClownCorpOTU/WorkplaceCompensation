@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Fusion;
 using System;
 using UnityEngine.SceneManagement;
+using System.Threading.Tasks;
 
 public class LobbyMenuManager : MonoBehaviour
 {
@@ -20,6 +21,7 @@ public class LobbyMenuManager : MonoBehaviour
     [Header("Game Objects")]
     [SerializeField] GameObject lobbyUI;
     [SerializeField] GameObject newLobbyPopUp;
+    [SerializeField] TMP_Text errorMessenger;
 
     [Header("User Inputs")]
     [SerializeField] TMP_InputField lobbyNameInput;
@@ -27,8 +29,8 @@ public class LobbyMenuManager : MonoBehaviour
     [SerializeField] TMP_Dropdown mapSelection;
 
     [Header ("Lobby")]
-    SessionInfo testingInfo;
-    int maxLobbySize = 4;
+    int maxLobbySize = 16;
+    Dictionary<SessionInfo, GameObject> lobbyEntries = new Dictionary<SessionInfo, GameObject>();
 
     void Awake()
     {
@@ -56,6 +58,11 @@ public class LobbyMenuManager : MonoBehaviour
         {
             newLobbyPopUp = GameObject.Find("NewLobbyPopUp");
         }
+        
+        if (errorMessenger == null)
+        {
+            errorMessenger = GameObject.Find("LobbyNameInput").GetComponent<TMP_Text>();
+        }
 
         if (lobbyNameInput == null)
         {
@@ -72,11 +79,15 @@ public class LobbyMenuManager : MonoBehaviour
             lobbySizeInput = GameObject.Find("LobbySizeInput").GetComponent<TMP_InputField>();
         }*/
         
+        errorMessenger.text = ""; // Clear error message.
+
+        errorMessenger.gameObject.SetActive(false);
         newLobbyPopUp.SetActive(false);
     }
 
     void Start()
     {
+        lobbyEntries.Clear();
         networkRunnerHandler.OnJoinLobby("MainLobbyList");
     }
 
@@ -107,13 +118,16 @@ public class LobbyMenuManager : MonoBehaviour
     /// </summary>
     public void CreateLobbySession()
     {
+        if (errorMessenger.gameObject.activeSelf)
+        {
+            errorMessenger.gameObject.SetActive(false);
+        }
+
         //int.TryParse(lobbySizeInput.text, out int lobbySize);
 
         string lobbyName = lobbyNameInput.text;
-
+        
         networkRunnerHandler.CreateGame(lobbyName, maxLobbySize, SelectMap());
-
-        //CreateEntry(NetworkManager._runnerInstance.SessionInfo);
 
         newLobbyPopUp.SetActive(false); // Hide Popup.
     }
@@ -149,9 +163,9 @@ public class LobbyMenuManager : MonoBehaviour
     {
         GameObject newEntry = GameObject.Instantiate(lobbyEntryPrefab, lobbyDisplay.transform);
 
-        UpdateEntry(session, newEntry);
+        lobbyEntries.Add(session, newEntry);
 
-        testingInfo = session;
+        UpdateEntry(session, newEntry);
     }
 
     /// <summary>
@@ -163,26 +177,50 @@ public class LobbyMenuManager : MonoBehaviour
     {        
         LobbyEntry entryScript = entry.GetComponent<LobbyEntry>();
 
-        entryScript.SessionInformation(session);
+        entryScript.SetSessionInformation(session);
 
         entryScript.joinButton.interactable = session.IsOpen;
 
         entry.SetActive(session.IsValid);
     }
 
+
+    /// <summary>
+    /// Removes entry from UI.
+    /// </summary>
+    /// <param name="delete"></param>
+    public void DeleteEntry(List<SessionInfo> sessionList)
+    {
+        
+    }
+
+
+    /// <summary>
+    /// Checks if the session already exists in the UI.
+    /// </summary>
+    /// <param name="compareTo"></param>
+    public void CompareEntries(List<SessionInfo> sessionList)
+    {
+        
+    }
+
+    /// <summary>
+    /// Displays error message on popup.
+    /// </summary>
+    /// <param name="errMsg">The message to be displayed</param>
+    public void DisplaySessionCreateError(string errMsg)
+    {
+        errorMessenger.gameObject.SetActive(true);
+
+        errorMessenger.text = errMsg;
+    }
+
     /// <summary>
     /// DELETE. Testing Join function. Overrides the entry UI's join button.
     /// </summary>
-    /// <param name="roomName"></param>
-    public void JoinLobbyByName(string roomName)
+    /// <param name="roomCode"></param>
+    public void JoinLobbyByCode(string roomCode)
     {
-        if (roomName == testingInfo.Name)
-        {
-            networkRunnerHandler.JoinGame(testingInfo);
-        }
-        else
-        {
-            Debug.LogError($"{roomName} is not a session.");
-        }
+        
     }
 }

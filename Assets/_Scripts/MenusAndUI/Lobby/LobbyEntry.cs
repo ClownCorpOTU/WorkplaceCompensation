@@ -27,27 +27,18 @@ public class LobbyEntry : MonoBehaviour
     }
 
     /// <summary>
-    /// Update the entry that is displayed.
-    /// </summary>
-    /// <param name="name">String of the lobby name.</param>
-    /// <param name="playerInLobby">Number of players in the lobby, currently.</param>
-    /// <param name="playerCap">Maximum players allowed in the lobby.</param>
-    /// <param name="map">String of the scene's name that the player will see.</param>
-    public void UpdateEntryInfo(string name, SessionInfo info, string map = null)
-    {
-        lobbyName.text = name;
-        sessionInfo = info;
-
-        UpdatePlayerCount(sessionInfo);
-    }
-
-    /// <summary>
     /// Update the player count text to match the current player count.
     /// </summary>
-    public void UpdatePlayerCount(SessionInfo info)
+    public void UpdatePlayerCount()
     {
-        currentPlayerCount = info.PlayerCount;
-        maxPlayerCount = info.MaxPlayers;
+        currentPlayerCount = sessionInfo.PlayerCount;
+
+        if (currentPlayerCount <= 0)
+        {
+            Destroy(this.gameObject);
+        }
+
+        maxPlayerCount = sessionInfo.MaxPlayers;
         
         if (maxPlayerCount <= 0)
         {
@@ -61,11 +52,14 @@ public class LobbyEntry : MonoBehaviour
     /// Gets the session information.
     /// </summary>
     /// <param name="info"></param>
-    public void SessionInformation(SessionInfo info)
+    public void SetSessionInformation(SessionInfo info)
     {
         this.sessionInfo = info;
 
-        UpdateEntryInfo(info.Name, info);
+        sessionInfo.Properties.TryGetValue("displayName", out var displayName);
+
+        lobbyName.text = displayName;
+        UpdatePlayerCount();
 
         bool canPlayerJoin = true;
         if (currentPlayerCount >= maxPlayerCount)
@@ -86,7 +80,7 @@ public class LobbyEntry : MonoBehaviour
             return;
         }
 
-        UpdatePlayerCount(sessionInfo);
+        UpdatePlayerCount();
 
         NetworkRunnerHandler networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
 
@@ -101,6 +95,6 @@ public class LobbyEntry : MonoBehaviour
 
     public void ExitRoom()
     {
-        UpdatePlayerCount(sessionInfo);
+        UpdatePlayerCount();
     }
 }

@@ -108,7 +108,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        throw new NotImplementedException();
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            FindFirstObjectByType<NetworkRunnerHandler>().OnJoinLobby("MainLobbyList");
+        }
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
@@ -118,20 +121,17 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        if (SceneManager.GetActiveScene().name != "Lobby")
-        {
-            return;
-        }
-
         Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
 
         if (sessionList.Count != 0)
         {
             lobbyMenuManager.ClearLobbyDisplay();
 
-            foreach (SessionInfo sessionInfo in sessionList)
+            //lobbyMenuManager.CompareEntries(sessionList);
+
+            foreach (SessionInfo session in sessionList)
             {
-                lobbyMenuManager.CreateEntry(sessionInfo);
+                lobbyMenuManager.CreateEntry(session);
             }
         }
     }
