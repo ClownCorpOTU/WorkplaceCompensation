@@ -13,7 +13,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
+    [Header("Lobbies")]
     [SerializeField] private LobbyMenuManager lobbyMenuManager;
+    [SerializeField] private int lobbyMenuBuildIndex = int.MinValue;
+    [SerializeField] private int mainMenuBuildIndex = int.MinValue;
 
     void Awake()
     {
@@ -25,6 +28,17 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         _runnerInstance.AddCallbacks(this);
         
         //_runnerInstance = gameObject.GetComponent<NetworkRunner>();
+
+        if (lobbyMenuBuildIndex == int.MinValue)
+        {
+            lobbyMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/Lobby.unity");
+            Debug.Log($"=> lobby build index = {lobbyMenuBuildIndex}.");
+        }
+
+        if (mainMenuBuildIndex == int.MinValue)
+        {
+            mainMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/MainMenu.unity");
+        }
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
@@ -49,7 +63,12 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
-        throw new NotImplementedException();
+        Debug.Log($"Disconnected from sever: {reason}");
+        
+        if (SceneManager.GetActiveScene().buildIndex != lobbyMenuBuildIndex)
+        {
+            SceneManager.LoadScene(lobbyMenuBuildIndex);
+        }
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
@@ -112,6 +131,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             FindFirstObjectByType<NetworkRunnerHandler>().OnJoinLobby("MainLobbyList");
         }
+
+        SceneManager.LoadScene(lobbyMenuBuildIndex);
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
@@ -123,10 +144,10 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
 
+        lobbyMenuManager.ClearLobbyDisplay();
+
         if (sessionList.Count != 0)
         {
-            lobbyMenuManager.ClearLobbyDisplay();
-
             //lobbyMenuManager.CompareEntries(sessionList);
 
             foreach (SessionInfo session in sessionList)

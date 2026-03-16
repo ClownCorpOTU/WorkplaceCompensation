@@ -12,10 +12,12 @@ public class LobbyEntry : MonoBehaviour
     [Header("Lobby Entry UI Info")]
     [SerializeField] TextMeshProUGUI lobbyName, playerCount;
     public Button joinButton;
-    public int currentPlayerCount = 0, maxPlayerCount = 1;
+    int currentPlayerCount = 0, maxPlayerCount = 1;
 
-    [Header("Session")]
+    [Header("Session Info")]
     SessionInfo sessionInfo;
+    public string joinCode {get; private set; }
+
     public event Action<SessionInfo> OnJoinSession;
 
     void Awake()
@@ -23,7 +25,9 @@ public class LobbyEntry : MonoBehaviour
         if (lobbyManager != null)
         {
             lobbyManager = GameObject.FindFirstObjectByType<LobbyMenuManager>();
-        }    
+        }
+
+        joinCode = string.Empty;
     }
 
     /// <summary>
@@ -52,14 +56,19 @@ public class LobbyEntry : MonoBehaviour
     /// Gets the session information.
     /// </summary>
     /// <param name="info"></param>
-    public void SetSessionInformation(SessionInfo info)
+    public void UpdateLobbyInformation(SessionInfo info)
     {
         this.sessionInfo = info;
 
-        sessionInfo.Properties.TryGetValue("displayName", out var displayName);
+        sessionInfo.Properties.TryGetValue("DisplayName", out var displayName);
 
         lobbyName.text = displayName;
         UpdatePlayerCount();
+
+        sessionInfo.Properties.TryGetValue("JoinCode", out var code);
+        joinCode = code;
+        Debug.Log($"=> Join Code for Lobby {displayName.ToString()} is {joinCode}.");
+
 
         bool canPlayerJoin = true;
         if (currentPlayerCount >= maxPlayerCount)
@@ -91,10 +100,5 @@ public class LobbyEntry : MonoBehaviour
     public void OnClick()
     {
         OnJoinSession?.Invoke(this.sessionInfo);
-    }
-
-    public void ExitRoom()
-    {
-        UpdatePlayerCount();
     }
 }

@@ -61,7 +61,7 @@ public class LobbyMenuManager : MonoBehaviour
         
         if (errorMessenger == null)
         {
-            errorMessenger = GameObject.Find("LobbyNameInput").GetComponent<TMP_Text>();
+            errorMessenger = GameObject.Find("ErrorMessage").GetComponent<TMP_Text>();
         }
 
         if (lobbyNameInput == null)
@@ -150,7 +150,7 @@ public class LobbyMenuManager : MonoBehaviour
             }
             default:
                 {
-                    return "Assets/_Scenes/Fall/FallExpo_FinalReview.unity";
+                    return "Assets/_Scenes/MainMenu.unity";
                 }
         }
     }
@@ -163,7 +163,7 @@ public class LobbyMenuManager : MonoBehaviour
     {
         GameObject newEntry = GameObject.Instantiate(lobbyEntryPrefab, lobbyDisplay.transform);
 
-        lobbyEntries.Add(session, newEntry);
+        //lobbyEntries.Add(session, newEntry);
 
         UpdateEntry(session, newEntry);
     }
@@ -177,7 +177,7 @@ public class LobbyMenuManager : MonoBehaviour
     {        
         LobbyEntry entryScript = entry.GetComponent<LobbyEntry>();
 
-        entryScript.SetSessionInformation(session);
+        entryScript.UpdateLobbyInformation(session);
 
         entryScript.joinButton.interactable = session.IsOpen;
 
@@ -221,6 +221,19 @@ public class LobbyMenuManager : MonoBehaviour
     /// <param name="roomCode"></param>
     public void JoinLobbyByCode(string roomCode)
     {
-        
+        roomCode = roomCode.ToUpper(); // Ensures room code is in all uppercase.
+
+        LobbyEntry currentLobbyEntry;
+
+        foreach (Transform lobbyEntryUI in lobbyDisplay.transform)
+        {
+             currentLobbyEntry = lobbyEntryUI.GetComponent<LobbyEntry>();
+
+             if (roomCode == currentLobbyEntry.joinCode)
+            {
+                currentLobbyEntry.OnJoinRoomClick();
+                return;
+            }
+        }
     }
 }

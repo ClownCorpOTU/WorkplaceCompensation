@@ -76,7 +76,16 @@ public class NetworkRunnerHandler : MonoBehaviour
         runner.ProvideInput = true;
 
         string joinCode = GenerateLobbyCode(codeLen);
-        string uniqueName = $"Room_{System.Guid.NewGuid()}_{sessionName}";
+
+        string uniqueName = "";
+        if (gameMode == GameMode.Host)
+        {
+            uniqueName = $"Room_{System.Guid.NewGuid()}_{sessionName}";
+        }
+        else
+        {
+            uniqueName = sessionName;
+        }
 
         return runner.StartGame(new StartGameArgs()
         {
@@ -91,8 +100,8 @@ public class NetworkRunnerHandler : MonoBehaviour
             IsVisible = true,
             SessionProperties = new Dictionary<string, SessionProperty>()
             {
-                {"displayName", sessionName},
-                {"code", joinCode}
+                {"DisplayName", sessionName},
+                {"JoinCode", joinCode}
             }
         });
     }
