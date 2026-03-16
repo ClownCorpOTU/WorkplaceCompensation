@@ -14,6 +14,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
     [Header("Lobbies")]
+    [SerializeField] private NetworkRunnerHandler networkRunnerHandler;
     [SerializeField] private LobbyMenuManager lobbyMenuManager;
     [SerializeField] private int lobbyMenuBuildIndex = int.MinValue;
     [SerializeField] private int mainMenuBuildIndex = int.MinValue;
@@ -29,10 +30,14 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         
         //_runnerInstance = gameObject.GetComponent<NetworkRunner>();
 
+        if (networkRunnerHandler == null)
+        {
+            networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
+        }
+
         if (lobbyMenuBuildIndex == int.MinValue)
         {
             lobbyMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/Lobby.unity");
-            Debug.Log($"=> lobby build index = {lobbyMenuBuildIndex}.");
         }
 
         if (mainMenuBuildIndex == int.MinValue)
@@ -142,6 +147,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
+        networkRunnerHandler.sessionList = sessionList;
+
         Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
 
         lobbyMenuManager.ClearLobbyDisplay();
@@ -155,5 +162,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
                 lobbyMenuManager.CreateEntry(session);
             }
         }
+
+
     }
 }

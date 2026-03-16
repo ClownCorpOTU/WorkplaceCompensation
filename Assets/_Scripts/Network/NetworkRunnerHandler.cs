@@ -23,6 +23,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     public Vector3 SpawnPoint => spawnPoint;
 
     [SerializeField] int defaultSessionPlayerCap = 4;
+    public List<SessionInfo> sessionList = new List<SessionInfo>();
 
     private void Awake()
     {
@@ -33,6 +34,8 @@ public class NetworkRunnerHandler : MonoBehaviour
         {
             networkRunner = FindFirstObjectByType<NetworkRunner>();
         }
+
+        sessionList.Clear();
     }
 
     private void Start()
@@ -144,6 +147,30 @@ public class NetworkRunnerHandler : MonoBehaviour
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         System.Random randomize = new System.Random();
 
-        return new string(Enumerable.Repeat(chars, length).Select(s => s[randomize.Next(s.Length)]).ToArray());
+        bool isNotUnique = true;
+        string newCode;
+
+        do
+        {
+            newCode = new string(Enumerable.Repeat(chars, length).Select(s => s[randomize.Next(s.Length)]).ToArray());
+
+            if (sessionList.Count == 0)
+            {
+                return newCode;
+            }
+
+            foreach (SessionInfo session in sessionList)
+            {
+                session.Properties.TryGetValue("JoinCode", out var sessionCode);
+
+                if (sessionCode.ToString() == newCode)
+                {
+                    isNotUnique = true;
+                    break;
+                }
+            }
+        } while(isNotUnique);
+
+        return newCode;
     }
 }
