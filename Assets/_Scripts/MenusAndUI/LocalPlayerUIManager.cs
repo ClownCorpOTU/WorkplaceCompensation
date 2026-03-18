@@ -14,10 +14,12 @@ public class LocalPlayerUIManager : MonoBehaviour
     private Recorder recorder;
     public bool IsLocalGamePaused { get; private set; }
 
+    private Image staminaBarImage2;
 
     private void Start()
     {
         fakeLoadingScreen.SetActive(false);
+        staminaBarImage2 = NetworkPlayer.Local.StaminaFillImage;
     }
 
     public void TogglePause()
@@ -48,8 +50,27 @@ public class LocalPlayerUIManager : MonoBehaviour
 
     private void Update()
     {
+        if (NetworkPlayer.Local == null) return;
+        
         var normalizeStamina = NetworkPlayer.Local.NormalizeStamina();
         staminaBarImage.fillAmount = normalizeStamina;
+
+        print(NetworkPlayer.Local.gameObject.name);
+
+        if (staminaBarImage2 == null)
+        {
+            staminaBarImage2 = NetworkPlayer.Local.StaminaFillImage;
+        }
+        else
+        {
+            staminaBarImage2.fillAmount = normalizeStamina;
+
+            float targetAlpha = NetworkPlayer.Local.IsUsingStamina ? 1f : 0.3f;
+            Color targetColor = new Color(1f, 1f, 1f, targetAlpha);
+    
+            // Time.deltaTime * 5f controls the speed. Higher = Faster fade.
+            staminaBarImage2.color = Color.Lerp(staminaBarImage2.color, targetColor, Time.deltaTime * 5f);
+        }
     }
 
     public void MuteLocalPlayer(bool mute)

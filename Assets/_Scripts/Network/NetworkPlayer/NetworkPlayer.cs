@@ -4,6 +4,7 @@ using Fusion.Addons.Physics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Base class for the networked player. This script takes care of the input, component setup, syncing joints, calling
@@ -27,6 +28,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private SkinnedMeshRenderer bodyMeshRenderer;
     [SerializeField] private Transform playerVest;
     [SerializeField] private GameObject burntPlayerVest;
+    [SerializeField] private Image staminaFillImage;
+    public Image StaminaFillImage => staminaFillImage;
     
     [Header("Juice - Dust Trail")]
     [SerializeField] private ParticleSystem dustFXParticles;
