@@ -48,8 +48,8 @@ public partial class NetworkPlayer
         var main = dustFXParticles.main;
 
         // Only show dust when grounded
-        emission.enabled = isGrounded;
-        if (!isGrounded)
+        emission.enabled = IsGrounded;
+        if (!IsGrounded)
             return;
 
         // Clamp velocity

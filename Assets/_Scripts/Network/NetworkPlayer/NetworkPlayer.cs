@@ -4,6 +4,7 @@ using Fusion.Addons.Physics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Base class for the networked player. This script takes care of the input, component setup, syncing joints, calling
@@ -25,12 +26,20 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private TextMeshProUGUI playerNumberText;
     [SerializeField] private Animator animatedModel;
     [SerializeField] private SkinnedMeshRenderer bodyMeshRenderer;
+    [SerializeField] private Transform playerVest;
+    [SerializeField] private GameObject burntPlayerVest;
+    [SerializeField] private Image staminaFillImage;
+    [SerializeField] private GameObject staminaBarParentObj;
+    public Image StaminaFillImage => staminaFillImage;
     
     [Header("Juice - Dust Trail")]
     [SerializeField] private ParticleSystem dustFXParticles;
     [SerializeField] private Vector2 rateOverDistanceRange = new Vector2(3f, 15f);
     [SerializeField] private Vector2 startSizeRange = new Vector2(0.1f, 0.4f);
     [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
+    
+    [Networked, HideInInspector] public float NetworkedMovementSpeed { get; set; }
+    [Networked, HideInInspector] public NetworkBool IsBurned { get; set; } 
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -50,6 +59,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkGameManager networkGameManager;
     private LocalPlayerUIManager localPlayerUIManager;
     private AudioListener audioListener; // This is on the main camera
+    private DissolvingController dissolvingController;
+    private ChangeDetector ragdollChanges; // Change detector for flattening Blobby
     
     // Input
     private NetworkInputData networkInputData;
@@ -74,8 +85,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #region Setup
     private void Awake()
     {
-        GetReferences();
-        InitializeSubSystems();
+        //GetReferences();
+        //InitializeSubSystems();
     }
 
     private void GetReferences()
@@ -88,8 +99,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         inputReader = GetComponent<InputReader>();
         audioManager = FindFirstObjectByType<AudioManager>();
         themeSong = FindFirstObjectByType<ThemeSong>();
+        dissolvingController = GetComponent<DissolvingController>();
         
-        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
+        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>(); 
     }
 
     private void InitializeSubSystems()
@@ -98,7 +110,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerRespawn = GetComponent<NetworkPlayerRespawn>();
         if (playerRespawn == null)
             playerRespawn = gameObject.AddComponent<NetworkPlayerRespawn>();
-        playerRespawn.Initialize(this, networkRB);
+        playerRespawn.Initialize(this, networkRB, dissolvingController);
         
         // SubSystem Setup: Player Camera
         playerCamera = GetComponent<NetworkPlayerCamera>();
@@ -117,17 +129,24 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        //startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
     }
 
     public override void Spawned()
     {
+        GetReferences();
+        InitializeSubSystems();
+        
+        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        
         // Called on every instance when the object spawns locally. OnChangedRender is NOT invoked on initial spawn, so initialize here as well
         UpdatePlayerNumberUI();
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
-        transform.name = $"Player_{(PlayerRefValue.RawEncoded % 1000) - 1}";
+        ragdollChanges = GetChangeDetector(ChangeDetector.Source.SimulationState);
+        transform.name = $"Player_{Object.Id}";
+
 
         if (Object.HasInputAuthority)
         {
@@ -160,6 +179,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             // Disable PlayerInput for non-local players
             if (playerInput != null) playerInput.enabled = false;
             if (inputReader != null) inputReader.enabled = false;
+            
+            // Disable stamina bar UI for non-local players
+            if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
     }
 
@@ -188,14 +210,14 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerNumberText.color = color;
         
         // Update player body color to be the same as their name
-        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);;
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);
         
         // Update rim color to complement their body color
         Color.RGBToHSV(color, out float h, out float s, out float v);
         float rimV = Mathf.Clamp01(1.2f - v); // brighter rims on darker colors
         Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
         
-        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);;
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
     public void RemovePlayerInputAuthority()
@@ -209,7 +231,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private void Update()
     {
         if (!Object || !Object.IsValid) return;
-        
+
         // TODO: This architecture is terrible. I'm checking for escape input outside of the loop so players can unpause
         isPauseButtonPressed = Object.HasInputAuthority && inputReader.IsPauseButtonPressed;
 
@@ -254,38 +276,33 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         isLiftingActive = networkInputData.IsLiftPressed;
         
         // Pause game (Called from here because right now there's no other way to know player input)
-        if (isPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
+        if (inputReader.IsPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
         previousPausePressed = isPauseButtonPressed;
         
-        HandlePlayer(localForwardVelocity);
+        HandlePlayer();
     }
 
-    private void HandlePlayer(float localForwardVelocity)
+    private void HandlePlayer()
     {
         if (Object.HasStateAuthority)
         {
             GravityAndGrounding();
             
-            // Limit forward movement to our max speed
-            Vector3 localVelocityVsForward = transform.forward * Vector3.Dot(transform.forward, rb.linearVelocity);
-            localForwardVelocity = localVelocityVsForward.magnitude;
-        }
+            // Calculate speed ONLY on the Host
+            Vector3 localVelocity = transform.InverseTransformDirection(rb.linearVelocity);
+            NetworkedMovementSpeed = new Vector3(localVelocity.x, 0, localVelocity.z).magnitude;
+        }/*
         else if (Object.HasInputAuthority)
         {
             // Do a lightweight local estimate for visuals
             localForwardVelocity = rb.linearVelocity.magnitude;
             isGrounded = Physics.CheckSphere(transform.position, 0.25f);
-        }
+        }*/
         
         // Respawn in place
         if (networkInputData.IsRevivePressed)
             playerRespawn.Respawn(false);
         
-        print(waitBeforeRespawn.RemainingTime(Runner));
-        
-        // Respawn if timer expired
-        //if (!IsActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))
-            //playerRespawn.Respawn(false);
         // Only respawn if the timer was actually set and has now finished
         if (!IsActiveRagdoll && waitBeforeRespawn.IsRunning && waitBeforeRespawn.Expired(Runner))
         {
@@ -296,12 +313,10 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (IsActiveRagdoll)
         {
             HandleStamina();
-            HandleMovement(localForwardVelocity);
+            HandleMovement();
         }
         
-        SyncAnimations(localForwardVelocity);
-        UpdateDustFX(localForwardVelocity);
-        UpdateSpineLean(localForwardVelocity);
+        SyncAnimations(NetworkedMovementSpeed);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
@@ -309,6 +324,17 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         networkGameManager.ScoreText.text = newScore.ToString();
     }
+    #endregion
+
+    #region Other functions
+
+    public void SpawnVestAfterBurning()
+    {
+        var vest = Runner.Spawn(burntPlayerVest, playerVest.position, playerVest.localRotation);
+        vest.transform.parent = playerVest.transform.parent;
+        playerVest.gameObject.SetActive(false);
+    }
+
     #endregion
     
     #region Network Functions
@@ -364,6 +390,15 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
                     syncPhysicsObjects[i].transform.localRotation,
                     NetworkPhysicsSyncedRotations.Get(i), interpolated.Alpha);
             }
+        }
+        
+        UpdateSpineLean(NetworkedMovementSpeed);
+        UpdateDustFX(NetworkedMovementSpeed);
+        
+        foreach (var change in ragdollChanges.DetectChanges(this))
+        {
+            if (change == nameof(flattenSignal) && flattenSignal > 0)
+                LocalFlattenBlobby();
         }
 
         // Smoother camera movement for clients

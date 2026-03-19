@@ -18,6 +18,8 @@ public class HandGrabHandler : MonoBehaviour
     private FixedJoint fixedJoint; // Created dynamically
     private NetworkPlayer networkPlayer;
     private NetworkPlayerGrab playerGrab;
+
+    private NetworkFossilScanner currentScanner; // There's probably some better way of doing this, but this is to let the scanenr know it's being held
     
     private void Awake()
     {
@@ -71,9 +73,19 @@ public class HandGrabHandler : MonoBehaviour
 
         playerGrab.CurrentlyGrabbedRigidbody = otherRB;
         playerGrab.CurrentlyGrabbedHandSide = handSide;
-            
+        
+        if (other.gameObject.TryGetComponent(out GrabbedByTracker grabTracker))
+            grabTracker.OnGrabbedBy(networkPlayer);
+        
+        // Update vials to use GrabbedByTracker later
         if (other.gameObject.TryGetComponent(out Vial v))
             v.OnGrabbedBy(networkPlayer);
+
+        if (other.gameObject.TryGetComponent(out NetworkFossilScanner scanner))
+        {
+            currentScanner = scanner;
+            currentScanner.IsActive = true;
+        }
         
         return true;
     }
@@ -85,6 +97,13 @@ public class HandGrabHandler : MonoBehaviour
         // Apply throw force if still attached
         if (fixedJoint.connectedBody != null)
         {
+            // If a scanner was being held, mark it no longer active
+            if (currentScanner != null)
+            {
+                currentScanner.IsActive = false;
+                currentScanner = null;
+            }
+            
             float forceAmountMultiplier = 0.5f;
 
             // Check if we're grabbing onto another player, and if they're ragdolled or not

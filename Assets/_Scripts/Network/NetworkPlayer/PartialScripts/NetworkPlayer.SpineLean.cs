@@ -30,7 +30,7 @@ public partial class NetworkPlayer
             snapTimer = 0f;
 
             targetLeanZ = Mathf.Lerp(0f, -maxLeanAngle, clampedSpeed / 10f);
-            currentLeanZ = Mathf.Lerp(currentLeanZ, targetLeanZ, Time.deltaTime * leanLerpSpeed);
+            currentLeanZ = Mathf.Lerp(currentLeanZ, targetLeanZ, Runner.DeltaTime * leanLerpSpeed);
         }
         else
         {
@@ -44,17 +44,17 @@ public partial class NetworkPlayer
             if (isSnappingForward)
             {
                 // Snap quickly toward forward lean, hold briefly, then return to neutral
-                snapTimer += Time.deltaTime;
+                snapTimer += Runner.DeltaTime;
 
                 if (snapTimer < SNAP_DURATION * 0.5f)
                 {
                     // First half: snap forward quickly
-                    currentLeanZ = Mathf.Lerp(currentLeanZ, forwardSnapAngle, Time.deltaTime * snapSpeed);
+                    currentLeanZ = Mathf.Lerp(currentLeanZ, forwardSnapAngle, Runner.DeltaTime * snapSpeed);
                 }
                 else
                 {
                     // Second half: return to neutral smoothly
-                    currentLeanZ = Mathf.Lerp(currentLeanZ, 0f, Time.deltaTime * recoverSpeed);
+                    currentLeanZ = Mathf.Lerp(currentLeanZ, 0f, Runner.DeltaTime * recoverSpeed);
                     
                     // Reset once close enough to 0
                     if (Mathf.Abs(currentLeanZ) < 0.5f)
@@ -64,7 +64,7 @@ public partial class NetworkPlayer
             else
             {
                 // Fully stopped and neutral
-                currentLeanZ = Mathf.Lerp(currentLeanZ, 0f, Time.deltaTime * recoverSpeed);
+                currentLeanZ = Mathf.Lerp(currentLeanZ, 0f, Runner.DeltaTime * recoverSpeed);
             }
         }
 

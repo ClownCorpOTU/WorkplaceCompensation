@@ -17,7 +17,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses:
@@ -134,6 +134,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HalfToneIntensity: 1
     - _HeightMapStrength: 1
     - _LIGHTMAP_SHADOW_MIXING: 0
     - _LitThreshold: 1
@@ -172,7 +173,7 @@ Material:
     - _ZWriteControl: 0
     m_Colors:
     - _Albedo: {r: 1, g: 1, b: 1, a: 1}
-    - _BaseColor: {r: 1, g: 0, b: 0.9606123, a: 1}
+    - _BaseColor: {r: 0.347461, g: 1, b: 0, a: 1}
     - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
     - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}

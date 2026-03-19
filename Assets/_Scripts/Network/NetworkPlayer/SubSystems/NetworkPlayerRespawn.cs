@@ -10,16 +10,18 @@ public class NetworkPlayerRespawn : MonoBehaviour
     // Injected
     private NetworkPlayer networkPlayer;
     private NetworkRigidbody3D networkRB;
+    private DissolvingController dissolvingController;
     private Vector3 spawnPoint;
     private NetworkRunnerHandler handler;
 
-    public void Initialize(NetworkPlayer player, NetworkRigidbody3D rb)
+    public void Initialize(NetworkPlayer player, NetworkRigidbody3D rb, DissolvingController dc)
     {
         if (handler == null) 
             handler = FindFirstObjectByType<NetworkRunnerHandler>();
         
         networkPlayer = player;
         networkRB = rb;
+        dissolvingController = dc;
         spawnPoint = handler.SpawnPoint;
     }
 
@@ -27,6 +29,7 @@ public class NetworkPlayerRespawn : MonoBehaviour
     {
         networkRB.Rigidbody.linearVelocity = Vector3.zero;
         networkRB.Rigidbody.angularVelocity = Vector3.zero;
+        if (dissolvingController != null) dissolvingController.ResetBurningFx();
         
         if (!inPlace)
         {

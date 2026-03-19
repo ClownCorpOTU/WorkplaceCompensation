@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Spawns the player and collects local input to send to the host.
@@ -11,18 +10,15 @@ using UnityEngine.SceneManagement;
 public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 {
     [SerializeField] private NetworkPlayer networkPlayerPrefab;
-    [SerializeField] private LobbyMenuManager lobbyManager;
-    
+
+    private NetworkPlayer playerToSpawn;
     private Vector3 spawnPoint;
 
-    public void Initialize(Vector3 pos)
+    public void Initialize(Vector3 pos, NetworkPlayer playerPrefabOverride = null)
     {
         spawnPoint = pos;
-        
-        if (SceneManager.GetActiveScene().name == "Lobby")
-        {
-            lobbyManager = GameObject.FindFirstObjectByType<LobbyMenuManager>();
-        }
+
+        playerToSpawn = playerPrefabOverride ? playerPrefabOverride : networkPlayerPrefab;
     }
     
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -37,9 +33,9 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer && SceneManager.GetActiveScene().name != "Lobby")
+        if (runner.IsServer)
         {
-            var spawnedPlayer = runner.Spawn(networkPlayerPrefab.gameObject, spawnPoint, Quaternion.identity, player);
+            var spawnedPlayer = runner.Spawn(playerToSpawn.gameObject, spawnPoint, Quaternion.identity, player);
             spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
         }
     }
@@ -102,7 +98,7 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
     {
-        // Debug.Log("Session list (Spawner) updated: " + sessionList.Count);
+        
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)

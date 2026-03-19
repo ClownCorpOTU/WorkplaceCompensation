@@ -17,6 +17,7 @@ public class NetworkRunnerHandler : MonoBehaviour
 {
     [SerializeField] private NetworkRunner networkRunnerPrefab;
     [SerializeField] private Vector3 spawnPoint;
+    [SerializeField] private NetworkPlayer networkPlayerPrefabOverride = null;
     [SerializeField] private bool shouldStartInSinglePlayer = false;
     private NetworkRunner networkRunner;
     
@@ -45,7 +46,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         {
             networkRunner = Instantiate(networkRunnerPrefab);
             networkRunner.name = "NetworkRunner";
-            networkRunner.gameObject.GetComponent<Spawner>().Initialize(spawnPoint);
+            networkRunner.gameObject.GetComponent<Spawner>().Initialize(spawnPoint, networkPlayerPrefabOverride);
             sessionName = "TestSession";
         }
         
