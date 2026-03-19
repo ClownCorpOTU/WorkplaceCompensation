@@ -14771,10 +14771,10 @@ MonoBehaviour:
   breakVfxPrefab: {fileID: 1556518787003821986, guid: be5200b4d83616e45941e08bb9350982, type: 3}
   landingWarningPrefab: {fileID: 6409307083683098144, guid: c30f56e8910fbe24ebce031fcf691b79, type: 3}
   fireTrailObj: {fileID: 899415101262124031}
-  explosionForce: 500
-  explosionRadius: 8
-  baseShakeForce: 2.2
-  maxShakeDistance: 120
+  explosionForce: 5000
+  explosionRadius: 20
+  baseShakeForce: 3
+  maxShakeDistance: 100
   explosionVFX: {fileID: 3404418844552932105, guid: 6e60e4d18ffbc704cb98a1d1b7a96d7d, type: 3}
 --- !u!114 &7519717965188957366
 MonoBehaviour:

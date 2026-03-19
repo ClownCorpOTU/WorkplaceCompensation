@@ -32,6 +32,7 @@ public class NetworkMeteor : NetworkBehaviour
     private CameraShakeManager camShakeManager;
     private GameObject localWarningCircle;
     private CinemachineImpulseSource thisImpulseSource;
+    private FullScreenEffectsManager fullScreenEffectsManager;
     private bool isDespawning = false;
     
     public void InitializeMeteor(Vector3 finalSpeed, Vector3 targetLandingPos)
@@ -47,6 +48,7 @@ public class NetworkMeteor : NetworkBehaviour
         changes = GetChangeDetector(ChangeDetector.Source.SimulationState);
         thisImpulseSource = GetComponent<CinemachineImpulseSource>();
         camShakeManager = CameraShakeManager.Instance;
+        fullScreenEffectsManager = FindFirstObjectByType<FullScreenEffectsManager>();
 
         if (Object.HasStateAuthority)
         {
@@ -174,6 +176,8 @@ public class NetworkMeteor : NetworkBehaviour
         
         // Play VFx
         if (explosionVFX != null) Instantiate(explosionVFX, transform.position, Quaternion.identity);
+        fullScreenEffectsManager.TriggerTimeStop(0.2f);
+        fullScreenEffectsManager.TriggerImpactFlash(16);
         
         // Shake camera
         if (camShakeManager != null && thisImpulseSource != null && NetworkPlayer.Local != null)
