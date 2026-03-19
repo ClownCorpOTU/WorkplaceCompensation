@@ -54,9 +54,7 @@ public class LocalPlayerUIManager : MonoBehaviour
         
         var normalizeStamina = NetworkPlayer.Local.NormalizeStamina();
         staminaBarImage.fillAmount = normalizeStamina;
-
-        print(NetworkPlayer.Local.gameObject.name);
-
+        
         if (staminaBarImage2 == null)
         {
             staminaBarImage2 = NetworkPlayer.Local.StaminaFillImage;

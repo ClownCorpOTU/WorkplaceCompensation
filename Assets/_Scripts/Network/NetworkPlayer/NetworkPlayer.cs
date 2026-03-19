@@ -29,6 +29,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Transform playerVest;
     [SerializeField] private GameObject burntPlayerVest;
     [SerializeField] private Image staminaFillImage;
+    [SerializeField] private GameObject staminaBarParentObj;
     public Image StaminaFillImage => staminaFillImage;
     
     [Header("Juice - Dust Trail")]
@@ -59,6 +60,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private LocalPlayerUIManager localPlayerUIManager;
     private AudioListener audioListener; // This is on the main camera
     private DissolvingController dissolvingController;
+    private ChangeDetector ragdollChanges; // Change detector for flattening Blobby
     
     // Input
     private NetworkInputData networkInputData;
@@ -99,7 +101,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         themeSong = FindFirstObjectByType<ThemeSong>();
         dissolvingController = GetComponent<DissolvingController>();
         
-        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
+        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>(); 
     }
 
     private void InitializeSubSystems()
@@ -137,6 +139,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
+        ragdollChanges = GetChangeDetector(ChangeDetector.Source.SimulationState);
         transform.name = $"Player_{Object.Id}";
 
 
@@ -171,6 +174,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             // Disable PlayerInput for non-local players
             if (playerInput != null) playerInput.enabled = false;
             if (inputReader != null) inputReader.enabled = false;
+            
+            // Disable stamina bar UI for non-local players
+            if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
     }
 
@@ -383,6 +389,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         UpdateSpineLean(NetworkedMovementSpeed);
         UpdateDustFX(NetworkedMovementSpeed);
+        
+        foreach (var change in ragdollChanges.DetectChanges(this))
+        {
+            if (change == nameof(flattenSignal) && flattenSignal > 0)
+                LocalFlattenBlobby();
+        }
 
         // Smoother camera movement for clients
         if (Object.HasInputAuthority)

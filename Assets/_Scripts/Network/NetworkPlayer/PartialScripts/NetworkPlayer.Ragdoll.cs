@@ -12,8 +12,10 @@ public partial class NetworkPlayer
     private float startSlerpPositionSpring;
     private float lastTimeBecameRagdoll;
     
+    [Networked] private byte flattenSignal { get; set; }
     [Networked] private TickTimer waitBeforeRespawn { get; set; }
-
+    
+    
     public void CreateRespawnTimer()
     {
         // I don't want to add this directly to MakeRagdoll() in case it breaks something
@@ -22,6 +24,15 @@ public partial class NetworkPlayer
 
     public void FlattenAndMakeRagdoll()
     {
+        flattenSignal++;
+        
+        MakeRagdoll();
+    }
+
+    // This is being called from Render() in the main NetworkPlayer script
+    private void LocalFlattenBlobby()
+    {
+        print("Flattening");
         var blobbyOriginalScale = transform.localScale;
             
         transform.localScale = new Vector3(
@@ -29,8 +40,6 @@ public partial class NetworkPlayer
             blobbyOriginalScale.y,
             0.1f
         );
-            
-        MakeRagdoll();
     }
     
     public void MakeRagdoll()
