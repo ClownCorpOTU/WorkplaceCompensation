@@ -85,8 +85,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #region Setup
     private void Awake()
     {
-        GetReferences();
-        InitializeSubSystems();
+        //GetReferences();
+        //InitializeSubSystems();
     }
 
     private void GetReferences()
@@ -129,11 +129,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        //startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
     }
 
     public override void Spawned()
     {
+        GetReferences();
+        InitializeSubSystems();
+        
+        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        
         // Called on every instance when the object spawns locally. OnChangedRender is NOT invoked on initial spawn, so initialize here as well
         UpdatePlayerNumberUI();
         
