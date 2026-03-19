@@ -60,28 +60,7 @@ public class NetworkLandmine : NetworkBehaviour
         if (despawnTimer.Expired(Runner))
             Runner.Despawn(Object);
     }
-
-    /*
-    private void Explode()
-    {
-        // Explode landmine
-        Collider[] colliders = new Collider[12];
-        int numFound = Runner.GetPhysicsScene().OverlapSphere(transform.position, explosionRadius, colliders, ~0, QueryTriggerInteraction.Collide);
-
-        for (int i = 0; i < numFound; i++)
-        {
-            Rigidbody rb = colliders[i].GetComponent<Rigidbody>();
-            
-            if (rb != null)
-                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 3f);
-            
-            if (colliders[i].transform.root.TryGetComponent(out NetworkPlayer player))
-                player.FlattenAndMakeRagdoll();
-        }
-        
-        flashbangSFxTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
-    }
-    */
+    
     private void Explode()
     {
         // 1. Increase buffer size. 64 is usually safe for an explosion.
