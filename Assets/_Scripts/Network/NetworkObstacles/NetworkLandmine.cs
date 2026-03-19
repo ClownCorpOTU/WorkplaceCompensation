@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fusion;
 using Unity.Cinemachine;
@@ -60,10 +61,11 @@ public class NetworkLandmine : NetworkBehaviour
             Runner.Despawn(Object);
     }
 
+    /*
     private void Explode()
     {
         // Explode landmine
-        Collider[] colliders = new Collider[10];
+        Collider[] colliders = new Collider[12];
         int numFound = Runner.GetPhysicsScene().OverlapSphere(transform.position, explosionRadius, colliders, ~0, QueryTriggerInteraction.Collide);
 
         for (int i = 0; i < numFound; i++)
@@ -74,9 +76,53 @@ public class NetworkLandmine : NetworkBehaviour
                 rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 3f);
             
             if (colliders[i].transform.root.TryGetComponent(out NetworkPlayer player))
-                player.MakeRagdoll();
+                player.FlattenAndMakeRagdoll();
         }
         
+        flashbangSFxTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
+    }
+    */
+    private void Explode()
+    {
+        // 1. Increase buffer size. 64 is usually safe for an explosion.
+        Collider[] colliders = new Collider[64]; 
+    
+        // 2. Use a LayerMask to ignore the ground/environment if they don't have RBs
+        // This saves slots in the 'colliders' array.
+        int layerMask = ~LayerMask.GetMask("Ground"); 
+
+        int numFound = Runner.GetPhysicsScene().OverlapSphere(
+            transform.position, 
+            explosionRadius, 
+            colliders, 
+            layerMask, 
+            QueryTriggerInteraction.Collide
+        );
+
+        // 3. Track which players we've already hit to avoid redundant logic
+        HashSet<NetworkPlayer> uniquePlayersHit = new HashSet<NetworkPlayer>();
+
+        for (int i = 0; i < numFound; i++)
+        {
+            // Handle Physics (Boxes/Debris)
+            // We apply force to every Rigidbody we find (this is good for ragdolls)
+            if (colliders[i].TryGetComponent(out Rigidbody rb))
+            {
+                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 3f);
+            }
+        
+            // Handle Player Logic (Flattening/Health)
+            // We use the root to find the NetworkPlayer script
+            if (colliders[i].transform.root.TryGetComponent(out NetworkPlayer player))
+            {
+                // .Add() returns true only if the player wasn't already in the set
+                if (uniquePlayersHit.Add(player))
+                {
+                    player.FlattenAndMakeRagdoll();
+                }
+            }
+        }
+    
         flashbangSFxTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
     }
     

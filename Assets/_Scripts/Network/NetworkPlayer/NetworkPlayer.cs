@@ -29,6 +29,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Transform playerVest;
     [SerializeField] private GameObject burntPlayerVest;
     [SerializeField] private Image staminaFillImage;
+    [SerializeField] private GameObject staminaBarParentObj;
     public Image StaminaFillImage => staminaFillImage;
     
     [Header("Juice - Dust Trail")]
@@ -171,6 +172,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             // Disable PlayerInput for non-local players
             if (playerInput != null) playerInput.enabled = false;
             if (inputReader != null) inputReader.enabled = false;
+            
+            // Disable stamina bar UI for non-local players
+            if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
     }
 
