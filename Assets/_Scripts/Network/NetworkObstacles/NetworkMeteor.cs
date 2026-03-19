@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Fusion;
 using Unity.Cinemachine;
@@ -11,16 +12,20 @@ public class NetworkMeteor : NetworkBehaviour
     [SerializeField] private float selfDestructTime = 12f;
     [SerializeField] private GameObject breakVfxPrefab;
     [SerializeField] private GameObject landingWarningPrefab;
+    [SerializeField] private GameObject fireTrailObj;
 
     [Header("Impact Settings")] 
+    [SerializeField] private float explosionForce = 500f;
     [SerializeField] private float explosionRadius = 5f;
     [SerializeField] private float baseShakeForce = 2.2f;
     [SerializeField] private float maxShakeDistance = 50f;
+    [SerializeField] private GameObject explosionVFX;
     
     [Networked] private Vector3 networkedVelocity { get; set; }
     [Networked] private Vector3 targetPos { get; set; }
     [Networked] private byte impactSignal { get; set; }
     [Networked] private TickTimer selfDestructTimer { get; set; }
+    [Networked] private TickTimer despawnTimer { get; set; }
 
     private ChangeDetector changes;
     private AudioManager audioManager;
@@ -51,6 +56,10 @@ public class NetworkMeteor : NetworkBehaviour
     
     public override void FixedUpdateNetwork()
     {
+        // Despawn
+        if (despawnTimer.Expired(Runner) && (Object != null && Runner != null && Runner.IsRunning))
+            Runner.Despawn(Object);
+        
         if (isDespawning) return;
 
         Vector3 displacement = networkedVelocity * Runner.DeltaTime;
@@ -62,6 +71,16 @@ public class NetworkMeteor : NetworkBehaviour
             transform.position = hit.point; // Snap to hit point for cleaner impact
             TriggerImpact();
             return;
+        }
+        
+        // Make sure fire trail is rotated correctly so it actually looks like a tail
+        // Make sure fire trail is rotated correctly so it actually looks like a tail
+        if (fireTrailObj != null && networkedVelocity.sqrMagnitude > 0.1f)
+        {
+            // We set the WORLD rotation so it ignores the parent meteor's tumbling.
+            // Use -networkedVelocity because the 'forward' axis of a trail 
+            // usually needs to point AWAY from the direction of travel to look right.
+            fireTrailObj.transform.rotation = Quaternion.LookRotation(-networkedVelocity);
         }
         
         // If not hit, move normally
@@ -95,42 +114,66 @@ public class NetworkMeteor : NetworkBehaviour
         TriggerImpact();
     }
 
-    private async void TriggerImpact()
+    private void TriggerImpact()
     {
         isDespawning = true;
         impactSignal++;
 
         ApplyRadialImpact();
-
-        await Task.Delay(150);
-        
-        if (Object != null && Runner != null && Runner.IsRunning)
-            Runner.Despawn(Object);
     }
 
     private void ApplyRadialImpact()
     {
-        Collider[] hits = new Collider[10];
+        // 1. Increase buffer size. 64 is usually safe for an explosion.
+        Collider[] colliders = new Collider[64]; 
+    
+        // 2. Use a LayerMask to ignore the ground/environment if they don't have RBs
+        // This saves slots in the 'colliders' array.
+        int layerMask = ~LayerMask.GetMask("Ground"); 
 
-        var hitCount = Runner.GetPhysicsScene().OverlapSphere(
-            transform.position,
-            explosionRadius,
-            hits,
-            -1,
-            QueryTriggerInteraction.UseGlobal
+        int numFound = Runner.GetPhysicsScene().OverlapSphere(
+            transform.position, 
+            explosionRadius, 
+            colliders, 
+            layerMask, 
+            QueryTriggerInteraction.Collide
         );
 
-        for (int i = 0; i < hitCount; i++)
+        // 3. Track which players we've already hit to avoid redundant logic
+        HashSet<NetworkPlayer> uniquePlayersHit = new HashSet<NetworkPlayer>();
+
+        for (int i = 0; i < numFound; i++)
         {
-            var player = hits[i].GetComponent<NetworkPlayer>();
-            if (player != null) player.FlattenAndMakeRagdoll();
+            // Handle Physics (Boxes/Debris)
+            // We apply force to every Rigidbody we find (this is good for ragdolls)
+            if (colliders[i].TryGetComponent(out Rigidbody rb))
+            {
+                rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 3f);
+            }
+        
+            // Handle Player Logic (Flattening/Health)
+            // We use the root to find the NetworkPlayer script
+            if (colliders[i].transform.root.TryGetComponent(out NetworkPlayer player))
+            {
+                // .Add() returns true only if the player wasn't already in the set
+                if (uniquePlayersHit.Add(player))
+                {
+                    player.FlattenAndMakeRagdoll();
+                }
+            }
         }
+        
+        // 4. Create a despawn timer to ensure everything happens first
+        despawnTimer = TickTimer.CreateFromSeconds(Runner, 0.2f);
     }
 
     private void PlayImpactEffects()
     {
-        // Play sound
-        if (audioManager != null) audioManager.Play("RockBreak", transform.position);
+        // Play SFx
+        audioManager.Play("MeteorImpact", transform.position);
+        
+        // Play VFx
+        if (explosionVFX != null) Instantiate(explosionVFX, transform.position, Quaternion.identity);
         
         // Shake camera
         if (camShakeManager != null && thisImpulseSource != null && NetworkPlayer.Local != null)
@@ -159,7 +202,7 @@ public class NetworkMeteor : NetworkBehaviour
         {
             var vfx = Instantiate(breakVfxPrefab, transform.position, transform.rotation);
             vfx.transform.localScale = transform.localScale;
-            Destroy(vfx, 5f);
+            Destroy(vfx, 3f);
         }
         
         // Clean up warning prefab

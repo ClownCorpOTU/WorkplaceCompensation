@@ -12,6 +12,7 @@ public class NetworkLandmine : NetworkBehaviour
     [SerializeField] private float explosionRadius = 5f;
     [SerializeField] private float explosionForce = 1000f;
     [SerializeField] private float camShakeForce = 1.5f;
+    [SerializeField] private GameObject explosionVFX;
     
     [Networked] private NetworkBool hasActivated { get; set; } // The "fuse"
     [Networked] private NetworkBool physicsTriggered { get; set; } // The "boom"
@@ -127,7 +128,7 @@ public class NetworkLandmine : NetworkBehaviour
         // VFx
         fullScreenEffectsManager.TriggerTimeStop(0.1f);
         fullScreenEffectsManager.TriggerImpactFlash(10);
-        // Also spawn explosion particles and debris later
+        Instantiate(explosionVFX, transform.position, Quaternion.identity);
         
         // Camera Shake
         float distance = Vector3.Distance(NetworkPlayer.Local.transform.position, transform.position);
