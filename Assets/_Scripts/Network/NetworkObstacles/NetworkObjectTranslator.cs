@@ -32,7 +32,6 @@ public class NetworkObjectTranslator : NetworkBehaviour
             else
             {
                 translatorTransform.position = newPos;
-                print(newPos);
             }
         }
     }
