@@ -386,7 +386,7 @@ MonoBehaviour:
     loop: 0
     is3D: 1
   - name: BombCountdown
-    clip: {fileID: 8300000, guid: ec9408e7f4333f841bdbd0bae352eb76, type: 3}
+    clip: {fileID: 8300000, guid: 8cf7b90788a54ef40a13dd21bfd3ec40, type: 3}
     hasVariations: 0
     variations: []
     audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
@@ -396,7 +396,7 @@ MonoBehaviour:
     loop: 0
     is3D: 1
   - name: LandmineExplosion
-    clip: {fileID: 8300000, guid: 9dc0927990820d04e9d3697ff461b42b, type: 3}
+    clip: {fileID: 8300000, guid: 027712086e0123041a4e7d427ae3dd12, type: 3}
     hasVariations: 0
     variations: []
     audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
@@ -415,3 +415,13 @@ MonoBehaviour:
     source: {fileID: 0}
     loop: 0
     is3D: 0
+  - name: MeteorImpact
+    clip: {fileID: 8300000, guid: 982f60d700cd31843a2a67ce5a16b849, type: 3}
+    hasVariations: 0
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1

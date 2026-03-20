@@ -25,7 +25,13 @@ public class NetworkFossilScanner : NetworkBehaviour
     [SerializeField] private MeshRenderer batteryBarRend;
     [SerializeField] private Gradient batteryGradient;
     [SerializeField] private Axis batteryScalingAxis = Axis.Z;
-    [SerializeField] private Transform rechargeStation; 
+    [SerializeField] private Transform rechargeStation;
+    
+    [Header("Confetti Settings")]
+    [SerializeField] private GameObject confettiFX;
+    [SerializeField] private float confettiActivationRange = 2.5f;
+    [SerializeField] private float confettiActivationWaiTime = 0.3f;
+    [SerializeField] private Transform fxSpawnPos;
     
     [Header("Audio Settings")]
     [SerializeField] private Vector2 tickDelayRange = new Vector2(0.1f, 1.5f);
@@ -41,6 +47,9 @@ public class NetworkFossilScanner : NetworkBehaviour
     private float currentVolume;
     private Vector3 batteryOriginalScale;
     private Rigidbody rb;
+    private float fossilDetectionTimer;
+    private bool hasPlayedConfetti;
+    
     
     public override void Spawned()
     {
@@ -111,6 +120,32 @@ public class NetworkFossilScanner : NetworkBehaviour
 
             if (distance <= detectionRange)
             {
+                // === CONFETTI START ===
+                if (distance < confettiActivationRange)
+                {
+                    fossilDetectionTimer += Time.deltaTime;
+                    print(fossilDetectionTimer);
+
+                    if (fossilDetectionTimer >= confettiActivationWaiTime && !hasPlayedConfetti)
+                    {
+                        print("CONFETTI!");
+
+                        if (confettiFX != null)
+                            Instantiate(confettiFX, fxSpawnPos.position, Quaternion.identity);
+
+                        hasPlayedConfetti = true;
+                    }
+                }
+                else
+                {
+                    // Reset if they wander out of the "sweet spot"
+                    print("RESETTING!");
+                    fossilDetectionTimer = 0f;
+                    hasPlayedConfetti = false;
+                }
+                // === CONFETTI END ===
+                
+                
                 // Normalize distance (0 = at fossil; 1 = max range)
                 float t = Mathf.Clamp01(distance / detectionRange);
                 
