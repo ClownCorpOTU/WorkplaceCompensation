@@ -13,6 +13,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
     [SerializeField] private GameObject windPrefab;
     [SerializeField] private Transform windSpawnPoint;
     [SerializeField] private float fxDespawnDelay = 15;
+    [SerializeField] private string suctionAudioName = "Suction"; // Temporary since I'm using this on Mars for the UFO
 
     [Networked] private TickTimer flyDelayTimer { get; set; }
     [Networked] private TickTimer despawnTimer { get; set; }
@@ -40,7 +41,6 @@ public class NetworkOutputReceiver : NetworkBehaviour
             
             // Play juice
             RPC_PlayWind();
-            AudioManager.instance.Play("Suction", transform.position);
             
             
             // Record the vial object and start the first timer
@@ -79,6 +79,8 @@ public class NetworkOutputReceiver : NetworkBehaviour
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_PlayWind()
     {
+        AudioManager.instance.Play(suctionAudioName, transform.position);
+
         if (windPrefab == null || windSpawnPoint == null) return;
 
         GameObject fx = Instantiate(windPrefab, windSpawnPoint.position, Quaternion.Euler(-90f,0f,0f));
