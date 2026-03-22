@@ -124,8 +124,29 @@ public class NetworkMeteor : NetworkBehaviour
     {
         isDespawning = true;
         impactSignal++;
+        
+        // SPAWN THE CHUNKS HERE (On the Server)
+        if (Object.HasStateAuthority && breakVfxPrefab != null)
+        {
+            var chunks = Runner.Spawn(breakVfxPrefab, transform.position, transform.rotation);
+            if (chunks.TryGetComponent(out BrokenBoulder brokenScript))
+            {
+                // Pass the explosion data to the chunks
+                brokenScript.ApplyInitialExplosion(transform.position, explosionForce, explosionRadius);
+            }
+        
+            // Auto-despawn the debris after 5 seconds to keep the scene clean
+            StartCoroutine(DespawnDebris(chunks, 5f));
+        }
 
         ApplyRadialImpact();
+    }
+    
+    // Helper to clean up the networked debris
+    private System.Collections.IEnumerator DespawnDebris(NetworkObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (obj != null && Runner != null) Runner.Despawn(obj);
     }
 
     private void ApplyRadialImpact()
@@ -205,6 +226,7 @@ public class NetworkMeteor : NetworkBehaviour
             }
         }
         
+        /*
         // Spawn local broken chunks (BUG)
         if (breakVfxPrefab != null)
         {
@@ -212,6 +234,7 @@ public class NetworkMeteor : NetworkBehaviour
             vfx.transform.localScale = transform.localScale;
             Destroy(vfx, 3f);
         }
+        */
         
         // Remove warning UI
         if (MeteorWarningUI.Instance != null) MeteorWarningUI.Instance.SetWarning(false);
