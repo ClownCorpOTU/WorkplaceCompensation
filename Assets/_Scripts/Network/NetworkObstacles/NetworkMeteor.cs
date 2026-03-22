@@ -49,6 +49,8 @@ public class NetworkMeteor : NetworkBehaviour
         thisImpulseSource = GetComponent<CinemachineImpulseSource>();
         camShakeManager = CameraShakeManager.Instance;
         fullScreenEffectsManager = FindFirstObjectByType<FullScreenEffectsManager>();
+        
+        if (MeteorWarningUI.Instance != null) MeteorWarningUI.Instance.SetWarning(true);
 
         if (Object.HasStateAuthority)
         {
@@ -208,6 +210,9 @@ public class NetworkMeteor : NetworkBehaviour
             vfx.transform.localScale = transform.localScale;
             Destroy(vfx, 3f);
         }
+        
+        // Remove warning UI
+        if (MeteorWarningUI.Instance != null) MeteorWarningUI.Instance.SetWarning(false);
         
         // Clean up warning prefab
         if (localWarningCircle != null) Destroy(localWarningCircle);
