@@ -19,6 +19,8 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
         spawnPoint = pos;
 
         playerToSpawn = playerPrefabOverride ? playerPrefabOverride : networkPlayerPrefab;
+
+        NetworkManager._runnerInstance.AddCallbacks(this);
     }
     
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
