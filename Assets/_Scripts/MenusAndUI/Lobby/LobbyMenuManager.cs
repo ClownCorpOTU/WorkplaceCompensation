@@ -142,7 +142,7 @@ public class LobbyMenuManager : MonoBehaviour
         {
             case 0:
                 {
-                    return "Assets/_Scenes/Fall/FallExpo_FinalReview.unity";
+                    return "Assets/_Scenes/Winter/WinterWeek2_ShaderTests.unity";
                 }
             case 1:
             {
