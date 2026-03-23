@@ -19,6 +19,7 @@ public class NetworkPlayerCamera : MonoBehaviour
 
     public void SetupCamera(bool hasInputAuthority)
     {
+        print("Setup camera!");
         // Spawn camera
         localCameraInstance = Instantiate(cameraContainerPrefab, Vector3.zero, Quaternion.identity);
 
@@ -28,6 +29,7 @@ public class NetworkPlayerCamera : MonoBehaviour
 
         cinemachineCamera.Follow = camFollow;
         cinemachineCamera.LookAt = camFollow;
+        print(camFollow);
         
         // Enable audio listener
         var audioListener = cam.GetComponent<AudioListener>();

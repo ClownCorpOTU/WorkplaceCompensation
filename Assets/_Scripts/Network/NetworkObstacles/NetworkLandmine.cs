@@ -98,7 +98,7 @@ public class NetworkLandmine : NetworkBehaviour
                 // .Add() returns true only if the player wasn't already in the set
                 if (uniquePlayersHit.Add(player))
                 {
-                    player.FlattenAndMakeRagdoll();
+                    player.MakeRagdoll();
                 }
             }
         }

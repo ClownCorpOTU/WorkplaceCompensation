@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;
@@ -6,9 +7,13 @@ using Random = UnityEngine.Random;
 
 public class AudioManager : MonoBehaviour
 {
+    [Header("Object Pooling Settings")] 
+    [SerializeField] private int poolSize = 12;
+    private Queue<AudioSource> pooled3DSources = new Queue<AudioSource>();
+    
+    [Header("Audio Clips")]
     public Sound[] sounds;
     public static AudioManager instance;
-    
     private HashSet<string> active3DSounds = new HashSet<string>(); // Ensures we don't play the same sound at the same time in 3D
 
     
@@ -22,9 +27,16 @@ public class AudioManager : MonoBehaviour
         }
         DontDestroyOnLoad(gameObject);
 
+        // Initialize 2D sounds
         foreach (Sound s in sounds)
         {
             if (!s.is3D) Populate2DSounds(s);
+        }
+        
+        // Pre-warm 3D pool
+        for (int i = 0; i < poolSize; i++)
+        {
+            CreateNewPoolObject();
         }
     }
 
@@ -45,6 +57,15 @@ public class AudioManager : MonoBehaviour
                 Populate2DSounds(v);
             }
         }
+    }
+
+    private void CreateNewPoolObject()
+    {
+        GameObject go = new GameObject("Pooled_3D_Source");
+        go.transform.SetParent(transform);
+        AudioSource source = go.AddComponent<AudioSource>();
+        go.SetActive(false);
+        pooled3DSources.Enqueue(source);
     }
 
     public void Play(string name, Vector3? position = null) {
@@ -75,30 +96,71 @@ public class AudioManager : MonoBehaviour
         }
 
         // ================================
-        // 3D SOUND — avoid double spawning
+        // 3D SOUND — avoid double spawning; includes object pooling
         // ================================
-        if (active3DSounds.Contains(s.name)) return;
+        if (s.usePooling)
+        {
+            PlayPooled3DSound(soundToPlay, position ?? Vector3.zero, s.name);
+        }
+        else
+        {
+            PlayStandard3DSound(soundToPlay, position ?? Vector3.zero, s.name);
+        }
+    }
 
-        active3DSounds.Add(s.name);
+    private void PlayPooled3DSound(Sound s, Vector3 position, string soundName)
+    {
+        if (!s.allowOverlap && active3DSounds.Contains(soundName)) return;
+        
+        if (pooled3DSources.Count == 0) CreateNewPoolObject();
 
-        Vector3 soundPosition = position ?? Vector3.zero;
-        GameObject tempGO = new GameObject("3D_Sound_" + soundToPlay.name);
-        tempGO.transform.position = soundPosition;
+        AudioSource source = pooled3DSources.Dequeue();
+        source.gameObject.SetActive(true);
+        source.transform.position = position;
+        
+        // Apply settings
+        source.clip = s.clip;
+        source.outputAudioMixerGroup = s.audioMixerGroup;
+        source.volume = s.volume;
+        source.pitch = s.pitch;
+        source.spatialBlend = 1f;
+        source.loop = s.loop;
+        
+        source.Play();
+        active3DSounds.Add(soundName);
 
+        StartCoroutine(ReturnToPool(source, s.clip.length, soundName));
+    }
+
+    private IEnumerator ReturnToPool(AudioSource source, float clipLength, string soundName)
+    {
+        yield return new WaitForSeconds(clipLength);
+        source.gameObject.SetActive(false);
+        pooled3DSources.Enqueue(source);
+        active3DSounds.Remove(soundName);
+    }
+
+    private void PlayStandard3DSound(Sound s, Vector3 position, string soundName)
+    {
+        if (!s.allowOverlap && active3DSounds.Contains(soundName)) return;
+        active3DSounds.Add(soundName);
+
+        GameObject tempGO = new GameObject("3D_Sound_" + s.name);
+        tempGO.transform.position = position;
         AudioSource tempSource = tempGO.AddComponent<AudioSource>();
         
         // Copy settings from the chosen soundToPlay (variation or base)
-        tempSource.clip = soundToPlay.clip;
-        tempSource.outputAudioMixerGroup = soundToPlay.audioMixerGroup;
-        tempSource.volume = soundToPlay.volume;
-        tempSource.pitch = soundToPlay.pitch;
+        tempSource.clip = s.clip;
+        tempSource.outputAudioMixerGroup = s.audioMixerGroup;
+        tempSource.volume = s.volume;
+        tempSource.pitch = s.pitch;
         tempSource.spatialBlend = 1f; // Force 3D
-        tempSource.loop = soundToPlay.loop;
+        tempSource.loop = s.loop;
 
         tempSource.Play();
 
         // Cleanup
-        float clipLength = soundToPlay.clip.length;
+        float clipLength = s.clip.length;
         Destroy(tempGO, clipLength);
         StartCoroutine(RemoveAfterDelay(s.name, clipLength));
     }

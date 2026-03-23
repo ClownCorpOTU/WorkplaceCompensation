@@ -124,7 +124,6 @@ public class NetworkFossilScanner : NetworkBehaviour
                 if (distance < confettiActivationRange)
                 {
                     fossilDetectionTimer += Time.deltaTime;
-                    print(fossilDetectionTimer);
 
                     if (fossilDetectionTimer >= confettiActivationWaiTime && !hasPlayedConfetti)
                     {
