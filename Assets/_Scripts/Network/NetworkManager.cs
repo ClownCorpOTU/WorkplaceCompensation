@@ -9,7 +9,7 @@ using UnityEditor;
 
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public static NetworkRunner _runnerInstance;
+    public NetworkRunner _runnerInstance;
 
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
@@ -140,6 +140,11 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         if (SceneManager.GetActiveScene().name == "Lobby")
         {
             FindFirstObjectByType<NetworkRunnerHandler>().OnJoinLobby("MainLobbyList");
+        }
+
+        if (_runnerInstance == runner)
+        {
+            _runnerInstance = null;
         }
 
         SceneManager.LoadScene(lobbyMenuBuildIndex);

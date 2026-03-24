@@ -33,11 +33,13 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        if (runner.IsServer)
-        {
-            var spawnedPlayer = runner.Spawn(playerToSpawn.gameObject, spawnPoint, Quaternion.identity, player);
-            spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
-        }
+        if (!runner.IsServer) return;
+
+        if (playerToSpawn == null) return;
+        
+        var spawnedPlayer = runner.Spawn(playerToSpawn.gameObject, spawnPoint, Quaternion.identity, player);
+        
+        spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
