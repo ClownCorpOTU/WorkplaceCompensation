@@ -36,13 +36,15 @@ public class TutorialManager : MonoBehaviour
     private TutorialStepSO[] steps;
     private int currentIndex = -1; // Start at -1 to represent the Cover Page
     private string chosenLevel;
-    
+    private AudioManager audioManager;
     
     private void Awake() {
         if (Instance == null) 
             Instance = this;
         else
             Destroy(gameObject);
+        
+        audioManager = AudioManager.instance;
     }
     
     private void Start() => UpdateUI();
@@ -76,6 +78,7 @@ public class TutorialManager : MonoBehaviour
         if (steps != null && currentIndex < steps.Length)
         {
             currentIndex++;
+            if (audioManager) audioManager.Play("PageFlip");
             UpdateUI();
         }
     }
@@ -86,6 +89,7 @@ public class TutorialManager : MonoBehaviour
         if (currentIndex > -1)
         {
             currentIndex--;
+            if (audioManager) audioManager.Play("PageFlip");
             UpdateUI();
         }
     }

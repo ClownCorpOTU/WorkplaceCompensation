@@ -514,3 +514,39 @@ MonoBehaviour:
     is3D: 1
     usePooling: 0
     allowOverlap: 0
+  - name: PageFlip
+    clip: {fileID: 0}
+    hasVariations: 1
+    variations:
+    - name: PageFlipVariation1
+      clip: {fileID: 8300000, guid: 176c871c81496e644b0ce804f0a34d0c, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.07
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 0
+      usePooling: 0
+      allowOverlap: 1
+    - name: PageFlipVariation2
+      clip: {fileID: 8300000, guid: fadddcf0ebc10f74b9f3c4b9a80b8862, type: 3}
+      hasVariations: 0
+      variations: []
+      audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+      volume: 0.04
+      pitch: 1
+      source: {fileID: 0}
+      loop: 0
+      is3D: 0
+      usePooling: 0
+      allowOverlap: 1
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.1
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 0
+    usePooling: 0
+    allowOverlap: 1
