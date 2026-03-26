@@ -1933,6 +1933,7 @@ MonoBehaviour:
   rotationAngle: 360
   jumpForce: 75
   jumpHeight: 1.5
+  footstepInterval: 0.2
   ragdollTime: 3
   _IsActiveRagdoll:
     _value: 1
@@ -2008,7 +2009,7 @@ MonoBehaviour:
   magnetForce: 1.25
   grabbableLayer:
     serializedVersion: 2
-    m_Bits: 520
+    m_Bits: 3721
 --- !u!136 &8497186059431564370
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -2319,7 +2320,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &8839888996463486802
 RectTransform:
   m_ObjectHideFlags: 0
