@@ -21,15 +21,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     void Awake()
     {
-        if (_runnerInstance == null)
-        {
-            _runnerInstance = Instantiate(networkRunnerPrefab);
-        }
-
-        _runnerInstance.AddCallbacks(this);
-        
-        //_runnerInstance = gameObject.GetComponent<NetworkRunner>();
-
         if (networkRunnerHandler == null)
         {
             networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
@@ -133,10 +124,21 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadStart(NetworkRunner runner)
     {
-        
+        if (lobbyMenuManager != null)
+        {
+            lobbyMenuManager.gameObject.SetActive(false);
+        }
     }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+
+        if (shutdownReason == ShutdownReason.Ok)
+        {
+            return;
+        }
+
+        Debug.Log($"Network Shutdown Reason: {shutdownReason}");
+    
         if (SceneManager.GetActiveScene().name == "Lobby")
         {
             FindFirstObjectByType<NetworkRunnerHandler>().OnJoinLobby("MainLobbyList");

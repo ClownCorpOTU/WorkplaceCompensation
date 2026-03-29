@@ -41,15 +41,7 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private void Start()
     {
-        string sessionName = "";
-        if (networkRunner == null)
-        {
-            networkRunner = Instantiate(networkRunnerPrefab);
-            networkRunner.name = "NetworkRunner";
-            networkRunner.gameObject.GetComponent<Spawner>().Initialize(spawnPoint, networkPlayerPrefabOverride);
-            sessionName = "TestSession";
-        }
-        
+        string sessionName = $"DirectLoadMap{SceneManager.GetActiveScene().name}";
         if (SceneManager.GetActiveScene().name == "Lobby")
         {
             return;
@@ -58,7 +50,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
-            var clientTask = InitializeNetworkRunner(networkRunner, mode, sessionName, defaultSessionPlayerCap, 
+            var clientTask = InitializeNetworkRunner(mode, sessionName, defaultSessionPlayerCap, 
                 NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
         }
     }
@@ -73,11 +65,32 @@ public class NetworkRunnerHandler : MonoBehaviour
         return sceneManager ?? runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
     }
 
-    protected virtual Task InitializeNetworkRunner(NetworkRunner runner, GameMode gameMode, string sessionName, int lobbyCap,
+    protected virtual async Task InitializeNetworkRunner(GameMode gameMode, string sessionName, int lobbyCap,
         NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, int codeLen = 6)
     {
-        INetworkSceneManager sceneManager = GetSceneManager(runner);
-        runner.ProvideInput = true;
+        NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
+
+        if (networkRunner != null)
+        {
+            if (networkManager != null) networkRunner.RemoveCallbacks(networkManager);
+
+            await networkRunner.Shutdown(destroyGameObject: true);
+            networkRunner = null;
+        }
+
+        networkRunner = Instantiate(networkRunnerPrefab);
+        networkRunner.name = "NetworkRunner";   
+
+        Spawner spawner = networkRunner.GetComponent<Spawner>();
+        networkRunner.AddCallbacks(spawner);
+
+        if (networkManager != null) networkRunner.AddCallbacks(networkManager);
+
+        spawner.Initialize(spawnPoint, networkPlayerPrefabOverride);
+        networkRunner.ProvideInput = true;
+
+        INetworkSceneManager sceneManager = GetSceneManager(networkRunner);
+        networkRunner.ProvideInput = true;
 
         string joinCode = GenerateLobbyCode(codeLen);
 
@@ -91,7 +104,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             uniqueName = sessionName;
         }
 
-        return runner.StartGame(new StartGameArgs()
+        await networkRunner.StartGame(new StartGameArgs()
         {
             GameMode = gameMode,
             Address = address,
@@ -129,17 +142,17 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
     }
 
-        public void JoinGame (SessionInfo sessionInfo)
+        public async void JoinGame (SessionInfo sessionInfo)
     {
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Client, sessionInfo.Name, sessionInfo.MaxPlayers,
+        await InitializeNetworkRunner(GameMode.Client, sessionInfo.Name, sessionInfo.MaxPlayers,
             NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
     }
 
-    public void CreateGame(string sessionName, int lobbyCap, string scenePath)
+    public async void CreateGame(string sessionName, int lobbyCap, string scenePath)
     {
         int buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
 
-        var clientTask = InitializeNetworkRunner(networkRunner, GameMode.Host, sessionName, lobbyCap,
+        await InitializeNetworkRunner(GameMode.Host, sessionName, lobbyCap,
             NetAddress.Any(), SceneRef.FromIndex(buildIndex), null);
     }
 
