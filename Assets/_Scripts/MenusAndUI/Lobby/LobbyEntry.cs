@@ -93,8 +93,10 @@ public class LobbyEntry : MonoBehaviour
 
         NetworkRunnerHandler networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
 
-        //networkRunnerHandler.OnJoinLobby("MainLobbyList");
-        networkRunnerHandler.JoinGame(sessionInfo);
+        if (networkRunnerHandler != null)
+        {
+            networkRunnerHandler.JoinGame(sessionInfo);
+        }
     }
 
     public void OnClick()

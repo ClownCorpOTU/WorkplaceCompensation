@@ -138,18 +138,19 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         }
 
         Debug.Log($"Network Shutdown Reason: {shutdownReason}");
-    
-        if (SceneManager.GetActiveScene().name == "Lobby")
-        {
-            FindFirstObjectByType<NetworkRunnerHandler>().OnJoinLobby("MainLobbyList");
-        }
+        
 
-        if (_runnerInstance == runner)
+        if (SceneManager.GetActiveScene().name != "Lobby")
         {
-            _runnerInstance = null;
+            SceneManager.LoadScene(lobbyMenuBuildIndex);
         }
-
-        SceneManager.LoadScene(lobbyMenuBuildIndex);
+        else
+        {
+            if (networkRunnerHandler != null)
+            {
+                networkRunnerHandler.OnJoinLobby("MainLobbyList");
+            }
+        }
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)

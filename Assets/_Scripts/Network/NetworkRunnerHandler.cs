@@ -41,15 +41,23 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private void Start()
     {
-        string sessionName = $"DirectLoadMap{SceneManager.GetActiveScene().name}";
         if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            OnJoinLobby("MainLobbyList");
+            return;
+        }
+
+        if (networkRunner != null && networkRunner.IsRunning)
         {
             return;
         }
 
-        GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
+        string sessionName = $"DirectLoad{SceneManager.GetActiveScene().name}";
+
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
+            GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
+
             var clientTask = InitializeNetworkRunner(mode, sessionName, defaultSessionPlayerCap, 
                 NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
         }
@@ -125,6 +133,18 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     public void OnJoinLobby(string lobbyListName)
     {
+        if (networkRunner == null)
+        {
+            networkRunner = Instantiate(networkRunnerPrefab);
+            networkRunner.name = "LobbyRunner";
+
+            NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
+            if (networkManager != null)
+            {
+                networkRunner.AddCallbacks(networkManager);
+            }
+        }
+
         var clientTask = JoinLobby(lobbyListName);
     }
 
