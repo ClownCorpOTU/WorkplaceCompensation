@@ -30760,7 +30760,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -14.623301
+      value: -14.123301
       objectReference: {fileID: 0}
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalPosition.y
@@ -30768,7 +30768,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -18.72415
+      value: -18.22415
       objectReference: {fileID: 0}
     - target: {fileID: 2641404556092715679, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_LocalRotation.w
@@ -30803,8 +30803,16 @@ PrefabInstance:
       value: RadioactiveBarrel
       objectReference: {fileID: 0}
     - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 3450874274107189285, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3937717450943675524, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: radiationStartDistance
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 4192690556837454815, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: SortKey
@@ -30813,6 +30821,10 @@ PrefabInstance:
     - target: {fileID: 6566715914913342347, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
       propertyPath: SortKey
       value: 793156058
+      objectReference: {fileID: 0}
+    - target: {fileID: 8094376793656729642, guid: 4e1003d0030a5454b9d8dd7ecd8d9c26, type: 3}
+      propertyPath: m_Radius
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
