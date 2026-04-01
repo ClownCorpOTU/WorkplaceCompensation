@@ -47,7 +47,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             return;
         }
 
-        if (networkRunner != null && networkRunner.IsRunning)
+        if (networkRunner != null && networkRunner.IsRunning || networkRunner.IsCloudReady)
         {
             return;
         }
@@ -100,19 +100,19 @@ public class NetworkRunnerHandler : MonoBehaviour
         INetworkSceneManager sceneManager = GetSceneManager(networkRunner);
         networkRunner.ProvideInput = true;
 
-        string joinCode = GenerateLobbyCode(codeLen);
-
+        string joinCode = "";
         string uniqueName = "";
         if (gameMode == GameMode.Host)
         {
             uniqueName = $"Room_{System.Guid.NewGuid()}_{sessionName}";
+            joinCode = GenerateLobbyCode(codeLen);
         }
         else
         {
             uniqueName = sessionName;
         }
 
-        await networkRunner.StartGame(new StartGameArgs()
+        var result = await networkRunner.StartGame(new StartGameArgs()
         {
             GameMode = gameMode,
             Address = address,
