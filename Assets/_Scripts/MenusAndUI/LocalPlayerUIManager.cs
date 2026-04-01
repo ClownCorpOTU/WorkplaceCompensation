@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using Photon.Voice.Unity;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -52,6 +53,7 @@ public class LocalPlayerUIManager : MonoBehaviour
     {
         if (NetworkPlayer.Local == null) return;
         
+        // Stamina (old)
         var normalizeStamina = NetworkPlayer.Local.NormalizeStamina();
         staminaBarImage.fillAmount = normalizeStamina;
         

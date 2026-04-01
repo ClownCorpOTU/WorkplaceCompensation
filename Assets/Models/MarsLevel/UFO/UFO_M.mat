@@ -129,13 +129,13 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FalloffThreshold: 2.5
+    - _FalloffThreshold: 0.18
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _HalfToneIntensity: 1
+    - _HalfToneIntensity: 0.436
     - _LIGHTMAP_SHADOW_MIXING: 0
-    - _LitThreshold: 0.9
+    - _LitThreshold: 0.2
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -174,7 +174,7 @@ Material:
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 0}
     - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}
     - _RimLightColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RotationJitterRange: {r: -5, g: -5, b: 0, a: 0}
+    - _RotationJitterRange: {r: -5, g: 5, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _SpecularColour: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []

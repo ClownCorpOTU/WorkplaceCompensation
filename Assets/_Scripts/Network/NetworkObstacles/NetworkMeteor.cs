@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Fusion;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 using Random = UnityEngine.Random;
 
 public class NetworkMeteor : NetworkBehaviour
@@ -34,6 +35,7 @@ public class NetworkMeteor : NetworkBehaviour
     private CinemachineImpulseSource thisImpulseSource;
     private FullScreenEffectsManager fullScreenEffectsManager;
     private bool isDespawning = false;
+    private DecalProjector warningDecal;
     
     public void InitializeMeteor(Vector3 finalSpeed, Vector3 targetLandingPos)
     {
@@ -49,6 +51,8 @@ public class NetworkMeteor : NetworkBehaviour
         thisImpulseSource = GetComponent<CinemachineImpulseSource>();
         camShakeManager = CameraShakeManager.Instance;
         fullScreenEffectsManager = FindFirstObjectByType<FullScreenEffectsManager>();
+        
+        if (MeteorWarningUI.Instance != null) MeteorWarningUI.Instance.SetWarning(true);
 
         if (Object.HasStateAuthority)
         {
@@ -120,8 +124,29 @@ public class NetworkMeteor : NetworkBehaviour
     {
         isDespawning = true;
         impactSignal++;
+        
+        // SPAWN THE CHUNKS HERE (On the Server)
+        if (Object.HasStateAuthority && breakVfxPrefab != null)
+        {
+            var chunks = Runner.Spawn(breakVfxPrefab, transform.position, transform.rotation);
+            if (chunks.TryGetComponent(out BrokenBoulder brokenScript))
+            {
+                // Pass the explosion data to the chunks
+                brokenScript.ApplyInitialExplosion(transform.position, explosionForce, explosionRadius);
+            }
+        
+            // Auto-despawn the debris after 5 seconds to keep the scene clean
+            StartCoroutine(DespawnDebris(chunks, 5f));
+        }
 
         ApplyRadialImpact();
+    }
+    
+    // Helper to clean up the networked debris
+    private System.Collections.IEnumerator DespawnDebris(NetworkObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (obj != null && Runner != null) Runner.Despawn(obj);
     }
 
     private void ApplyRadialImpact()
@@ -201,6 +226,7 @@ public class NetworkMeteor : NetworkBehaviour
             }
         }
         
+        /*
         // Spawn local broken chunks (BUG)
         if (breakVfxPrefab != null)
         {
@@ -208,6 +234,10 @@ public class NetworkMeteor : NetworkBehaviour
             vfx.transform.localScale = transform.localScale;
             Destroy(vfx, 3f);
         }
+        */
+        
+        // Remove warning UI
+        if (MeteorWarningUI.Instance != null) MeteorWarningUI.Instance.SetWarning(false);
         
         // Clean up warning prefab
         if (localWarningCircle != null) Destroy(localWarningCircle);
@@ -218,7 +248,46 @@ public class NetworkMeteor : NetworkBehaviour
         // Extra safety to ensure the circle is destroyed if the meteor is despawned abruptly
         if (localWarningCircle != null) Destroy(localWarningCircle);
     }
+    
+    private void UpdateLandingWarning()
+    {
+        // Raycast from high above the target position down to the ground
+        if (Physics.Raycast(targetPos + Vector3.up * 50f, Vector3.down, out RaycastHit hit, 100f))
+        {
+            if (localWarningCircle == null && landingWarningPrefab != null)
+            {
+                localWarningCircle = Instantiate(landingWarningPrefab, hit.point, Quaternion.identity);
+                warningDecal = localWarningCircle.GetComponent<DecalProjector>();
+            }
 
+            if (warningDecal != null)
+            {
+                // 1. DEPTH & OFFSET FIX: 
+                // We set a large Projection Depth (20 units) so it can handle hills.
+                // We move the center of the box 10 units ABOVE the ground so the "beam" hits.
+                float projectionDepth = 20f;
+                warningDecal.transform.position = hit.point + (hit.normal * (projectionDepth * 0.5f));
+                warningDecal.transform.rotation = Quaternion.LookRotation(-hit.normal);
+
+                // 2. GROWTH MATH FIX:
+                // Calculate distance from the meteor's current height to the impact height
+                float currentDist = transform.position.y - hit.point.y;
+            
+                // Start growing when the meteor is 150m away (increase this if it's still "too small")
+                float growthThreshold = 150f; 
+                float progress = Mathf.Clamp01(1.0f - (currentDist / growthThreshold));
+
+                // 3. SIZE RANGE: 
+                // Let's go bigger. From 4m wide to 20m wide at impact.
+                float currentSize = Mathf.Lerp(4f, 20f, progress);
+            
+                // Apply size (X, Y are width/height, Z is that depth we defined earlier)
+                warningDecal.size = new Vector3(currentSize, currentSize, projectionDepth);
+            }
+        }
+    }
+    
+    /*
     private void UpdateLandingWarning()
     {
         // Go 50 units above the targetPos, and raycast 100 units down to find any points on the terrain
@@ -226,8 +295,11 @@ public class NetworkMeteor : NetworkBehaviour
         {
             if (localWarningCircle == null && landingWarningPrefab != null)
             {
-                localWarningCircle = Instantiate(landingWarningPrefab, hit.point + (hit.normal * 0.05f), 
-                    Quaternion.LookRotation(hit.normal));
+                //localWarningCircle = Instantiate(landingWarningPrefab, hit.point + (hit.normal * 0.05f), 
+                    //Quaternion.LookRotation(hit.normal));
+
+                localWarningCircle = Instantiate(landingWarningPrefab, hit.point + (hit.normal * 0.1f), 
+                    Quaternion.FromToRotation(Vector3.forward, -hit.normal));
             }
 
             if (localWarningCircle != null)
@@ -239,4 +311,5 @@ public class NetworkMeteor : NetworkBehaviour
             }
         }
     }
+    */
 }

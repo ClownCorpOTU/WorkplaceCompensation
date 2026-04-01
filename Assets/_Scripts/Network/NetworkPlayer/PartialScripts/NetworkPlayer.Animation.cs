@@ -21,7 +21,9 @@ public partial class NetworkPlayer
         }
         */
 
-        animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
+        if (IsGrounded) animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
+        else animatedModel.SetFloat("movementSpeed", 0f);
+        
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
         {
             syncPhysicsObjects[i].UpdateJointFromAnimation();
