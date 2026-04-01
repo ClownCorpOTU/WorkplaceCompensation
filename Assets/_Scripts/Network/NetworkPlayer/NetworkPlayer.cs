@@ -348,6 +348,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         if (Object.HasInputAuthority)
         {
+            Local = null;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
+        
+        if (Object.HasInputAuthority)
+        {
             playerCamera.DespawnCamera();
         }
     }

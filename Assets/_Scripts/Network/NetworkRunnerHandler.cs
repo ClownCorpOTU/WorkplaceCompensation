@@ -182,18 +182,22 @@ public class NetworkRunnerHandler : MonoBehaviour
         System.Random randomize = new System.Random();
 
         bool isNotUnique = true;
-        string newCode;
+        string newCode = "";
+
+        List<SessionInfo> sessionListSnapshot = sessionList.ToList();
 
         do
         {
             newCode = new string(Enumerable.Repeat(chars, length).Select(s => s[randomize.Next(s.Length)]).ToArray());
 
-            if (sessionList.Count == 0)
+            if (sessionListSnapshot.Count == 0)
             {
                 return newCode;
             }
 
-            foreach (SessionInfo session in sessionList)
+            isNotUnique = false;
+
+            foreach (SessionInfo session in sessionListSnapshot)
             {
                 session.Properties.TryGetValue("JoinCode", out var sessionCode);
 

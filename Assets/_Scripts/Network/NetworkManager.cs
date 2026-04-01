@@ -131,6 +131,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
 
         if (shutdownReason == ShutdownReason.Ok)
         {
