@@ -17,6 +17,9 @@ public class NetworkGameManager : NetworkBehaviour
     
     [Networked] private TickTimer GameTimer { get; set; }
     [Networked] private bool IsGameOver { get; set; }
+    [Networked] private float remainingTime { get; set; }
+
+    public float RemainingTime => remainingTime;
 
     private Dictionary<PlayerRef, int> playerScores = new();
     
@@ -56,7 +59,7 @@ public class NetworkGameManager : NetworkBehaviour
         // UI updates are client-only (not networked)
         if (GameTimer.IsRunning)
         {
-            float remainingTime = GameTimer.RemainingTime(Runner).GetValueOrDefault();
+            remainingTime = GameTimer.RemainingTime(Runner).GetValueOrDefault();
             UpdateTimerUI(remainingTime);
         }
     }

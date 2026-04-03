@@ -24,6 +24,8 @@ public class InputReader : MonoBehaviour
     private InputAction rightHandGrabAction;
     private InputAction pauseAction;
     private InputAction liftAction;
+    
+    public event System.Action OnPausePressed;
 
     private void Awake()
     {
@@ -159,9 +161,14 @@ public class InputReader : MonoBehaviour
     private void OnPause(InputAction.CallbackContext context)
     {
         if (context.performed)
+        {
             IsPauseButtonPressed = true;
+            OnPausePressed?.Invoke();
+        }
         else if (context.canceled)
+        {
             IsPauseButtonPressed = false;
+        }
     }
     
     private void OnLift(InputAction.CallbackContext context)

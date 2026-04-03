@@ -47,7 +47,7 @@ public partial class NetworkPlayer
 
                     if (footstepTimer <= 0f)
                     {
-                        RPC_Play("Walk", transform.position);
+                        RPC_PlayWalkSound("Walk", transform.position);
                         footstepTimer = footstepInterval;
                     }
                 }
@@ -101,6 +101,15 @@ public partial class NetworkPlayer
     private void OnJumpTriggered()
     {
         audioManager.Play("Jump", transform.position);
+    }
+    
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, TickAligned = false)]
+    private void RPC_PlayWalkSound(string audioName, Vector3 position)
+    {
+        if (Object.HasStateAuthority)
+            if (audioManager != null) audioManager.Play(audioName, position);
+        else
+            RPC_Play("Walk", transform.position);
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]

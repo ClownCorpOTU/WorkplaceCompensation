@@ -9,32 +9,141 @@ using UnityEditor;
 
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
-    public NetworkRunner _runnerInstance;
+    public static NetworkRunner _runnerInstance;
+    public string lobbyName = "Default";
 
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
-    [Header("Lobbies")]
-    [SerializeField] private NetworkRunnerHandler networkRunnerHandler;
-    [SerializeField] private LobbyMenuManager lobbyMenuManager;
-    [SerializeField] private int lobbyMenuBuildIndex = int.MinValue;
-    [SerializeField] private int mainMenuBuildIndex = int.MinValue;
+    public Transform lobbyEntryContentParent;
+    public GameObject lobbyEntryPrefab;
+    public string gameplayScene = "FallExpo_FinalReview";
+    
+    public Dictionary<string, GameObject> lobbyEntriesDictionary = new Dictionary<string, GameObject>(); 
 
     void Awake()
     {
-        if (networkRunnerHandler == null)
+        _runnerInstance = gameObject.GetComponent<NetworkRunner>();
+
+        if (lobbyEntryContentParent == null)
         {
-            networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
+            lobbyEntryContentParent = GameObject.Find("LobbyListContent").transform;
+        }
+    }
+
+    void Start()
+    {
+        if (_runnerInstance == null)
+        {
+            _runnerInstance = Instantiate(networkRunnerPrefab);
         }
 
-        if (lobbyMenuBuildIndex == int.MinValue)
-        {
-            lobbyMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/Lobby.unity");
-        }
+        _runnerInstance.AddCallbacks(this);
+        _runnerInstance.JoinSessionLobby(SessionLobby.Shared, lobbyName);
+    }
 
-        if (mainMenuBuildIndex == int.MinValue)
+    
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+    {
+
+        DeleteEntry(sessionList);
+
+        CompareEntries(sessionList);
+        
+
+    }
+
+    /// <summary>
+    /// Checks if the lobby is in session. If not, the lobby will be removed from the UI and Dictionary.
+    /// </summary>
+    /// <param name="sessionList"></param>
+    void DeleteEntry(List<SessionInfo> sessionList)
+    {
+        bool isInSession = false;
+        GameObject entryToDelete = null;
+
+        // Check LobbyEntries for lobbies that are no longer in session list
+        foreach (KeyValuePair<string, GameObject> kvp in lobbyEntriesDictionary)
         {
-            mainMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/MainMenu.unity");
+            string lobbyName = kvp.Key;
+            foreach (SessionInfo sessionInfo in sessionList)
+            {
+                if (sessionInfo.Name == lobbyName)
+                {
+                    isInSession = true;
+                    break;
+                }
+            }
+
+            if (!isInSession)
+            {
+                entryToDelete = kvp.Value;
+                lobbyEntriesDictionary.Remove(lobbyName); // Remove Lobby from entry
+                Destroy(entryToDelete); // Delete lobby
+            }
         }
+    }
+
+    void CompareEntries(List<SessionInfo> sessionList)
+    {
+        foreach (SessionInfo session in sessionList)
+        {
+            if (lobbyEntriesDictionary.ContainsKey(session.Name))
+            {
+                UpdateEntry(session);
+            }
+            else
+            {
+                CreateEntry(session);
+            }
+        }
+    }
+
+    /// <summary>
+    /// Create new lobby entry and display it on the lobby UI.
+    /// </summary>
+    /// <param name="session"></param>
+    void CreateEntry(SessionInfo session)
+    {
+        GameObject newEntry = GameObject.Instantiate(lobbyEntryPrefab, lobbyEntryContentParent);
+        lobbyEntriesDictionary.Add(session.Name, newEntry);
+
+        UpdateEntry(session, newEntry);
+    }
+
+    /// <summary>
+    /// Updates lobby entry.
+    /// </summary>
+    /// <param name="session"></param>
+    /// <param name="entry">The new entry UI prefab that will be updated. If it is null, get the existing entry from the dictionary and update it.</param>
+    void UpdateEntry(SessionInfo session, GameObject entry = null)
+    {
+        if (entry == null)
+        {
+            lobbyEntriesDictionary.TryGetValue(session.Name, out entry);
+        }
+        
+        LobbyEntry entryScript = entry.GetComponent<LobbyEntry>();
+
+        entryScript.lobbyName.text = session.Name;
+        entryScript.currentPlayerCount = session.PlayerCount;
+        entryScript.maxPlayerCount = session.MaxPlayers;
+
+        entryScript.UpdatePlayerCount();
+
+        entryScript.joinButton.interactable = session.IsOpen;
+
+        entry.SetActive(session.IsValid);
+    }
+
+    public void CreateNewSession()
+    {
+        int sessionInt = UnityEngine.Random.Range(1000,9999);
+
+        string sessionName = $"Room-{sessionInt}";
+
+        GameObject.Find("LobbyUI").SetActive(false);
+        DontDestroyOnLoad(_runnerInstance.gameObject);
+        SceneManager.LoadScene(gameplayScene);
     }
 
     public void OnConnectedToServer(NetworkRunner runner)
@@ -44,140 +153,97 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnConnectFailed(NetworkRunner runner, NetAddress remoteAddress, NetConnectFailedReason reason)
     {
-        
+        // Empty callback
     }
 
     public void OnConnectRequest(NetworkRunner runner, NetworkRunnerCallbackArgs.ConnectRequest request, byte[] token)
     {
-        
+        // Empty callback
     }
 
     public void OnCustomAuthenticationResponse(NetworkRunner runner, Dictionary<string, object> data)
     {
-        
+        // Empty callback
     }
 
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
-        Debug.Log($"Disconnected from sever: {reason}");
-        
-        if (SceneManager.GetActiveScene().buildIndex != lobbyMenuBuildIndex)
-        {
-            SceneManager.LoadScene(lobbyMenuBuildIndex);
-        }
+        // Empty callback
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
     {
-        
+        // Empty callback
     }
 
     public void OnInput(NetworkRunner runner, NetworkInput input)
     {
-        
+        // Empty callback
     }
 
     public void OnInputMissing(NetworkRunner runner, PlayerRef player, NetworkInput input)
     {
-        
+        // Empty callback
     }
 
     public void OnObjectEnterAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
-        
+        // Empty callback
     }
 
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
     {
-        
+        // Empty callback
     }
 
     public void OnPlayerJoined(NetworkRunner runner, PlayerRef player)
     {
-        
+        // Empty callback
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        
+        // Empty callback
     }
 
     public void OnReliableDataProgress(NetworkRunner runner, PlayerRef player, ReliableKey key, float progress)
     {
-        
+        // Empty callback
     }
 
     public void OnReliableDataReceived(NetworkRunner runner, PlayerRef player, ReliableKey key, ArraySegment<byte> data)
     {
-        
+        // Empty callback
     }
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        Spawner spawner = FindFirstObjectByType<Spawner>();
-
-        if (spawner != null)
-        {
-            runner.AddCallbacks(spawner);
-        }
+        // Empty callback
     }
 
     public void OnSceneLoadStart(NetworkRunner runner)
     {
-        if (lobbyMenuManager != null)
-        {
-            lobbyMenuManager.gameObject.SetActive(false);
-        }
+        // Empty callback
     }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-
-        if (shutdownReason == ShutdownReason.Ok)
+        // Now that you've added .AddCallbacks(this), you will see this print!
+        Debug.Log($"<color=orange>NetworkManager:</color> Game Shutdown! Reason: {shutdownReason}");
+    
+        // 0 is 'Ok' (the user left normally). 
+        // Anything else means a disconnect, host-quit, or error.
+        if (shutdownReason != ShutdownReason.Ok)
         {
-            return;
-        }
-
-        Debug.Log($"Network Shutdown Reason: {shutdownReason}");
-        
-
-        if (SceneManager.GetActiveScene().name != "Lobby")
-        {
-            SceneManager.LoadScene(lobbyMenuBuildIndex);
-        }
-        else
-        {
-            if (networkRunnerHandler != null)
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null)
             {
-                networkRunnerHandler.OnJoinLobby("MainLobbyList");
+                uiManager.ShowHostLeftScreen();
             }
         }
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
     {
-        
-    }
-
-    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
-    {
-        networkRunnerHandler.sessionList = sessionList;
-
-        Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
-
-        lobbyMenuManager.ClearLobbyDisplay();
-
-        if (sessionList.Count != 0)
-        {
-            //lobbyMenuManager.CompareEntries(sessionList);
-
-            foreach (SessionInfo session in sessionList)
-            {
-                lobbyMenuManager.CreateEntry(session);
-            }
-        }
-
-
+        // Empty callback
     }
 }
