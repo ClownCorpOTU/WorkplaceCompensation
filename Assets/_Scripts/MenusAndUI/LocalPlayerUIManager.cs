@@ -12,6 +12,7 @@ public class LocalPlayerUIManager : MonoBehaviour
     [SerializeField] private GameObject pausePanel;
     [SerializeField] private GameObject pauseMenu;
     [SerializeField] private GameObject settingsMenu;
+    [SerializeField] private GameObject hostLeftPanel;
 
     [Header("Gameplay UI")]
     [SerializeField] private Image staminaBarImage;
@@ -114,6 +115,15 @@ public class LocalPlayerUIManager : MonoBehaviour
     public void QuitGame()
     {
         Application.Quit();
+    }
+
+    public void ShowHostLeftScreen()
+    {
+        hostLeftPanel.SetActive(true);
+        pausePanel.SetActive(false);
+
+        IsLocalGamePaused = true;
+        UpdateCursorState();
     }
 
     private void Update()
