@@ -17,6 +17,21 @@ public class LocalPlayerUIManager : MonoBehaviour
 
     private Image staminaBarImage2;
 
+
+    private void OnEnable()
+    {
+        var input = FindFirstObjectByType<InputReader>();
+        print("HELLO LOOK AT ME!");
+        print(input.name);
+        if (input != null) input.OnPausePressed += TogglePause;
+    }
+    
+    private void OnDisable()
+    {
+        var input = FindFirstObjectByType<InputReader>();
+        if (input != null) input.OnPausePressed -= TogglePause;
+    }
+
     private void Start()
     {
         fakeLoadingScreen.SetActive(false);
@@ -25,10 +40,16 @@ public class LocalPlayerUIManager : MonoBehaviour
 
     public void TogglePause()
     {
+        // If the game is ending/host left, we still want to be able to pause/quit!
         IsLocalGamePaused = !IsLocalGamePaused;
+        print(IsLocalGamePaused);
         pausePanel.SetActive(IsLocalGamePaused);
+    
         Cursor.lockState = IsLocalGamePaused ? CursorLockMode.None : CursorLockMode.Locked;
         Cursor.visible = IsLocalGamePaused;
+    
+        // Optional: Slow down time locally if not in a multiplayer match
+        // Time.timeScale = IsLocalGamePaused ? 0f : 1f;
     }
 
     public void ResumeGame()
