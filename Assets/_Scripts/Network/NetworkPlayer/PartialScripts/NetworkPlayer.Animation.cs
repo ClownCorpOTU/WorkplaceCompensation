@@ -4,13 +4,26 @@ using Fusion;
 public partial class NetworkPlayer
 {
     [Networked, Capacity(10), HideInInspector] public NetworkArray<Quaternion> NetworkPhysicsSyncedRotations { get; }
-
+    //[SerializeField] private SyncPhysicsObject headObject;
     
     private void SyncAnimations(float localForwardVelocity)
     {
         if (!Object.HasStateAuthority) return;
 
-        animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
+        /* Looks like it's better to always sync the head
+        if (localForwardVelocity < 0.1f)
+        {
+            headObject.UpdateSyncing(true);
+        }
+        else
+        {
+            headObject.UpdateSyncing(false);
+        }
+        */
+
+        if (IsGrounded) animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
+        else animatedModel.SetFloat("movementSpeed", 0f);
+        
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
         {
             syncPhysicsObjects[i].UpdateJointFromAnimation();
@@ -37,8 +50,8 @@ public partial class NetworkPlayer
         var main = dustFXParticles.main;
 
         // Only show dust when grounded
-        emission.enabled = isGrounded;
-        if (!isGrounded)
+        emission.enabled = IsGrounded;
+        if (!IsGrounded)
             return;
 
         // Clamp velocity

@@ -162,7 +162,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: efa71f1f51790ab4aa1cc39d40f5750c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  receiver: {fileID: 7073259095409944159}
+  receiver: {fileID: 1494397863971840130}
+  multipleReceivers: []
 --- !u!1 &2534486971539803420
 GameObject:
   m_ObjectHideFlags: 0
@@ -302,7 +303,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: 323316438243b7240b639f369ff58750, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

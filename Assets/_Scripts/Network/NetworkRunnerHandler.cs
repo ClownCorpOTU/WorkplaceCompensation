@@ -13,8 +13,12 @@ using UnityEngine.SceneManagement;
 public class NetworkRunnerHandler : MonoBehaviour
 {
     [SerializeField] private NetworkRunner networkRunnerPrefab;
+    [SerializeField] private Vector3 spawnPoint;
+    [SerializeField] private NetworkPlayer networkPlayerPrefabOverride = null;
     [SerializeField] private bool shouldStartInSinglePlayer = false;
     private NetworkRunner networkRunner;
+    
+    public Vector3 SpawnPoint => spawnPoint;
 
     private void Awake()
     {
@@ -31,6 +35,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         {
             networkRunner = Instantiate(networkRunnerPrefab);
             networkRunner.name = "NetworkRunner";
+            networkRunner.gameObject.GetComponent<Spawner>().Initialize(spawnPoint, networkPlayerPrefabOverride);
             sessionName = "TestSession";
         }
         

@@ -9,6 +9,7 @@ using UnityEngine;
 public class NetworkPlayerCamera : MonoBehaviour
 {
     [SerializeField] private GameObject cameraContainerPrefab;
+    [SerializeField] private Transform camFollow;
     
     private Camera cam;
     private CinemachineCamera cinemachineCamera;
@@ -18,6 +19,7 @@ public class NetworkPlayerCamera : MonoBehaviour
 
     public void SetupCamera(bool hasInputAuthority)
     {
+        print("Setup camera!");
         // Spawn camera
         localCameraInstance = Instantiate(cameraContainerPrefab, Vector3.zero, Quaternion.identity);
 
@@ -25,8 +27,9 @@ public class NetworkPlayerCamera : MonoBehaviour
         cinemachineCamera = localCameraInstance.GetComponentInChildren<CinemachineCamera>();
         cinemachineBrain = localCameraInstance.GetComponentInChildren<CinemachineBrain>();
 
-        cinemachineCamera.Follow = transform;
-        cinemachineCamera.LookAt = transform;
+        cinemachineCamera.Follow = camFollow;
+        cinemachineCamera.LookAt = camFollow;
+        print(camFollow);
         
         // Enable audio listener
         var audioListener = cam.GetComponent<AudioListener>();
