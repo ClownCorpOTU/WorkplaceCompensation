@@ -2,29 +2,26 @@
 using System.Collections;
 using Photon.Voice.Unity;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class LocalPlayerUIManager : MonoBehaviour
 {
+    [Header("Panels")]
     [SerializeField] private GameObject pausePanel;
+    [SerializeField] private GameObject pauseMenu;
+    [SerializeField] private GameObject settingsMenu;
+
+    [Header("Gameplay UI")]
     [SerializeField] private Image staminaBarImage;
     [SerializeField] private GameObject fakeLoadingScreen;
     [SerializeField] private Material radiationScreenMat;
 
-    private Recorder recorder;
     public bool IsLocalGamePaused { get; private set; }
-
     private Image staminaBarImage2;
-
-
-    private void OnEnable()
-    {
-        var input = FindFirstObjectByType<InputReader>();
-        print("HELLO LOOK AT ME!");
-        print(input.name);
-        if (input != null) input.OnPausePressed += TogglePause;
-    }
+    private Recorder recorder;
+    
     
     private void OnDisable()
     {
@@ -36,32 +33,81 @@ public class LocalPlayerUIManager : MonoBehaviour
     {
         fakeLoadingScreen.SetActive(false);
         staminaBarImage2 = NetworkPlayer.Local.StaminaFillImage;
+        CloseAllMenus();
+    }
+    
+    public void SetInputSource(InputReader reader)
+    {
+        reader.OnPausePressed -= TogglePause; // Prevent double-subscription
+        reader.OnPausePressed += TogglePause;
     }
 
     public void TogglePause()
     {
-        // If the game is ending/host left, we still want to be able to pause/quit!
-        IsLocalGamePaused = !IsLocalGamePaused;
-        print(IsLocalGamePaused);
-        pausePanel.SetActive(IsLocalGamePaused);
+        if (IsLocalGamePaused)
+            ResumeGame();
+        else
+            OpenPauseMenu();
+    }
     
-        Cursor.lockState = IsLocalGamePaused ? CursorLockMode.None : CursorLockMode.Locked;
-        Cursor.visible = IsLocalGamePaused;
-    
-        // Optional: Slow down time locally if not in a multiplayer match
-        // Time.timeScale = IsLocalGamePaused ? 0f : 1f;
+    public void OpenPauseMenu()
+    {
+        IsLocalGamePaused = true;
+        pausePanel.SetActive(true);
+        
+        // FIX: Always reset to main menu view
+        pauseMenu.SetActive(true);
+        settingsMenu.SetActive(false);
+
+        UpdateCursorState();
     }
 
     public void ResumeGame()
     {
         IsLocalGamePaused = false;
         pausePanel.SetActive(false);
-        Cursor.lockState = CursorLockMode.Locked;
-        Cursor.visible = false;
+        
+        if (EventSystem.current != null)
+        {
+            EventSystem.current.SetSelectedGameObject(null);
+        }
+        
+        UpdateCursorState();
+    }
+    
+    private void UpdateCursorState()
+    {
+        if (IsLocalGamePaused)
+        {
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
+        else
+        {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
+        }
+    }
+    
+    private void OnApplicationFocus(bool hasFocus)
+    {
+        // If the player clicks back into the game window, re-apply the correct lock state
+        if (hasFocus) UpdateCursorState();
+    }
+    
+    private void CloseAllMenus()
+    {
+        IsLocalGamePaused = false;
+        pausePanel.SetActive(false);
+        UpdateCursorState();
     }
 
     public void BackToMenu()
     {
+        // Shut down runner before leaving
+        var runner = FindFirstObjectByType<Fusion.NetworkRunner>();
+        if (runner != null) runner.Shutdown();
+        
         SceneManager.LoadScene(0);
     }
 
@@ -72,8 +118,12 @@ public class LocalPlayerUIManager : MonoBehaviour
 
     private void Update()
     {
-        if (NetworkPlayer.Local == null) return;
-        
+        if (NetworkPlayer.Local != null) 
+            UpdateStaminaVisuals();
+    }
+
+    private void UpdateStaminaVisuals()
+    {
         // Stamina (old)
         var normalizeStamina = NetworkPlayer.Local.NormalizeStamina();
         staminaBarImage.fillAmount = normalizeStamina;

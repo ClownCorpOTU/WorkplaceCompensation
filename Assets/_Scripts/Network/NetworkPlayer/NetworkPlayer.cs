@@ -150,6 +150,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (Object.HasInputAuthority)
         {
             Local = this;
+            
+            // Observer pattern for the UI manager (to handle pause)
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                uiManager.SetInputSource(inputReader);
+            
+            // Player camera
             playerCamera.SetupCamera(Object.HasInputAuthority);
             networkGameManager.ScoreText.text = 0.ToString();
             
@@ -339,6 +346,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         if (Object.HasInputAuthority)
         {
+            // Unsubscribe from the pause function
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                inputReader.OnPausePressed -= uiManager.TogglePause;
+            
             playerCamera.DespawnCamera();
         }
     }
