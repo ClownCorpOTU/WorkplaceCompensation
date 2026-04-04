@@ -1077,7 +1077,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkManager
   networkRunnerPrefab: {fileID: 548566944644215969, guid: 5ebb32773a8cccf4fa5c6eeb677211c2, type: 3}
+  networkRunnerHandler: {fileID: 0}
   lobbyMenuManager: {fileID: 54624160}
+  lobbyMenuBuildIndex: -2147483648
+  mainMenuBuildIndex: -2147483648
 --- !u!4 &270776167
 Transform:
   m_ObjectHideFlags: 0
@@ -1107,6 +1110,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NetworkRunnerHandler
   networkRunnerPrefab: {fileID: 548566944644215969, guid: 5ebb32773a8cccf4fa5c6eeb677211c2, type: 3}
   spawnPoint: {x: 0, y: 0, z: 0}
+  networkPlayerPrefabOverride: {fileID: 0}
   shouldStartInSinglePlayer: 1
   defaultSessionPlayerCap: 4
 --- !u!1 &288529854
@@ -3996,7 +4000,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 459108942}
   m_HandleRect: {fileID: 459108941}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

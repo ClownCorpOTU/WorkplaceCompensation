@@ -10,141 +10,38 @@ using UnityEditor;
 public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 {
     public static NetworkRunner _runnerInstance;
-    public string lobbyName = "Default";
 
     [SerializeField] private NetworkRunner networkRunnerPrefab;
 
-    public Transform lobbyEntryContentParent;
-    public GameObject lobbyEntryPrefab;
-    public string gameplayScene = "FallExpo_FinalReview";
-    
-    public Dictionary<string, GameObject> lobbyEntriesDictionary = new Dictionary<string, GameObject>(); 
+    [Header("Lobbies")]
+    [SerializeField] private NetworkRunnerHandler networkRunnerHandler;
+    [SerializeField] private LobbyMenuManager lobbyMenuManager;
+    [SerializeField] private int lobbyMenuBuildIndex = int.MinValue;
+    [SerializeField] private int mainMenuBuildIndex = int.MinValue;
 
     void Awake()
     {
-        _runnerInstance = gameObject.GetComponent<NetworkRunner>();
-
-        if (lobbyEntryContentParent == null)
+        if (networkRunnerHandler == null)
         {
-            lobbyEntryContentParent = GameObject.Find("LobbyListContent").transform;
+            networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
+        }
+
+        if (lobbyMenuBuildIndex == int.MinValue)
+        {
+            lobbyMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/Lobby.unity");
+        }
+
+        if (mainMenuBuildIndex == int.MinValue)
+        {
+            mainMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/MainMenu.unity");
+        }
+
+        if (lobbyMenuManager == null && SceneManager.GetActiveScene().buildIndex == lobbyMenuBuildIndex)
+        {
+            lobbyMenuManager = FindAnyObjectByType<LobbyMenuManager>();
         }
     }
 
-    void Start()
-    {
-        if (_runnerInstance == null)
-        {
-            _runnerInstance = Instantiate(networkRunnerPrefab);
-        }
-
-        _runnerInstance.AddCallbacks(this);
-        _runnerInstance.JoinSessionLobby(SessionLobby.Shared, lobbyName);
-    }
-
-    
-    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
-    {
-
-        DeleteEntry(sessionList);
-
-        CompareEntries(sessionList);
-        
-
-    }
-
-    /// <summary>
-    /// Checks if the lobby is in session. If not, the lobby will be removed from the UI and Dictionary.
-    /// </summary>
-    /// <param name="sessionList"></param>
-    void DeleteEntry(List<SessionInfo> sessionList)
-    {
-        bool isInSession = false;
-        GameObject entryToDelete = null;
-
-        // Check LobbyEntries for lobbies that are no longer in session list
-        foreach (KeyValuePair<string, GameObject> kvp in lobbyEntriesDictionary)
-        {
-            string lobbyName = kvp.Key;
-            foreach (SessionInfo sessionInfo in sessionList)
-            {
-                if (sessionInfo.Name == lobbyName)
-                {
-                    isInSession = true;
-                    break;
-                }
-            }
-
-            if (!isInSession)
-            {
-                entryToDelete = kvp.Value;
-                lobbyEntriesDictionary.Remove(lobbyName); // Remove Lobby from entry
-                Destroy(entryToDelete); // Delete lobby
-            }
-        }
-    }
-
-    void CompareEntries(List<SessionInfo> sessionList)
-    {
-        foreach (SessionInfo session in sessionList)
-        {
-            if (lobbyEntriesDictionary.ContainsKey(session.Name))
-            {
-                UpdateEntry(session);
-            }
-            else
-            {
-                CreateEntry(session);
-            }
-        }
-    }
-
-    /// <summary>
-    /// Create new lobby entry and display it on the lobby UI.
-    /// </summary>
-    /// <param name="session"></param>
-    void CreateEntry(SessionInfo session)
-    {
-        GameObject newEntry = GameObject.Instantiate(lobbyEntryPrefab, lobbyEntryContentParent);
-        lobbyEntriesDictionary.Add(session.Name, newEntry);
-
-        UpdateEntry(session, newEntry);
-    }
-
-    /// <summary>
-    /// Updates lobby entry.
-    /// </summary>
-    /// <param name="session"></param>
-    /// <param name="entry">The new entry UI prefab that will be updated. If it is null, get the existing entry from the dictionary and update it.</param>
-    void UpdateEntry(SessionInfo session, GameObject entry = null)
-    {
-        if (entry == null)
-        {
-            lobbyEntriesDictionary.TryGetValue(session.Name, out entry);
-        }
-        
-        LobbyEntry entryScript = entry.GetComponent<LobbyEntry>();
-
-        entryScript.lobbyName.text = session.Name;
-        entryScript.currentPlayerCount = session.PlayerCount;
-        entryScript.maxPlayerCount = session.MaxPlayers;
-
-        entryScript.UpdatePlayerCount();
-
-        entryScript.joinButton.interactable = session.IsOpen;
-
-        entry.SetActive(session.IsValid);
-    }
-
-    public void CreateNewSession()
-    {
-        int sessionInt = UnityEngine.Random.Range(1000,9999);
-
-        string sessionName = $"Room-{sessionInt}";
-
-        GameObject.Find("LobbyUI").SetActive(false);
-        DontDestroyOnLoad(_runnerInstance.gameObject);
-        SceneManager.LoadScene(gameplayScene);
-    }
 
     public void OnConnectedToServer(NetworkRunner runner)
     {
@@ -168,7 +65,12 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
-        // Empty callback
+        Debug.Log($"Disconnected from sever: {reason}");
+        
+        if (SceneManager.GetActiveScene().buildIndex != lobbyMenuBuildIndex)
+        {
+            SceneManager.LoadScene(lobbyMenuBuildIndex);
+        }
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
@@ -218,12 +120,20 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadDone(NetworkRunner runner)
     {
-        // Empty callback
+        Spawner spawner = FindFirstObjectByType<Spawner>();
+
+        if (spawner != null)
+        {
+            runner.AddCallbacks(spawner);
+        }
     }
 
     public void OnSceneLoadStart(NetworkRunner runner)
     {
-        // Empty callback
+        if (lobbyMenuManager != null)
+        {
+            lobbyMenuManager.gameObject.SetActive(false);
+        }
     }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
@@ -240,10 +150,52 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
                 uiManager.ShowHostLeftScreen();
             }
         }
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        if (shutdownReason == ShutdownReason.Ok)
+        {
+            return;
+        }
+
+        Debug.Log($"Network Shutdown Reason: {shutdownReason}");
+        
+
+        if (SceneManager.GetActiveScene().name != "Lobby")
+        {
+            SceneManager.LoadScene(lobbyMenuBuildIndex);
+        }
+        else
+        {
+            if (networkRunnerHandler != null)
+            {
+                networkRunnerHandler.OnJoinLobby("MainLobbyList");
+            }
+        }
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
     {
         // Empty callback
+    }
+
+    public void OnSessionListUpdated(NetworkRunner runner, List<SessionInfo> sessionList)
+    {
+        networkRunnerHandler.sessionList = sessionList;
+
+        Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
+
+        lobbyMenuManager.ClearLobbyDisplay();
+
+        if (sessionList.Count != 0)
+        {
+            //lobbyMenuManager.CompareEntries(sessionList);
+
+            foreach (SessionInfo session in sessionList)
+            {
+                lobbyMenuManager.CreateEntry(session);
+            }
+        }
     }
 }

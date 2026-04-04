@@ -150,7 +150,7 @@ GameObject:
   - component: {fileID: 608315986073398571}
   - component: {fileID: 5839410036127512828}
   m_Layer: 5
-  m_Name: PlayerCount
+  m_Name: PlayerCountDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -288,7 +288,7 @@ GameObject:
   - component: {fileID: 5770005799132974635}
   - component: {fileID: 1812950373746733785}
   m_Layer: 5
-  m_Name: LobbyName
+  m_Name: LobbyNameDisplay
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -425,7 +425,7 @@ GameObject:
   - component: {fileID: 3965177097604208855}
   - component: {fileID: 4776147819631770675}
   m_Layer: 5
-  m_Name: Join
+  m_Name: JoinButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -624,8 +624,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::LobbyEntry
   lobbyManager: {fileID: 0}
-  lobbyName: {fileID: 1812950373746733785}
-  playerCount: {fileID: 5839410036127512828}
+  lobbyNameText: {fileID: 1812950373746733785}
+  playerCountText: {fileID: 5839410036127512828}
   joinButton: {fileID: 4776147819631770675}
   currentPlayerCount: 0
   maxPlayerCount: 0

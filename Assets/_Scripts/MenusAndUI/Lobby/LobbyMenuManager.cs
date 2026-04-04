@@ -216,7 +216,7 @@ public class LobbyMenuManager : MonoBehaviour
     }
 
     /// <summary>
-    /// DELETE. Testing Join function. Overrides the entry UI's join button.
+    /// Allows for direct joining to a specific lobby using a code generated on session creation.
     /// </summary>
     /// <param name="roomCode"></param>
     public void JoinLobbyByCode(string roomCode)
