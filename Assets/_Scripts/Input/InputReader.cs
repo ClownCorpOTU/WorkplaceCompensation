@@ -121,7 +121,10 @@ public class InputReader : MonoBehaviour
     private void OnJump(InputAction.CallbackContext context)
     {
         if (context.performed)
+        {
             IsJumpButtonPressed = true;
+            //testing score popup using jump ScorePopupManager.Instance.ShowScore(2);
+        }
         else if (context.canceled)
             IsJumpButtonPressed = false;
     }
