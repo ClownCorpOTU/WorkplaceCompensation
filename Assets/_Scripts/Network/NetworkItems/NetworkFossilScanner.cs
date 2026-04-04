@@ -246,13 +246,22 @@ public class NetworkFossilScanner : NetworkBehaviour
 
     private void OnBatteryDead()
     {
-        // Create target rotation
-        rechargeStation.position = new Vector3(rechargeStation.position.x, 0f, rechargeStation.position.z);
-        Quaternion targetRot = Quaternion.LookRotation(rechargeStation.position);
+        // 1. Calculate the direction vector from the arrow TO the station
+        Vector3 direction = rechargeStation.position - arrowPivot.position;
+    
+        // 2. Flatten it on the Y axis so the arrow doesn't tilt into the ground
+        direction.y = 0; 
+
+        // 3. Ensure the direction isn't zero to avoid console errors
+        if (direction != Vector3.zero)
+        {
+            // 4. Create the target rotation based on that direction
+            Quaternion targetRot = Quaternion.LookRotation(direction);
         
-        // Smoothly rotate the arrow towards the recharge station
-        arrowPivot.rotation = Quaternion.Slerp(arrowPivot.rotation, targetRot, Time.deltaTime * 5f);
-        
+            // Smoothly rotate
+            arrowPivot.rotation = Quaternion.Slerp(arrowPivot.rotation, targetRot, Time.deltaTime * 5f);
+        }
+    
         // Set colors
         arrowRend.material.SetColor("_BaseColor", signalGradient.Evaluate(0));
         arrowRend.material.SetColor("_EmissionColor",
