@@ -10,9 +10,14 @@ public partial class NetworkPlayer
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float jumpHeight = 1.5f;
 
+    [Header("Audio Settings")] 
+    [SerializeField] private float footstepInterval = 0.2f;
+
     private Vector2 moveInputVector = Vector2.zero;
     public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
+
+    private float footstepTimer;
     //private TickTimer jumpBuffer;
     //private bool jumpConsumed = false;
     
@@ -33,8 +38,24 @@ public partial class NetworkPlayer
             if (NetworkedMovementSpeed < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
-                if (IsGrounded) audioManager.Play("Walk", transform.position);
+
+                if (IsGrounded)
+                {
+                    //RPC_Play("Walk", transform.position);
+
+                    footstepTimer -= Runner.DeltaTime;
+
+                    if (footstepTimer <= 0f)
+                    {
+                        RPC_PlayWalkSound("Walk", transform.position);
+                        footstepTimer = footstepInterval;
+                    }
+                }
             }
+        }
+        else
+        {
+            footstepTimer = 0f;
         }
         
         HandleJump();
@@ -80,6 +101,21 @@ public partial class NetworkPlayer
     private void OnJumpTriggered()
     {
         audioManager.Play("Jump", transform.position);
+    }
+    
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, TickAligned = false)]
+    private void RPC_PlayWalkSound(string audioName, Vector3 position)
+    {
+        if (Object.HasStateAuthority)
+            if (audioManager != null) audioManager.Play(audioName, position);
+        else
+            RPC_Play("Walk", transform.position);
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
     
     

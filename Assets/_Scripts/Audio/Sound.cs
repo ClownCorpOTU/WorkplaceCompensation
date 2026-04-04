@@ -17,4 +17,6 @@ public class Sound
 
     public bool loop;
     public bool is3D;
+    public bool usePooling;
+    [Tooltip("Useful for sounds like walking that play more than once at a time")] public bool allowOverlap;
 }

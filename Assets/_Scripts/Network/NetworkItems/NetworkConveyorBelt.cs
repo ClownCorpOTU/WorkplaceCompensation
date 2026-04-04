@@ -38,6 +38,8 @@ public class NetworkConveyorBelt : NetworkBehaviour
     {
         if (other.gameObject.CompareTag("SlowStaminaDrain")) return;
         
+        print("Entered");
+        
         if (other.gameObject.TryGetComponent(out Rigidbody otherRb))
         {
             if (!onBelt.Contains(otherRb)) onBelt.Add(otherRb);

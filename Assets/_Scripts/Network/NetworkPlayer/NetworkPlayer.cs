@@ -66,7 +66,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkInputData networkInputData;
     private bool isReviveButtonPressed = false;
     private bool isGrabButtonPressed, isLeftGrabButtonPressed, isRightGrabButtonPressed, isLiftButtonPressed = false;
-    private bool isPauseButtonPressed, previousPausePressed = false;
     
     // States
     private bool isGrabbingActive = false;
@@ -151,6 +150,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (Object.HasInputAuthority)
         {
             Local = this;
+            
+            // Observer pattern for the UI manager (to handle pause)
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                uiManager.SetInputSource(inputReader);
+            
+            // Player camera
             playerCamera.SetupCamera(Object.HasInputAuthority);
             networkGameManager.ScoreText.text = 0.ToString();
             
@@ -231,10 +237,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private void Update()
     {
         if (!Object || !Object.IsValid) return;
-
-        // TODO: This architecture is terrible. I'm checking for escape input outside of the loop so players can unpause
-        isPauseButtonPressed = Object.HasInputAuthority && inputReader.IsPauseButtonPressed;
-
         if (!localPlayerUIManager.IsLocalGamePaused) ReadInputFromUnity();
     }
 
@@ -274,10 +276,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         isLeftHandGrabbingActive = networkInputData.IsLeftGrabPressed;
         isRightHandGrabbingActive = networkInputData.IsRightGrabPressed;
         isLiftingActive = networkInputData.IsLiftPressed;
-        
-        // Pause game (Called from here because right now there's no other way to know player input)
-        if (inputReader.IsPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
-        previousPausePressed = isPauseButtonPressed;
         
         HandlePlayer();
     }
@@ -348,6 +346,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         if (Object.HasInputAuthority)
         {
+            // Unsubscribe from the pause function
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                inputReader.OnPausePressed -= uiManager.TogglePause;
+            
             playerCamera.DespawnCamera();
         }
     }

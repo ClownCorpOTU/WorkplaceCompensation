@@ -1076,6 +1076,7 @@ MonoBehaviour:
   rotationAngle: 380
   jumpForce: 75
   jumpHeight: 1.5
+  footstepInterval: 0.1
   ragdollTime: 5
   _IsActiveRagdoll:
     _value: 1
@@ -1151,7 +1152,7 @@ MonoBehaviour:
   magnetForce: 1.25
   grabbableLayer:
     serializedVersion: 2
-    m_Bits: 520
+    m_Bits: 3721
 --- !u!114 &7098789657871640562
 MonoBehaviour:
   m_ObjectHideFlags: 0
