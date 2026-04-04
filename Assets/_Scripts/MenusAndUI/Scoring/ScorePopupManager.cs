@@ -47,20 +47,24 @@ public class ScorePopupManager : MonoBehaviour
 
         //Setup popup
         popupObj.GetComponent<ScorePopup>().Setup(amount);
+        
+        // Play jingle
+        if (AudioManager.instance != null) AudioManager.instance.Play("ScoreJingle");
 
         //Apply camera shake
         ApplyShake(amount);
     }
+    
     private void ApplyShake(int amount)
     {
         if (impulseSource == null || CameraShakeManager.Instance == null)
             return;
 
-        float baseForce = (amount == 1) ? 0.5f : 1.2f;
+        float baseForce = (amount == 1) ? 0.9f : 1.4f;
         float force = baseForce * shakeMultiplier;
 
         //Slight randomness
-        Vector3 direction = new Vector3(Random.Range(-0.420f, 0.69f), Random.Range(-0.420f, 0.69f), 0f);
+        Vector3 direction = new Vector3(Random.Range(-0.420f, 0.69f), Random.Range(-0.420f, 0.69f), Random.Range(-0.420f, 0.69f));
 
         CameraShakeManager.Instance.ApplyCameraShake(impulseSource, direction, force);
     }

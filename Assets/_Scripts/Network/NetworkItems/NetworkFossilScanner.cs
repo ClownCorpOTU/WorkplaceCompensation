@@ -65,14 +65,6 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         
-        /*
-        if (IsInRechargeZone && !IsActive && CurrentBattery < maxBatteryLife)
-        {
-            print("Charging!");
-            CurrentBattery += Runner.DeltaTime * rechargeRate;
-        }
-        */
-        
         if (CurrentBattery > 0)
         {
             if (IsActive)
@@ -127,7 +119,7 @@ public class NetworkFossilScanner : NetworkBehaviour
 
                     if (fossilDetectionTimer >= confettiActivationWaiTime && !hasPlayedConfetti)
                     {
-                        print("CONFETTI!");
+                        if (AudioManager.instance != null) AudioManager.instance.Play("FoundFossilJingle", fossilPos);
 
                         if (confettiFX != null)
                             Instantiate(confettiFX, fxSpawnPos.position, Quaternion.identity);
@@ -138,7 +130,6 @@ public class NetworkFossilScanner : NetworkBehaviour
                 else
                 {
                     // Reset if they wander out of the "sweet spot"
-                    print("RESETTING!");
                     fossilDetectionTimer = 0f;
                     hasPlayedConfetti = false;
                 }
@@ -284,7 +275,6 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (!IsActive && CurrentBattery < maxBatteryLife)
         {
-            print("Charging!");
             CurrentBattery += Runner.DeltaTime * rechargeRate;
         }
     }
