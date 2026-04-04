@@ -123,7 +123,7 @@ public class InputReader : MonoBehaviour
         if (context.performed)
         {
             IsJumpButtonPressed = true;
-            // testing score popup using jump ScorePopupManager.Instance.ShowScore(1);
+            //testing score popup using jump ScorePopupManager.Instance.ShowScore(2);
         }
         else if (context.canceled)
             IsJumpButtonPressed = false;

@@ -22,23 +22,25 @@ public class ScorePopup : MonoBehaviour
     {
         text.text = "+" + score;
 
-        // Random rotation for juice
-        transform.rotation = Quaternion.Euler(0, 0, Random.Range(-20f, 20f));
+        //Random rainbow color
+        Color rainbowColor = Color.HSVToRGB(Random.value, 1f, 1f);
+        text.color = rainbowColor;
 
-        // Different feel for +1 vs +2
+        //Random rotation for juice
+        transform.rotation = Quaternion.Euler(0, 0, Random.Range(-10f, 10f));
+
+        //Keep your +1 vs +2 behavior
         if (score == 1)
         {
-            text.color = Color.white;
             lifetime = baseLifetime;
-            scaleAmount = 0.4f;
+            scaleAmount = 0.3f;
             scaleFrequency = 10f;
         }
         else if (score == 2)
         {
-            text.color = Color.yellow;
             lifetime = baseLifetime + 0.2f;
-            scaleAmount = 0.69f;      // bigger pop
-            scaleFrequency = 14f;    // snappier
+            scaleAmount = 0.6f;
+            scaleFrequency = 14f;
         }
     }
 
@@ -46,18 +48,18 @@ public class ScorePopup : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // Move upward
+        //Move upward
         transform.Translate(Vector3.up * floatSpeed * Time.deltaTime);
 
-        // Scale animation
+        //Scale animation
         float scale = 1 + Mathf.Sin(timer * scaleFrequency) * scaleAmount;
         transform.localScale = Vector3.one * scale;
 
-        // Fade out
+        //Fade out
         float alpha = Mathf.Lerp(1f, 0f, timer / lifetime);
         text.alpha = alpha;
 
-        // Destroy when done
+        //Destroy when done
         if (timer >= lifetime)
         {
             Destroy(gameObject);

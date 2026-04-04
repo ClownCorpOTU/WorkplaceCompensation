@@ -8916,6 +8916,7 @@ MonoBehaviour:
   basePosition: {x: 100, y: 100}
   randomOffset: {x: 20, y: 10}
   impulseSource: {fileID: 1626939793}
+  shakeMultiplier: 0.6
 --- !u!114 &1626939793
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -8937,7 +8938,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    ImpulseDuration: 0.35
+    ImpulseDuration: 0.2
     ImpulseType: 0
     DissipationRate: 0.25
     RawSignal: {fileID: 0}
