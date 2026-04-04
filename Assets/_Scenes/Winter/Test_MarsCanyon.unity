@@ -8913,7 +8913,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::ScorePopupManager
   scorePopupPrefab: {fileID: 2722941577844742009, guid: bc08ee2e10b71dc41afe4d2ae93d7607, type: 3}
   canvasTransform: {fileID: 1626939791}
-  spawnArea: {x: 80, y: 40}
+  basePosition: {x: 100, y: 100}
+  randomOffset: {x: 20, y: 10}
   impulseSource: {fileID: 1626939793}
 --- !u!114 &1626939793
 MonoBehaviour:
@@ -8929,7 +8930,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineImpulseSource
   ImpulseDefinition:
     ImpulseChannel: 1
-    ImpulseShape: 3
+    ImpulseShape: 4
     CustomImpulseShape:
       serializedVersion: 2
       m_Curve: []
@@ -8937,7 +8938,7 @@ MonoBehaviour:
       m_PostInfinity: 2
       m_RotationOrder: 4
     ImpulseDuration: 0.35
-    ImpulseType: 1
+    ImpulseType: 0
     DissipationRate: 0.25
     RawSignal: {fileID: 0}
     AmplitudeGain: 1
@@ -8967,7 +8968,7 @@ MonoBehaviour:
     DissipationMode: 2
     DissipationDistance: 100
     PropagationSpeed: 343
-  DefaultVelocity: {x: 0, y: -1, z: 0}
+  DefaultVelocity: {x: 1, y: 1, z: 0}
 --- !u!1 &1628086230
 GameObject:
   m_ObjectHideFlags: 0
