@@ -122,7 +122,7 @@ public class NetworkGameManager : NetworkBehaviour
         // Update the specific player's personal score UI
         NetworkPlayer player = FindPlayerByRef(playerRef);
         if (player != null)
-            player.RPC_UpdateScoreUI(playerScores[playerRef], amount);
+            player.RPC_UpdateScoreUI(playerScores[playerRef]);
         
         // Broadcast top scores to everyone's leaderbox
         UpdateLeaderboardData();

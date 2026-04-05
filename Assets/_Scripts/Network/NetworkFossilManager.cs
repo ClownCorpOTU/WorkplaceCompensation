@@ -20,6 +20,8 @@ public class NetworkFossilManager : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
 
+        print("Spawning fossils!");
+
         List<int> indices = new List<int>();
         for (int i = 0; i < allSpawnPoints.Length; i++) indices.Add(i);
 

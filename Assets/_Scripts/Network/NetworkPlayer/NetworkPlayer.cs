@@ -318,10 +318,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    public void RPC_UpdateScoreUI(int newScore, int addedScore)
+    public void RPC_UpdateScoreUI(int newScore)
     {
         networkGameManager.ScoreText.text = newScore.ToString();
-        ScorePopupManager.Instance.ShowScore(addedScore);
     }
     #endregion
 
