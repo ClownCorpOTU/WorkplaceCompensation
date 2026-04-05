@@ -1,37 +1,51 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class BarrierSection : MonoBehaviour
 {
-    public Transform player;
-    public float revealDistance = 5f;
-    public float fadeSpeed = 5f;
+    [Header("References")]
+    [SerializeField] private Transform player;
+    [SerializeField] private Renderer barrierRenderer;
 
-    private Renderer rend;
-    private Material mat;
-    private float currentAlpha = 0f;
+    [Header("Visibility Settings")]
+    [SerializeField] private float revealDistance = 5f;
+    [SerializeField] private float fadeSpeed = 5f;
 
-    void Start()
+    [Header("Debug")]
+    [SerializeField] private bool useManualVisibility = false;
+    [SerializeField, Range(0f, 1f)] private float visibility = 0f;
+
+    private Material materialInstance;
+
+    private static readonly int VisibilityID = Shader.PropertyToID("_Visibility");
+
+    private void Awake()
     {
-        rend = GetComponentInChildren<Renderer>();
-        mat = rend.material;
-
-        SetAlpha(0f); // start invisible
+        materialInstance = Instantiate(barrierRenderer.material);
+        barrierRenderer.material = materialInstance;
     }
 
-    void Update()
+    private void Update()
     {
+        if (useManualVisibility)
+        {
+            //Use inspector slider directly
+            SetVisibility(visibility);
+            return;
+        }
+
+        if (player == null) return;
+
         float distance = Vector3.Distance(player.position, transform.position);
 
-        float targetAlpha = distance < revealDistance ? 1f : 0f;
+        float targetVisibility = Mathf.InverseLerp(revealDistance, 0f, distance);
 
-        currentAlpha = Mathf.Lerp(currentAlpha, targetAlpha, Time.deltaTime * fadeSpeed);
-        SetAlpha(currentAlpha);
+        visibility = Mathf.Lerp(visibility, targetVisibility, Time.deltaTime * fadeSpeed);
+
+        SetVisibility(visibility);
     }
 
-    void SetAlpha(float alpha)
+    private void SetVisibility(float value)
     {
-        Color color = mat.color;
-        color.a = alpha;
-        mat.color = color;
+        materialInstance.SetFloat(VisibilityID, value);
     }
 }
