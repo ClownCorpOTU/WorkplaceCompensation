@@ -26507,6 +26507,22 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 5557298244728902598, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1487380529}
+    - target: {fileID: 5557298244728902598, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: QuitGame
+      objectReference: {fileID: 0}
+    - target: {fileID: 5559261809814039059, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1487380529}
+    - target: {fileID: 5559261809814039059, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: BackToMenu
+      objectReference: {fileID: 0}
     - target: {fileID: 5646479018473113181, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
       propertyPath: m_AnchorMax.x
       value: 0.7997998
