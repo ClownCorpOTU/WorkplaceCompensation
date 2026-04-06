@@ -16,7 +16,6 @@ public class NetworkMagnifyingLens : NetworkBehaviour
 
     private ChangeDetector changes;
     private NetworkGameManager networkGameManager;
-    private AudioManager audioManager;
     
     // Tracks Object ID -> Time spent cooking
     private Dictionary<NetworkId, float> cookTrackers = new Dictionary<NetworkId, float>();
@@ -24,35 +23,19 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     public override void Spawned()
     {
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
-        audioManager = FindFirstObjectByType<AudioManager>();
     }
 
     private void OnTriggerEnter(Collider other)
     {
         if (!Object.HasStateAuthority) return;
-        
-        switch (other.gameObject.tag)
+    
+        if (other.CompareTag("Fossil"))
         {
-            case "Player":
-                //if (!hasHitPlayer)
-                HitPlayer(other);
-                break;
-            case "Fossil":
-                CookFossil(other);
-                break;
-            default:
-                break;
+            CookFossil(other);
         }
-    }
-
-    private void HitPlayer(Collider other)
-    {
-        //hasHitPlayer = true;
-        
-        if (other.transform.root.TryGetComponent(out NetworkPlayer networkPlayer))
+        else if (other.transform.root.TryGetComponent(out NetworkPlayer player))
         {
-            RPC_BurnPlayer(networkPlayer);
-            networkPlayer.MakeRagdoll();
+            player.Burn();
         }
     }
     
@@ -68,18 +51,5 @@ public class NetworkMagnifyingLens : NetworkBehaviour
         
         // Spawn egg
         Runner.Spawn(eggPrefab, other.transform.position, Quaternion.identity);
-    }
-    
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_BurnPlayer(NetworkPlayer networkPlayer)
-    {
-        if (networkPlayer.IsBurned) return;
-        
-        networkPlayer.IsBurned = true;
-        
-        networkPlayer.GetComponent<DissolvingController>().BeginFx();
-        networkPlayer.SpawnVestAfterBurning();
-        if (audioManager != null) audioManager.Play("PlayerBurn", networkPlayer.transform.position);
     }
 }

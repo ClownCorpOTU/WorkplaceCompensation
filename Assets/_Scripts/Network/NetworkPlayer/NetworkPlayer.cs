@@ -346,10 +346,40 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         vest.transform.parent = playerVest.transform.parent;
         playerVest.gameObject.SetActive(false);
     }
+    
+    private void TriggerBurnVisuals()
+    {
+        // Visuals/FX
+        if (dissolvingController != null) dissolvingController.BeginFx();
+    
+        SpawnVestAfterBurning();
+    
+        if (audioManager != null) 
+            audioManager.Play("PlayerBurn", transform.position);
+    }
 
+    // This function gets called from other objects to burn the player
+    public void Burn()
+    {
+        if (Object.HasStateAuthority)
+        {
+            if (IsBurned) return; // Don't burn twice
+        
+            IsBurned = true;
+            MakeRagdoll(); // Flatten the player
+        }
+    }
     #endregion
     
     #region Network Functions
+    private void OnBurnedChanged()
+    {
+        if (IsBurned)
+        {
+            TriggerBurnVisuals();
+        }
+    }
+    
     public void PlayerLeft(PlayerRef player)
     {
         if (Object.InputAuthority == player)
