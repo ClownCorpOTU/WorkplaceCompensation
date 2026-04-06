@@ -34,11 +34,9 @@ public class SettingsManager : MonoBehaviour
 
         if (micToggle != null) 
         {
-            micToggle.SetIsOnWithoutNotify(isMicActive);
             micToggle.onValueChanged.AddListener(OnToggleMic);
+            OnToggleMic(isMicActive);
         }
-    
-        if (recorder != null) recorder.TransmitEnabled = isMicActive;
         
         // === SENSITIVITY LOGIC === ///
         float savedSensitivity = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
@@ -54,7 +52,19 @@ public class SettingsManager : MonoBehaviour
 
     public void OnToggleMic(bool micActive)
     {
-        if (recorder != null) recorder.TransmitEnabled = micActive;
+        if (recorder == null) 
+        {
+            recorder = FindFirstObjectByType<Recorder>();
+        }
+        
+        if (recorder != null)
+        {
+            recorder.RecordingEnabled = micActive;
+        }
+        else
+        {
+            Debug.LogWarning("No recorder found in scene!");
+        }
 
         var newValue = micActive ? 1 : 0;
         PlayerPrefs.SetInt("IsMicActive?", newValue);
