@@ -121,6 +121,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (playerGrab == null)
             playerGrab = gameObject.AddComponent<NetworkPlayerGrab>();
         playerGrab.Initialize(this);
+        
+        // (Not a sub-system) Barriers
+        var barriers = GameObject.FindObjectsByType<BarrierSection>(FindObjectsSortMode.None);
+        foreach (var barrier in barriers)
+        {
+            if (barrier != null) barrier.InitializeBarrierSections(Local.transform);
+        }
     }
 
     private void Start()

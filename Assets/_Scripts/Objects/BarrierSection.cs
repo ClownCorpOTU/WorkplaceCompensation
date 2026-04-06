@@ -24,6 +24,11 @@ public class BarrierSection : MonoBehaviour
         barrierRenderer.material = materialInstance;
     }
 
+    public void InitializeBarrierSections(Transform localPlayer)
+    {
+        player = localPlayer;
+    }
+
     private void Update()
     {
         if (useManualVisibility)
