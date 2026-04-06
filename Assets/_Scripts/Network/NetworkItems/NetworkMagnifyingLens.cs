@@ -71,13 +71,6 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     }
     
     
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
-    private void RPC_Play(string audioName, Vector3 position)
-    {
-        print("Playing!");
-        if (audioManager != null) audioManager.Play(audioName, position);
-    }
-    
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_BurnPlayer(NetworkPlayer networkPlayer)
     {

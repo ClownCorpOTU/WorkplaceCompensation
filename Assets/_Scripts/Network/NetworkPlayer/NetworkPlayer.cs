@@ -39,7 +39,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
     
     [Networked, HideInInspector] public float NetworkedMovementSpeed { get; set; }
-    [Networked, HideInInspector] public NetworkBool IsBurned { get; set; } 
+    [Networked, OnChangedRender(nameof(OnBurnedChanged)), HideInInspector] public NetworkBool IsBurned { get; set; } 
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -121,6 +121,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (playerGrab == null)
             playerGrab = gameObject.AddComponent<NetworkPlayerGrab>();
         playerGrab.Initialize(this);
+        
+        // (Not a sub-system) Send local player location to barriers
+        if (Object.HasInputAuthority && Local != null)
+        {
+            var barriers = GameObject.FindObjectsByType<BarrierSection>(FindObjectsSortMode.None);
+            foreach (BarrierSection barrier in barriers)
+            {
+                barrier.InitializeBarrierSections(Local.transform);
+            }
+        }
     }
 
     private void Start()
@@ -134,6 +144,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     public override void Spawned()
     {
         GetReferences();
+        
+        // Set local first so sub-systems don't throw a null reference error
+        if (Object.HasInputAuthority)
+            Local = this;
+        
         InitializeSubSystems();
         
         startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
@@ -149,8 +164,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
         if (Object.HasInputAuthority)
         {
-            Local = this;
-            
             // Observer pattern for the UI manager (to handle pause)
             var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
             if (uiManager != null && inputReader != null)
