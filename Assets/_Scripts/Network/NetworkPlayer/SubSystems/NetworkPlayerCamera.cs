@@ -70,7 +70,7 @@ public class NetworkPlayerCamera : MonoBehaviour
         if (inputController != null)
         {
             inputController.Controllers[0].Input.Gain = value;
-            inputController.Controllers[1].Input.Gain = value;
+            inputController.Controllers[1].Input.Gain = -value;
         }
     }
 
