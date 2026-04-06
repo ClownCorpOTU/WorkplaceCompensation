@@ -61,6 +61,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private AudioListener audioListener; // This is on the main camera
     private DissolvingController dissolvingController;
     private ChangeDetector ragdollChanges; // Change detector for flattening Blobby
+
+    public NetworkPlayerCamera PlayerCamera => playerCamera;
     
     // Input
     private NetworkInputData networkInputData;
