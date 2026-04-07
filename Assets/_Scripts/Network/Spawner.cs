@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
@@ -38,11 +39,15 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
             var spawnedPlayer = runner.Spawn(playerToSpawn.gameObject, spawnPoint, Quaternion.identity, player);
             spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
         }
+
+        var activePlayers = Runner.ActivePlayers.Count();
+        if (DiscordManager.Instance != null) DiscordManager.Instance.UpdatePlayerCount(activePlayers);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        
+        var activePlayers = Runner.ActivePlayers.Count();
+        if (DiscordManager.Instance != null) DiscordManager.Instance.UpdatePlayerCount(activePlayers);
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

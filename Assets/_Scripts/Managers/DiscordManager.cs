@@ -4,7 +4,22 @@ using Discord;
 
 public class DiscordManager : MonoBehaviour
 {
+    public static DiscordManager Instance;
+    
     private Discord.Discord discord;
+    private int currentPlayerCount;
+
+    private void Awake()
+    {
+        if (Instance == null) {
+            Instance = this;
+        }
+        else {
+            Destroy(gameObject);
+            return;
+        }
+        DontDestroyOnLoad(gameObject);
+    }
 
     private void Start()
     {
@@ -16,6 +31,12 @@ public class DiscordManager : MonoBehaviour
     {
         if (discord != null)
             discord.Dispose();
+    }
+
+    public void UpdatePlayerCount(int newPlayerCount)
+    {
+        currentPlayerCount = newPlayerCount;
+        ChangeActivity();
     }
 
     public void ChangeActivity()
@@ -33,7 +54,7 @@ public class DiscordManager : MonoBehaviour
             Party = {
                 Id = "workplace_comp_lobby", // Required to show player count
                 Size = {
-                    CurrentSize = 1,
+                    CurrentSize = currentPlayerCount,
                     MaxSize = 6
                 }
             }

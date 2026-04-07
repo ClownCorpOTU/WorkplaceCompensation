@@ -371,15 +371,28 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             MakeRagdoll(); // Flatten the player
         }
     }
+
+    private void ResetBurnVisuals()
+    {
+        if (dissolvingController != null) 
+        {
+            dissolvingController.ResetBurningFx(); 
+        }
+        
+        if (playerVest != null) 
+        {
+            playerVest.gameObject.SetActive(true);
+        }
+    }
     #endregion
     
     #region Network Functions
     private void OnBurnedChanged()
     {
         if (IsBurned)
-        {
             TriggerBurnVisuals();
-        }
+        else
+            ResetBurnVisuals();
     }
     
     public void PlayerLeft(PlayerRef player)

@@ -21,7 +21,7 @@ public class NetworkLandmineManager : NetworkBehaviour
         if (Object.HasStateAuthority)
         {
             _allSpawnPoints = GameObject.FindGameObjectsWithTag("LandmineSpawnPoint");
-            RefreshLandmineCount();
+            //RefreshLandmineCount();
         }
     }
 
@@ -74,8 +74,8 @@ public class NetworkLandmineManager : NetworkBehaviour
             Quaternion spawnRot = Quaternion.FromToRotation(Vector3.up, hit.normal);
 
             // 3. Spawn on the network
-            NetworkObject newMine = Runner.Spawn(landminePrefab, spawnPos, spawnRot, Object.InputAuthority);
-            newMine.transform.SetParent(landmineParent);
+            NetworkObject newMine = Runner.Spawn(landminePrefab, spawnPos, spawnRot);
+            //newMine.transform.SetParent(landmineParent);
             _activeLandmines.Add(newMine);
         }
     }
