@@ -81,7 +81,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
     private void Mix()
     {
-        AudioManager.instance.Play("Processor", transform.position);
+        RPC_Play("Processor", transform.position);
 
         // Order inputs alphabetically
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
@@ -212,6 +212,12 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
         // Auto-destroy if vfx didn't destory itself
         if (fx != null) Destroy(fx, fxDespawnDelay);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 
     // --- Trigger interface ---

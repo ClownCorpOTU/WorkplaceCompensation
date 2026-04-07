@@ -23,7 +23,6 @@ public class LocalPlayerUIManager : MonoBehaviour
     private Image staminaBarImage2;
     private Recorder recorder;
     
-    
     private void OnDisable()
     {
         var input = FindFirstObjectByType<InputReader>();

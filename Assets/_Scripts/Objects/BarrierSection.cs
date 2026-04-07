@@ -3,7 +3,6 @@
 public class BarrierSection : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform player;
     [SerializeField] private Renderer barrierRenderer;
 
     [Header("Visibility Settings")]
@@ -14,14 +13,16 @@ public class BarrierSection : MonoBehaviour
     [SerializeField] private bool useManualVisibility = false;
     [SerializeField, Range(0f, 1f)] private float visibility = 0f;
 
+    private Transform player;
     private Material materialInstance;
-
     private static readonly int VisibilityID = Shader.PropertyToID("_Visibility");
-
+    private Collider barrierCollider;
+    
     private void Awake()
     {
         materialInstance = Instantiate(barrierRenderer.material);
         barrierRenderer.material = materialInstance;
+        barrierCollider = GetComponent<Collider>();
     }
 
     public void InitializeBarrierSections(Transform localPlayer)
@@ -38,14 +39,16 @@ public class BarrierSection : MonoBehaviour
             return;
         }
 
-        if (player == null) return;
+        if (player == null || barrierCollider == null) return;
 
-        float distance = Vector3.Distance(player.position, transform.position);
+        // This finds the point on the barrier's edge closest to the player
+        Vector3 closestPointOnBarrier = barrierCollider.ClosestPoint(player.position);
+        float distance = Vector3.Distance(player.position, closestPointOnBarrier);
 
+        // Distance logic should work now since we're no longer using the pivot of the barrier (which was higher up)
         float targetVisibility = Mathf.InverseLerp(revealDistance, 0f, distance);
-
         visibility = Mathf.Lerp(visibility, targetVisibility, Time.deltaTime * fadeSpeed);
-
+    
         SetVisibility(visibility);
     }
 

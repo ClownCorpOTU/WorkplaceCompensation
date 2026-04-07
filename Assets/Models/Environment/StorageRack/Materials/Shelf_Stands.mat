@@ -135,15 +135,15 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
-    - _FalloffThreshold: 2
+    - _FalloffThreshold: 1.3
     - _GlossMapScale: 1
     - _Glossiness: 0.5
     - _GlossyReflections: 1
-    - _HalfToneIntensity: 1
+    - _HalfToneIntensity: 0.638
     - _HeightMapStrength: 1
     - _LIGHTMAP_SHADOW_MIXING: 0
     - _LightPosterizationSteps: 4
-    - _LitThreshold: 0.5
+    - _LitThreshold: 0.3
     - _Metallic: 0
     - _Mode: 0
     - _NormalMapStrength: 0
@@ -191,7 +191,7 @@ Material:
     - _Offset: {r: 0, g: 0, b: 0, a: 0}
     - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}
     - _RimLightColor: {r: 0, g: 0, b: 0, a: 1}
-    - _RotationJitterRange: {r: -5, g: -5, b: 0, a: 0}
+    - _RotationJitterRange: {r: -5, g: 5, b: 0, a: 0}
     - _ShadowColor: {r: 0.1547169, g: 0.1547169, b: 0.1547169, a: 1}
     - _ShadowPatternColor: {r: 1, g: 1, b: 1, a: 0.5490196}
     - _ShadowTextureMovementSpeed: {r: 0.01, g: 0.01, b: 0, a: 0}

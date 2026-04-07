@@ -57,7 +57,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         if (vial.Type != VialType.OutputVial) return;
 
         currentInputs.Add(vial.Type);
-        Utils.DebugLog($"Added vial: {vial.Type}");
 
         Runner.Despawn(vial.Object);
 
@@ -78,7 +77,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
     private void Mix()
     {
-        AudioManager.instance.Play("Processor", transform.position);
+        RPC_Play("Processor", transform.position);
 
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
         var matchingRecipe = recipes.FirstOrDefault(r =>
@@ -188,6 +187,12 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         audioManager.Play("FireworksHighPitch", transform.position);
 
         if (fx != null) Destroy(fx, fxDespawnDelay);
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 
     // --- Trigger Interface ---

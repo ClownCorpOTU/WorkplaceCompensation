@@ -116,8 +116,8 @@ MonoBehaviour:
     source: {fileID: 0}
     loop: 0
     is3D: 1
-    usePooling: 0
-    allowOverlap: 0
+    usePooling: 1
+    allowOverlap: 1
   - name: Ragdoll
     clip: {fileID: 8300000, guid: be1d2a3287edf4b4db6b0ca9fe83561b, type: 3}
     hasVariations: 0
@@ -237,7 +237,7 @@ MonoBehaviour:
     loop: 0
     is3D: 1
     usePooling: 0
-    allowOverlap: 0
+    allowOverlap: 1
   - name: Processor
     clip: {fileID: 8300000, guid: d3de15230e3bae34eba85e936ab78bb8, type: 3}
     hasVariations: 0
@@ -249,7 +249,7 @@ MonoBehaviour:
     loop: 0
     is3D: 1
     usePooling: 0
-    allowOverlap: 0
+    allowOverlap: 1
   - name: Suction
     clip: {fileID: 8300000, guid: 24fdc5265f7b40546bbe2ce8cc5f891a, type: 3}
     hasVariations: 0
@@ -501,7 +501,7 @@ MonoBehaviour:
     loop: 0
     is3D: 1
     usePooling: 0
-    allowOverlap: 0
+    allowOverlap: 1
   - name: UFOSuction
     clip: {fileID: 8300000, guid: 1d75035246405d944934bbfd4eefd7e0, type: 3}
     hasVariations: 0

@@ -39,7 +39,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
     
     [Networked, HideInInspector] public float NetworkedMovementSpeed { get; set; }
-    [Networked, HideInInspector] public NetworkBool IsBurned { get; set; } 
+    [Networked, OnChangedRender(nameof(OnBurnedChanged)), HideInInspector] public NetworkBool IsBurned { get; set; } 
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -61,6 +61,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private AudioListener audioListener; // This is on the main camera
     private DissolvingController dissolvingController;
     private ChangeDetector ragdollChanges; // Change detector for flattening Blobby
+
+    public NetworkPlayerCamera PlayerCamera => playerCamera;
     
     // Input
     private NetworkInputData networkInputData;
@@ -121,6 +123,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (playerGrab == null)
             playerGrab = gameObject.AddComponent<NetworkPlayerGrab>();
         playerGrab.Initialize(this);
+        
+        // (Not a sub-system) Send local player location to barriers
+        if (Object.HasInputAuthority && Local != null)
+        {
+            var barriers = GameObject.FindObjectsByType<BarrierSection>(FindObjectsSortMode.None);
+            foreach (BarrierSection barrier in barriers)
+            {
+                barrier.InitializeBarrierSections(Local.transform);
+            }
+        }
     }
 
     private void Start()
@@ -134,6 +146,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     public override void Spawned()
     {
         GetReferences();
+        
+        // Set local first so sub-systems don't throw a null reference error
+        if (Object.HasInputAuthority)
+            Local = this;
+        
         InitializeSubSystems();
         
         startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
@@ -149,8 +166,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
         if (Object.HasInputAuthority)
         {
-            Local = this;
-            
             // Observer pattern for the UI manager (to handle pause)
             var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
             if (uiManager != null && inputReader != null)
@@ -333,10 +348,53 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         vest.transform.parent = playerVest.transform.parent;
         playerVest.gameObject.SetActive(false);
     }
+    
+    private void TriggerBurnVisuals()
+    {
+        // Visuals/FX
+        if (dissolvingController != null) dissolvingController.BeginFx();
+    
+        SpawnVestAfterBurning();
+    
+        if (audioManager != null) 
+            audioManager.Play("PlayerBurn", transform.position);
+    }
 
+    // This function gets called from other objects to burn the player
+    public void Burn()
+    {
+        if (Object.HasStateAuthority)
+        {
+            if (IsBurned) return; // Don't burn twice
+        
+            IsBurned = true;
+            MakeRagdoll(); // Flatten the player
+        }
+    }
+
+    private void ResetBurnVisuals()
+    {
+        if (dissolvingController != null) 
+        {
+            dissolvingController.ResetBurningFx(); 
+        }
+        
+        if (playerVest != null) 
+        {
+            playerVest.gameObject.SetActive(true);
+        }
+    }
     #endregion
     
     #region Network Functions
+    private void OnBurnedChanged()
+    {
+        if (IsBurned)
+            TriggerBurnVisuals();
+        else
+            ResetBurnVisuals();
+    }
+    
     public void PlayerLeft(PlayerRef player)
     {
         if (Object.InputAuthority == player)

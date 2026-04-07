@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 8013769871511991450}
   - component: {fileID: 1035099744188122935}
   - component: {fileID: 8469903856824899937}
-  - component: {fileID: 5636234127016283165}
   - component: {fileID: 4557542286414572359}
   - component: {fileID: 8584355603672311469}
+  - component: {fileID: 1156976289021862176}
+  - component: {fileID: 7366902910298902181}
   m_Layer: 0
   m_Name: Barrier Section
   m_TagString: Untagged
@@ -92,28 +93,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5636234127016283165
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6913828850149191162}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
 --- !u!65 &4557542286414572359
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -129,7 +108,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
@@ -147,9 +126,40 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c7d5f3b6dbacb84597f5eef9f7a0ec4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BarrierSection
-  player: {fileID: 0}
   barrierRenderer: {fileID: 8469903856824899937}
-  revealDistance: 5
-  fadeSpeed: 5
+  revealDistance: 8
+  fadeSpeed: 8
   useManualVisibility: 0
   visibility: 0.151
+--- !u!114 &1156976289021862176
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6913828850149191162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a2531f1ea8e1d7419afaba43dc826f6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkHazard
+  destroyOnHit: 0
+--- !u!114 &7366902910298902181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6913828850149191162}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 2721652138
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours:
+  - {fileID: 1156976289021862176}
+  ForceRemoteRenderTimeframe: 0
