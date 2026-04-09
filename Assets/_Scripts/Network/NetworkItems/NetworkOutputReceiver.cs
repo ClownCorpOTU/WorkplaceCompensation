@@ -8,6 +8,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
     [SerializeField] private float flyDelay = 0.5f;
     [SerializeField] private float flySpeed = 5f;
     [SerializeField] private float despawnDelay = 3f;
+    [SerializeField] private int scoreToAdd = 2;
     
     [Header("Juice")]
     [SerializeField] private GameObject windPrefab;
@@ -69,7 +70,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
         if (despawnTimer.Expired(Runner) && vialToDespawn != null)
         {
             Vial v = vialToDespawn.gameObject.GetComponent<Vial>();
-            networkGameManager.AddScore(v.LastHeldBy, 2);
+            networkGameManager.AddScore(v.LastHeldBy, scoreToAdd);
             Runner.Despawn(vialToDespawn);
             vialToDespawn = null;
             v = null;

@@ -43,7 +43,7 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     {
         // Give point to whoever was holding the fossil last
         if (other.gameObject.TryGetComponent(out GrabbedByTracker grabTracker))
-            networkGameManager.AddScore(grabTracker.LastHeldBy, 1);
+            networkGameManager.AddScore(grabTracker.LastHeldBy, 2);
         
         // Despawn fossil
         NetworkObject no = other.gameObject.GetComponent<NetworkObject>();
