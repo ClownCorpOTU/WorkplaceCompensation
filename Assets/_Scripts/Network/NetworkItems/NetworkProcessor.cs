@@ -63,7 +63,9 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         // --- Give the correct player a score ---
         if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
         {
-            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+            var scoreToAdd = vial.Type == VialType.VIPCrate ? 2 : 1;
+            
+            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, scoreToAdd);
         }
 
         // --- Despawn vial ---
