@@ -33,6 +33,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new();
+    private NetworkGameManager networkGameManager;
     private int vialCount;
     private Vector3 originalPos;
 
@@ -46,7 +47,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
-
+        networkGameManager = FindFirstObjectByType<NetworkGameManager>();
+        
         if (Object.HasStateAuthority)
             RPC_ResetMixerVisuals();
     }
@@ -57,6 +59,12 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         if (vial.Type != VialType.OutputVial) return;
 
         currentInputs.Add(vial.Type);
+        
+        // --- Give the correct player a score ---
+        if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
+        {
+            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+        }
 
         Runner.Despawn(vial.Object);
 

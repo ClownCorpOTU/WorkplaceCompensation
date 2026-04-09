@@ -26,6 +26,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new(); // queue for multiple results
+    private NetworkGameManager networkGameManager;
     private int vialCount;
 
     // --- Network timers ---
@@ -39,6 +40,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     {
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
+        networkGameManager = FindFirstObjectByType<NetworkGameManager>();
 
         if (Object.HasStateAuthority) RPC_ResetLights();
     }
@@ -57,7 +59,14 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         Utils.DebugLog($"Added vial: {vial.Type}");
 
         OnBoxAdded(vial.Type);
+        
+        // --- Give the correct player a score ---
+        if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
+        {
+            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+        }
 
+        // --- Despawn vial ---
         Runner.Despawn(vial.Object);
 
         // --- Check if current inputs match any recipe exactly ---
