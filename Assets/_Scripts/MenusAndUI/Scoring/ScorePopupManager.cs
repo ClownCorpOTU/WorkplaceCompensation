@@ -30,8 +30,8 @@ public class ScorePopupManager : MonoBehaviour
 
     public void ShowScore(int amount)
     {
-        //Only allow 1 or 2
-        amount = Mathf.Clamp(amount, 1, 2);
+        //Only allow 1 to 3
+        amount = Mathf.Clamp(amount, 1, 3);
 
         //Spawn popup
         GameObject popupObj = Instantiate(scorePopupPrefab, canvasTransform);
@@ -60,7 +60,15 @@ public class ScorePopupManager : MonoBehaviour
         if (impulseSource == null || CameraShakeManager.Instance == null)
             return;
 
-        float baseForce = (amount == 1) ? 0.9f : 1.4f;
+        float baseForce = 0f;
+
+        switch (amount)
+        {
+            case 1: baseForce = 0.5f; break;
+            case 2: baseForce = 1.2f; break;
+            case 3: baseForce = 2.0f; break;
+        }
+
         float force = baseForce * shakeMultiplier;
 
         //Slight randomness
