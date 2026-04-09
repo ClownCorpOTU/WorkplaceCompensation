@@ -66,11 +66,16 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnDisconnectedFromServer(NetworkRunner runner, NetDisconnectReason reason)
     {
         Debug.Log($"Disconnected from sever: {reason}");
-        
-        if (SceneManager.GetActiveScene().buildIndex != lobbyMenuBuildIndex)
+
+        if (SceneManager.GetActiveScene().buildIndex != mainMenuBuildIndex)
         {
-            SceneManager.LoadScene(lobbyMenuBuildIndex);
+            SceneManager.LoadScene(mainMenuBuildIndex);
         }
+        
+        // if (SceneManager.GetActiveScene().buildIndex != lobbyMenuBuildIndex)
+        // {
+        //     SceneManager.LoadScene(lobbyMenuBuildIndex);
+        // }
     }
 
     public void OnHostMigration(NetworkRunner runner, HostMigrationToken hostMigrationToken)
@@ -139,10 +144,14 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
     {
         // Now that you've added .AddCallbacks(this), you will see this print!
         Debug.Log($"<color=orange>NetworkManager:</color> Game Shutdown! Reason: {shutdownReason}");
-    
+
+        if (shutdownReason == ShutdownReason.Ok)
+        {
+            return;
+        }
         // 0 is 'Ok' (the user left normally). 
         // Anything else means a disconnect, host-quit, or error.
-        if (shutdownReason != ShutdownReason.Ok)
+        else 
         {
             var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
             if (uiManager != null)
@@ -153,24 +162,21 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
-
-        if (shutdownReason == ShutdownReason.Ok)
-        {
-            return;
-        }
-
-        Debug.Log($"Network Shutdown Reason: {shutdownReason}");
         
 
-        if (SceneManager.GetActiveScene().name != "Lobby")
+        // if (SceneManager.GetActiveScene().name != "Lobby")
+        // {
+        //     SceneManager.LoadScene(lobbyMenuBuildIndex);
+        // }
+        if (SceneManager.GetActiveScene().buildIndex != mainMenuBuildIndex)
         {
-            SceneManager.LoadScene(lobbyMenuBuildIndex);
+            SceneManager.LoadScene(mainMenuBuildIndex);
         }
         else
         {
             if (networkRunnerHandler != null)
             {
-                networkRunnerHandler.OnJoinLobby("MainLobbyList");
+                networkRunnerHandler.OnJoinLobbyList(networkRunnerHandler.MainLobbyListName);
             }
         }
     }
@@ -186,16 +192,15 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
 
-        lobbyMenuManager.ClearLobbyDisplay();
+        //lobbyMenuManager.ClearLobbyDisplay();
 
         if (sessionList.Count != 0)
         {
-            //lobbyMenuManager.CompareEntries(sessionList);
-
-            foreach (SessionInfo session in sessionList)
-            {
-                lobbyMenuManager.CreateEntry(session);
-            }
+            // foreach (SessionInfo session in sessionList)
+            // {
+            //     lobbyMenuManager.CreateEntry(session);
+            // }
+            networkRunnerHandler.sessionList = sessionList;
         }
     }
 }

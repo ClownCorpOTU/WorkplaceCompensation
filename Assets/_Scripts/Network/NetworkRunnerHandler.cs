@@ -23,8 +23,11 @@ public class NetworkRunnerHandler : MonoBehaviour
     
     public Vector3 SpawnPoint => spawnPoint;
 
+    [Header ("Lobbies")]
     [SerializeField] int defaultSessionPlayerCap = 4;
     public List<SessionInfo> sessionList = new List<SessionInfo>();
+    public string MainLobbyListName = "MainLobbyList";
+    [SerializeField] bool doStartSessionOnScenePlay = false;
 
     private void Awake()
     {
@@ -41,9 +44,9 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private void Start()
     {
-        if (SceneManager.GetActiveScene().name == "Lobby")
+        if (!doStartSessionOnScenePlay)
         {
-            OnJoinLobby("MainLobbyList");
+            OnJoinLobbyList(MainLobbyListName);
             return;
         }
 
@@ -118,7 +121,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             Address = address,
             Scene = scene,
             SessionName = uniqueName,
-            CustomLobbyName = "MainLobbyList",
+            CustomLobbyName = MainLobbyListName,
             SceneManager = sceneManager,
             PlayerCount = lobbyCap,
             IsOpen = true,
@@ -131,8 +134,19 @@ public class NetworkRunnerHandler : MonoBehaviour
         });
     }
 
-    public void OnJoinLobby(string lobbyListName)
+    /// <summary>
+    /// Joins the lobby list.
+    /// </summary>
+    /// <param name="lobbyListName">The name of the lobby list you want to join (EU, NA, SEA, etc.)</param>
+    public void OnJoinLobbyList(string lobbyListName)
     {
+        // Check if a runner already exists and is busy
+        if (networkRunner != null && (networkRunner.IsRunning || networkRunner.IsCloudReady))
+        {
+            UnityEngine.Debug.LogWarning("Runner is already busy. Ignoring JoinLobby request.");
+            return;
+        }
+
         if (networkRunner == null)
         {
             networkRunner = Instantiate(networkRunnerPrefab);
@@ -148,8 +162,18 @@ public class NetworkRunnerHandler : MonoBehaviour
         var clientTask = JoinLobby(lobbyListName);
     }
 
-    private async Task JoinLobby(string lobbyListID = "MainLobbyList")
+    /// <summary>
+    /// Task to create the lobby list and/or join it.
+    /// </summary>
+    /// <param name="lobbyListID">TThe name of the lobby list you want to join (EU, NA, SEA, etc.)</param>
+    /// <returns></returns>
+    private async Task JoinLobby(string lobbyListID)
     {
+        if (lobbyListID == "")
+        {
+            lobbyListID = MainLobbyListName;
+        }
+
         var result = await networkRunner.JoinSessionLobby(SessionLobby.Custom, lobbyListID);
 
         if (!result.Ok)
@@ -162,20 +186,61 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
     }
 
-        public async void JoinGame (SessionInfo sessionInfo)
+    /// <summary>
+    /// Joins a lobby.;
+    /// </summary>
+    /// <param name="sessionInfo"></param>
+    public async void JoinGame (SessionInfo sessionInfo)
     {
         await InitializeNetworkRunner(GameMode.Client, sessionInfo.Name, sessionInfo.MaxPlayers,
             NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
     }
 
+    /// <summary>
+    /// Join a lobby using a join code.
+    /// </summary>
+    /// <param name="joinCode">The join code.</param>
+    public async void JoinGameByCode(string joinCode)
+    {
+        foreach(SessionInfo session in sessionList)
+        {
+            session.Properties.TryGetValue("JoinCode", out var code);
+            if (joinCode == code)
+            {
+                JoinGame(session);
+
+                return;
+            }
+        }
+
+        UnityEngine.Debug.LogError($"No such lobby with join code [{joinCode}] exists.");
+    }
+
+    /// <summary>
+    /// Create the lobby.
+    /// </summary>
+    /// <param name="sessionName">Name of the lobby.</param>
+    /// <param name="lobbyCap">Max number of players allowed in.</param>
+    /// <param name="scenePath">Path to the map scene.</param>
     public async void CreateGame(string sessionName, int lobbyCap, string scenePath)
     {
         int buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+
+        if (buildIndex == -1) 
+        {
+            UnityEngine.Debug.LogError("Scene not found in Build Settings! Check the path string.");
+            return;
+        }
 
         await InitializeNetworkRunner(GameMode.Host, sessionName, lobbyCap,
             NetAddress.Any(), SceneRef.FromIndex(buildIndex), null);
     }
 
+    /// <summary>
+    /// Create a lobby join code.
+    /// </summary>
+    /// <param name="length">How long the join code should be. The length is 6 by default.</param>
+    /// <returns></returns>
     public string GenerateLobbyCode(int length = 6)
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

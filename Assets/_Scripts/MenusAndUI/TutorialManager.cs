@@ -1,4 +1,4 @@
-﻿using System;
+﻿using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -67,10 +67,61 @@ public class TutorialManager : MonoBehaviour
         UpdateUI();
     }
     
-    // Will be changed later to use Jeff's lobby system
-    public void JonGameButton()
+    // NOTE: UI needs to be updated for multiple lobbies of the same map.
+    public void JoinGameButton(string hostOrClient)
     {
-        SceneManager.LoadScene(chosenLevel);
+        NetworkRunnerHandler networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
+
+        string mapScenePath = "";
+        if (chosenLevel == level1Name)
+        {
+            mapScenePath = "Assets/_Scenes/Winter/WinterWeek2_ShaderTests.unity";
+        }
+        else if (chosenLevel == level2Name)
+        {
+            mapScenePath = "Assets/_Scenes/Winter/Test_MarsCanyon.unity";
+        }
+
+
+        if (hostOrClient == "HOST")
+        {
+            // REMOVE AFTER UI IS UPDATED
+            foreach (SessionInfo sessionInfo in networkRunnerHandler.sessionList)
+            {
+                if (sessionInfo.Name.Contains(chosenLevel))
+                {
+                    networkRunnerHandler.JoinGame(sessionInfo);
+                    return;
+                }
+            }
+
+            if (mapScenePath != "" && mapScenePath.Contains(chosenLevel))
+            {
+                networkRunnerHandler.CreateGame(chosenLevel, 8, mapScenePath);
+                return;
+            }
+            
+            Debug.LogError($"Scene path [{mapScenePath}] was gotten instead of the path for [{chosenLevel}].");
+        }
+        else if (hostOrClient == "CLIENT")
+        {
+            foreach (SessionInfo sessionInfo in networkRunnerHandler.sessionList)
+            {
+                if (sessionInfo.Name.Contains(chosenLevel))
+                {
+                    networkRunnerHandler.JoinGame(sessionInfo);
+                    return;
+                }
+            }
+
+            Debug.LogError($"No lobby was hosted.");
+        }
+        else
+        {
+            Debug.LogError($"Fusion Game Mode [{hostOrClient.ToString()}] is NOT a Host or Client and is NOT implemented for.");
+        }
+
+        //SceneManager.LoadScene(chosenLevel);
     }
 
     public void NextStep()

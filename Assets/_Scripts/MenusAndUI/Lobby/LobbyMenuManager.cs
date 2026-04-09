@@ -88,7 +88,7 @@ public class LobbyMenuManager : MonoBehaviour
     void Start()
     {
         lobbyEntries.Clear();
-        networkRunnerHandler.OnJoinLobby("MainLobbyList");
+        networkRunnerHandler.OnJoinLobbyList("MainLobbyList");
     }
 
     /// <summary>
@@ -184,25 +184,6 @@ public class LobbyMenuManager : MonoBehaviour
         entry.SetActive(session.IsValid);
     }
 
-
-    /// <summary>
-    /// Removes entry from UI.
-    /// </summary>
-    /// <param name="delete"></param>
-    public void DeleteEntry(List<SessionInfo> sessionList)
-    {
-        
-    }
-
-
-    /// <summary>
-    /// Checks if the session already exists in the UI.
-    /// </summary>
-    /// <param name="compareTo"></param>
-    public void CompareEntries(List<SessionInfo> sessionList)
-    {
-        
-    }
 
     /// <summary>
     /// Displays error message on popup.
