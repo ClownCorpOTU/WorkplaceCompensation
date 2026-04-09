@@ -37,6 +37,11 @@ public class NetworkRunnerHandler : MonoBehaviour
         if (networkRunner == null)
         {
             networkRunner = FindFirstObjectByType<NetworkRunner>();
+
+            if (networkRunner == null)
+            {
+                networkRunner = Instantiate(networkRunnerPrefab);
+            }
         }
 
         sessionList.Clear();
