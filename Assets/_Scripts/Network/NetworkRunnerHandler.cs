@@ -90,12 +90,15 @@ public class NetworkRunnerHandler : MonoBehaviour
         {
             if (networkManager != null) networkRunner.RemoveCallbacks(networkManager);
 
-            await networkRunner.Shutdown(destroyGameObject: true);
+            await networkRunner.Shutdown();
+
+            if (networkRunner != null) Destroy(networkRunner.gameObject);
             networkRunner = null;
         }
 
         networkRunner = Instantiate(networkRunnerPrefab);
-        networkRunner.name = "NetworkRunner";   
+        networkRunner.name = "NetworkRunner";  
+        if (networkRunner == null) networkRunner = FindFirstObjectByType<NetworkRunner>(); 
 
         Spawner spawner = networkRunner.GetComponent<Spawner>();
         networkRunner.AddCallbacks(spawner);
@@ -145,23 +148,31 @@ public class NetworkRunnerHandler : MonoBehaviour
     /// <param name="lobbyListName">The name of the lobby list you want to join (EU, NA, SEA, etc.)</param>
     public void OnJoinLobbyList(string lobbyListName)
     {
-        // Check if a runner already exists and is busy
-        if (networkRunner != null && (networkRunner.IsRunning || networkRunner.IsCloudReady))
-        {
-            UnityEngine.Debug.LogWarning("Runner is already busy. Ignoring JoinLobby request.");
-            return;
-        }
+        NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
 
-        if (networkRunner == null)
+        if (networkRunner != null)
         {
-            networkRunner = Instantiate(networkRunnerPrefab);
-            networkRunner.name = "LobbyRunner";
-
-            NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
             if (networkManager != null)
             {
                 networkRunner.AddCallbacks(networkManager);
             }
+
+            if (networkRunner.LobbyInfo.IsValid)
+            {
+                UnityEngine.Debug.Log($"Already in lobby: {networkRunner.LobbyInfo.Name}. No need to rejoin.");
+                return;
+            }
+            // Check if a runner already exists and is busy
+            else if (networkRunner.IsRunning || networkRunner.IsCloudReady)
+            {
+                UnityEngine.Debug.LogWarning("Runner is already busy. Ignoring JoinLobby request.");
+            return;
+            }
+        }
+        else
+        {
+            networkRunner = Instantiate(networkRunnerPrefab);
+            networkRunner.name = "LobbyRunner";
         }
 
         var clientTask = JoinLobby(lobbyListName);
@@ -183,11 +194,11 @@ public class NetworkRunnerHandler : MonoBehaviour
 
         if (!result.Ok)
         {
-            UnityEngine.Debug.LogError($"Unable to join lobby {lobbyListID}.");
+            UnityEngine.Debug.LogError($"Unable to join lobby [{lobbyListID}]. Error: [{result.ShutdownReason}]");
         }
         else
         {
-            UnityEngine.Debug.Log($"Joined lobby list of {lobbyListID}.");
+            UnityEngine.Debug.Log($"SUCCESS: Joined lobby [{lobbyListID}]. Waiting for session list...");
         }
     }
 
@@ -239,6 +250,18 @@ public class NetworkRunnerHandler : MonoBehaviour
 
         await InitializeNetworkRunner(GameMode.Host, sessionName, lobbyCap,
             NetAddress.Any(), SceneRef.FromIndex(buildIndex), null);
+    }
+
+    public async void RefreshLobbyList()
+    {
+        if (networkRunner != null && networkRunner.LobbyInfo.IsValid)
+        {
+            string currentLobby = networkRunner.LobbyInfo.Name;
+            await networkRunner.Shutdown(false);
+
+            OnJoinLobbyList(currentLobby);
+            UnityEngine.Debug.Log($"Refreshing lobby list [{currentLobby}] by rejoining lobby list.");
+        }
     }
 
     /// <summary>
