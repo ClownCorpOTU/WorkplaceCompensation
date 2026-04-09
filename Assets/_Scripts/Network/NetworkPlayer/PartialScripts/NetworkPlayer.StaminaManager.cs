@@ -15,16 +15,18 @@ public partial class NetworkPlayer
     
     private float staminaDrainRate = 1f;
     private float lastActivityTime = 0f;
+    private bool isUsingStamina;
+    public bool IsUsingStamina => isUsingStamina;
 
     
     private void HandleStamina()
     {
         if (!Object.HasStateAuthority) return;
 
-        bool isUsingStamina = false;
+        isUsingStamina = false;
 
         // Reduce stamina while grabbing
-        if (IsGrabbingActive || IsLeftHandGrabbingActive || IsRightHandGrabbingActive)
+        if ((IsGrabbingActive || IsLeftHandGrabbingActive || IsRightHandGrabbingActive) && playerGrab.CurrentlyGrabbedRigidbody != null)
         {
             // Heavier objects drain more
             if (playerGrab.CurrentlyGrabbedRigidbody != null)
@@ -34,6 +36,9 @@ public partial class NetworkPlayer
                 if (otherObject.TryGetComponent(out NetworkPlayer otherPlayer))
                 {
                     staminaDrainRate = otherPlayer.IsActiveRagdoll ? maxStaminaDrainRate : 2.5f;
+                }
+                else if (otherObject.CompareTag("SlowStaminaDrain")){
+                    staminaDrainRate = Mathf.Clamp(playerGrab.CurrentlyGrabbedRigidbody.mass * 0.1f, minStaminaDrainRate, maxStaminaDrainRate);
                 }
                 else
                 {

@@ -46,7 +46,12 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     private void AddBox(Vial vial)
     {
         if (!Object.HasStateAuthority) return;
-        if (vial.Type == VialType.OutputBox || vial.Type == VialType.TrashBag) return;
+
+        if (vial.Type is not (VialType.InputCrate or VialType.VIPCrate))
+        {
+            Utils.DebugLog($"Invalid vial type: {vial.Type}");
+            return;
+        }
 
         currentInputs.Add(vial.Type);
         Utils.DebugLog($"Added vial: {vial.Type}");
@@ -76,7 +81,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
     private void Mix()
     {
-        AudioManager.instance.Play("Processor", transform.position);
+        RPC_Play("Processor", transform.position);
 
         // Order inputs alphabetically
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
@@ -119,6 +124,8 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
         newVial.Initialize(resultType);
         vialCount++;
+        
+        RPC_PlayFireworks();
     }
 
     private void OnBoxAdded(VialType vialType)
@@ -207,12 +214,18 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         if (fx != null) Destroy(fx, fxDespawnDelay);
     }
 
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
+    }
+
     // --- Trigger interface ---
     public void OnChildTriggerEnter(Collider other, TriggerType tType=TriggerType.Left)
     {
         if (!Object.HasStateAuthority) return;
 
-        if (other.TryGetComponent(out Vial vial))
+        if (other.TryGetComponent(out Vial vial) && vial.Type is (VialType.InputCrate or VialType.VIPCrate))
             AddBox(vial);
     }
 

@@ -1,8 +1,10 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Fusion;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 {
@@ -11,6 +13,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private Vial trashPrefab;
     [SerializeField] private Transform vialSpawnPoint;
     [SerializeField] private float spawnDelay = 0.5f;
+    [SerializeField] private GameObject model;
 
     [Header("Lighting parameters")]
     [SerializeField] private Renderer light1;
@@ -31,6 +34,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new();
     private int vialCount;
+    private Vector3 originalPos;
 
     // --- Network timers ---
     [Networked] private TickTimer spawnDelayTimer { get; set; }
@@ -50,10 +54,9 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     private void AddBox(Vial vial)
     {
         if (!Object.HasStateAuthority) return;
-        if (vial.Type == VialType.OutputBox || vial.Type == VialType.TrashBag) return;
+        if (vial.Type != VialType.OutputVial) return;
 
         currentInputs.Add(vial.Type);
-        Utils.DebugLog($"Added vial: {vial.Type}");
 
         Runner.Despawn(vial.Object);
 
@@ -74,7 +77,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
     private void Mix()
     {
-        AudioManager.instance.Play("Processor", transform.position);
+        RPC_Play("Processor", transform.position);
 
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
         var matchingRecipe = recipes.FirstOrDefault(r =>
@@ -107,6 +110,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         newVial.Initialize(resultType);
         vialCount++;
+        
+        RPC_PlayFireworks();
     }
 
     public override void FixedUpdateNetwork()
@@ -183,24 +188,41 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         if (fx != null) Destroy(fx, fxDespawnDelay);
     }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
+    }
 
     // --- Trigger Interface ---
     public void OnChildTriggerEnter(Collider other, TriggerType tType = TriggerType.Left)
     {
         if (!Object.HasStateAuthority) return;
         if (!other.TryGetComponent(out Vial vial)) return;
+        if (vial.Type != VialType.OutputVial) return;
 
+        int countBeforeAdd = currentInputs.Count;
         AddBox(vial);
         Runner.Despawn(vial.Object);
 
-        switch (tType)
+        if (countBeforeAdd >= 1)
         {
-            case TriggerType.Left:
-                RPC_SetSingleLightAndVial(true, true);
-                break;
-            case TriggerType.Right:
-                RPC_SetSingleLightAndVial(false, true);
-                break;
+            print("Here!");
+            RPC_SetSingleLightAndVial(true, true);
+            RPC_SetSingleLightAndVial(false, true);
+        }
+        else
+        {
+            switch (tType)
+            {
+                case TriggerType.Left:
+                    RPC_SetSingleLightAndVial(true, true);
+                    break;
+                case TriggerType.Right:
+                    RPC_SetSingleLightAndVial(false, true);
+                    break;
+            }
         }
     }
 

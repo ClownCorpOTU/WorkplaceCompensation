@@ -1,8 +1,10 @@
+using System;
 using Fusion;
 using Fusion.Addons.Physics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Base class for the networked player. This script takes care of the input, component setup, syncing joints, calling
@@ -22,6 +24,22 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private TextMeshProUGUI playerNumberText;
+    [SerializeField] private Animator animatedModel;
+    [SerializeField] private SkinnedMeshRenderer bodyMeshRenderer;
+    [SerializeField] private Transform playerVest;
+    [SerializeField] private GameObject burntPlayerVest;
+    [SerializeField] private Image staminaFillImage;
+    [SerializeField] private GameObject staminaBarParentObj;
+    public Image StaminaFillImage => staminaFillImage;
+    
+    [Header("Juice - Dust Trail")]
+    [SerializeField] private ParticleSystem dustFXParticles;
+    [SerializeField] private Vector2 rateOverDistanceRange = new Vector2(3f, 15f);
+    [SerializeField] private Vector2 startSizeRange = new Vector2(0.1f, 0.4f);
+    [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
+    
+    [Networked, HideInInspector] public float NetworkedMovementSpeed { get; set; }
+    [Networked, OnChangedRender(nameof(OnBurnedChanged)), HideInInspector] public NetworkBool IsBurned { get; set; } 
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -40,12 +58,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private ThemeSong themeSong;
     private NetworkGameManager networkGameManager;
     private LocalPlayerUIManager localPlayerUIManager;
+    private AudioListener audioListener; // This is on the main camera
+    private DissolvingController dissolvingController;
+    private ChangeDetector ragdollChanges; // Change detector for flattening Blobby
+
+    public NetworkPlayerCamera PlayerCamera => playerCamera;
     
     // Input
     private NetworkInputData networkInputData;
     private bool isReviveButtonPressed = false;
     private bool isGrabButtonPressed, isLeftGrabButtonPressed, isRightGrabButtonPressed, isLiftButtonPressed = false;
-    private bool isPauseButtonPressed, previousPausePressed = false;
     
     // States
     private bool isGrabbingActive = false;
@@ -64,8 +86,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #region Setup
     private void Awake()
     {
-        GetReferences();
-        InitializeSubSystems();
+        //GetReferences();
+        //InitializeSubSystems();
     }
 
     private void GetReferences()
@@ -78,8 +100,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         inputReader = GetComponent<InputReader>();
         audioManager = FindFirstObjectByType<AudioManager>();
         themeSong = FindFirstObjectByType<ThemeSong>();
+        dissolvingController = GetComponent<DissolvingController>();
         
-        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
+        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>(); 
     }
 
     private void InitializeSubSystems()
@@ -88,7 +111,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerRespawn = GetComponent<NetworkPlayerRespawn>();
         if (playerRespawn == null)
             playerRespawn = gameObject.AddComponent<NetworkPlayerRespawn>();
-        playerRespawn.Initialize(this, networkRB, spawnPoint);
+        playerRespawn.Initialize(this, networkRB, dissolvingController);
         
         // SubSystem Setup: Player Camera
         playerCamera = GetComponent<NetworkPlayerCamera>();
@@ -100,6 +123,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (playerGrab == null)
             playerGrab = gameObject.AddComponent<NetworkPlayerGrab>();
         playerGrab.Initialize(this);
+        
+        // (Not a sub-system) Send local player location to barriers
+        if (Object.HasInputAuthority && Local != null)
+        {
+            var barriers = GameObject.FindObjectsByType<BarrierSection>(FindObjectsSortMode.None);
+            foreach (BarrierSection barrier in barriers)
+            {
+                barrier.InitializeBarrierSections(Local.transform);
+            }
+        }
     }
 
     private void Start()
@@ -107,22 +140,39 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        //startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
     }
 
     public override void Spawned()
     {
+        GetReferences();
+        
+        // Set local first so sub-systems don't throw a null reference error
+        if (Object.HasInputAuthority)
+            Local = this;
+        
+        InitializeSubSystems();
+        
+        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        
         // Called on every instance when the object spawns locally. OnChangedRender is NOT invoked on initial spawn, so initialize here as well
         UpdatePlayerNumberUI();
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
+        ragdollChanges = GetChangeDetector(ChangeDetector.Source.SimulationState);
         transform.name = $"Player_{Object.Id}";
+
 
         if (Object.HasInputAuthority)
         {
-            Local = this;
-            playerCamera.SetupCamera();
+            // Observer pattern for the UI manager (to handle pause)
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                uiManager.SetInputSource(inputReader);
+            
+            // Player camera
+            playerCamera.SetupCamera(Object.HasInputAuthority);
             networkGameManager.ScoreText.text = 0.ToString();
             
             // Ensure PlayerInput is enabled for the local player only
@@ -150,6 +200,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             // Disable PlayerInput for non-local players
             if (playerInput != null) playerInput.enabled = false;
             if (inputReader != null) inputReader.enabled = false;
+            
+            // Disable stamina bar UI for non-local players
+            if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
     }
 
@@ -169,12 +222,23 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         // Make a readable number based on PlayerRef
         int playerNumber = PlayerRefValue.RawEncoded % 1000;
+        playerNumber--; // Right now players start at 2, this is a hack to make it start at 1
         playerNumberText.text = $"Player {playerNumber}";
         
         // Give each player a distinct color based on their ID
         float hue = (playerNumber * 137.508f) % 360f;
-        Color color = Color.HSVToRGB(hue / 360f, 0.8f, 0.9f);
+        Color color = Color.HSVToRGB(hue / 360f, 0.65f, 0.9f);
         playerNumberText.color = color;
+        
+        // Update player body color to be the same as their name
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);
+        
+        // Update rim color to complement their body color
+        Color.RGBToHSV(color, out float h, out float s, out float v);
+        float rimV = Mathf.Clamp01(1.2f - v); // brighter rims on darker colors
+        Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
+        
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
     public void RemovePlayerInputAuthority()
@@ -187,9 +251,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #region Update
     private void Update()
     {
-        // TODO: This architecture is terrible. I'm checking for escape input outside of the loop so players can unpause
-        isPauseButtonPressed = Object.HasInputAuthority && inputReader.IsPauseButtonPressed;
-
+        if (!Object || !Object.IsValid) return;
         if (!localPlayerUIManager.IsLocalGamePaused) ReadInputFromUnity();
     }
 
@@ -230,50 +292,109 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         isRightHandGrabbingActive = networkInputData.IsRightGrabPressed;
         isLiftingActive = networkInputData.IsLiftPressed;
         
-        // Pause game (Called from here because right now there's no other way to know player input)
-        if (isPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
-        previousPausePressed = isPauseButtonPressed;
-        
-        HandlePlayer(localForwardVelocity);
+        HandlePlayer();
     }
 
-    private void HandlePlayer(float localForwardVelocity)
+    private void HandlePlayer()
     {
         if (Object.HasStateAuthority)
         {
             GravityAndGrounding();
             
-            // Limit forward movement to our max speed
-            Vector3 localVelocityVsForward = transform.forward * Vector3.Dot(transform.forward, rb.linearVelocity);
-            localForwardVelocity = localVelocityVsForward.magnitude;
-        }
+            // Calculate speed ONLY on the Host
+            Vector3 localVelocity = transform.InverseTransformDirection(rb.linearVelocity);
+            NetworkedMovementSpeed = new Vector3(localVelocity.x, 0, localVelocity.z).magnitude;
+        }/*
+        else if (Object.HasInputAuthority)
+        {
+            // Do a lightweight local estimate for visuals
+            localForwardVelocity = rb.linearVelocity.magnitude;
+            isGrounded = Physics.CheckSphere(transform.position, 0.25f);
+        }*/
         
         // Respawn in place
         if (networkInputData.IsRevivePressed)
             playerRespawn.Respawn(false);
         
-        // Respawn if timer expired
-        if (!isActiveRagdoll && waitBeforeRespawn.ExpiredOrNotRunning(Runner))
+        // Only respawn if the timer was actually set and has now finished
+        if (!IsActiveRagdoll && waitBeforeRespawn.IsRunning && waitBeforeRespawn.Expired(Runner))
+        {
             playerRespawn.Respawn(false);
+        }
 
         // Active ragdoll
-        if (isActiveRagdoll)
+        if (IsActiveRagdoll)
         {
             HandleStamina();
-            HandleMovement(localForwardVelocity);
+            HandleMovement();
         }
         
-        SyncAnimations(localForwardVelocity);
+        SyncAnimations(NetworkedMovementSpeed);
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    public void RPC_UpdateScoreUI(int newScore)
+    public void RPC_UpdateScoreUI(int newScore, int addedScore)
     {
         networkGameManager.ScoreText.text = newScore.ToString();
+        ScorePopupManager.Instance.ShowScore(addedScore);
+    }
+    #endregion
+
+    #region Other functions
+
+    public void SpawnVestAfterBurning()
+    {
+        var vest = Runner.Spawn(burntPlayerVest, playerVest.position, playerVest.localRotation);
+        vest.transform.parent = playerVest.transform.parent;
+        playerVest.gameObject.SetActive(false);
+    }
+    
+    private void TriggerBurnVisuals()
+    {
+        // Visuals/FX
+        if (dissolvingController != null) dissolvingController.BeginFx();
+    
+        SpawnVestAfterBurning();
+    
+        if (audioManager != null) 
+            audioManager.Play("PlayerBurn", transform.position);
+    }
+
+    // This function gets called from other objects to burn the player
+    public void Burn()
+    {
+        if (Object.HasStateAuthority)
+        {
+            if (IsBurned) return; // Don't burn twice
+        
+            IsBurned = true;
+            MakeRagdoll(); // Flatten the player
+        }
+    }
+
+    private void ResetBurnVisuals()
+    {
+        if (dissolvingController != null) 
+        {
+            dissolvingController.ResetBurningFx(); 
+        }
+        
+        if (playerVest != null) 
+        {
+            playerVest.gameObject.SetActive(true);
+        }
     }
     #endregion
     
     #region Network Functions
+    private void OnBurnedChanged()
+    {
+        if (IsBurned)
+            TriggerBurnVisuals();
+        else
+            ResetBurnVisuals();
+    }
+    
     public void PlayerLeft(PlayerRef player)
     {
         if (Object.InputAuthority == player)
@@ -284,6 +405,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         if (Object.HasInputAuthority)
         {
+            // Unsubscribe from the pause function
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                inputReader.OnPausePressed -= uiManager.TogglePause;
+            
             playerCamera.DespawnCamera();
         }
     }
@@ -326,6 +452,15 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
                     syncPhysicsObjects[i].transform.localRotation,
                     NetworkPhysicsSyncedRotations.Get(i), interpolated.Alpha);
             }
+        }
+        
+        UpdateSpineLean(NetworkedMovementSpeed);
+        UpdateDustFX(NetworkedMovementSpeed);
+        
+        foreach (var change in ragdollChanges.DetectChanges(this))
+        {
+            if (change == nameof(flattenSignal) && flattenSignal > 0)
+                LocalFlattenBlobby();
         }
 
         // Smoother camera movement for clients

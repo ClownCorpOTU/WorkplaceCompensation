@@ -9,14 +9,15 @@ using UnityEngine;
 public class NetworkPlayerCamera : MonoBehaviour
 {
     [SerializeField] private GameObject cameraContainerPrefab;
+    [SerializeField] private Transform camFollow;
     
     private Camera cam;
     private CinemachineCamera cinemachineCamera;
     private CinemachineBrain cinemachineBrain;
     private GameObject localCameraInstance;
-    
+    private CinemachineInputAxisController inputController;
 
-    public void SetupCamera()
+    public void SetupCamera(bool hasInputAuthority)
     {
         // Spawn camera
         localCameraInstance = Instantiate(cameraContainerPrefab, Vector3.zero, Quaternion.identity);
@@ -24,9 +25,19 @@ public class NetworkPlayerCamera : MonoBehaviour
         cam = localCameraInstance.GetComponentInChildren<Camera>();
         cinemachineCamera = localCameraInstance.GetComponentInChildren<CinemachineCamera>();
         cinemachineBrain = localCameraInstance.GetComponentInChildren<CinemachineBrain>();
+        inputController = cinemachineCamera.GetComponent<CinemachineInputAxisController>();
 
-        cinemachineCamera.Follow = transform;
-        cinemachineCamera.LookAt = transform;
+        cinemachineCamera.Follow = camFollow;
+        cinemachineCamera.LookAt = camFollow;
+        
+        // Update sensitivity
+        UpdateSensitivity();
+        
+        // Enable audio listener
+        var audioListener = cam.GetComponent<AudioListener>();
+        
+        // Enable listener for the local player
+        if (audioListener != null) audioListener.enabled = hasInputAuthority;
     }
 
     public void ComputeCameraRelativeWorldDirection(bool hasInputAuthority, ref NetworkInputData data)
@@ -47,6 +58,19 @@ public class NetworkPlayerCamera : MonoBehaviour
         else
         {
             data.MoveDirection = Vector3.zero;
+        }
+    }
+
+    public void UpdateSensitivity()
+    {
+        if (cinemachineCamera == null) return;
+
+        float value = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
+        
+        if (inputController != null)
+        {
+            inputController.Controllers[0].Input.Gain = value;
+            inputController.Controllers[1].Input.Gain = -value;
         }
     }
 
