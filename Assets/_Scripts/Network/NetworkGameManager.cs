@@ -49,6 +49,10 @@ public class NetworkGameManager : NetworkBehaviour
             // Start a timer based on the runtime
             float gameTime = gameRuntime * 60f;
             GameTimer = TickTimer.CreateFromSeconds(Runner, gameTime);
+            
+            // Update Discord with the countdown!
+            if (DiscordManager.Instance != null)
+                DiscordManager.Instance.StartLevelTimer(gameTime);
         }
     }
     
