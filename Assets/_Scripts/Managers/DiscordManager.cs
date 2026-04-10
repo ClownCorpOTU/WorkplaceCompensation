@@ -55,7 +55,7 @@ public class DiscordManager : MonoBehaviour
         {
             state = "In the Lobby";
             details = "Waiting for coworkers...";
-            imageKey = "gameheroimage";
+            imageKey = "croppedhero";
             currentLevelEndTime = null; // Show elapsed time instead
         }
         else if (sceneName.Equals(level1SceneName))
