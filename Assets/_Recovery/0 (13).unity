@@ -887,7 +887,7 @@ MonoBehaviour:
         m_MethodName: OnColorSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 99689981}
+          m_ObjectArgument: {fileID: 1806171578}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -1897,14 +1897,14 @@ MonoBehaviour:
   m_CharacterValidation: 0
   m_RegexValue: 
   m_GlobalPointSize: 14
-  m_CharacterLimit: 4
+  m_CharacterLimit: 0
   m_OnEndEdit:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 8709301893223747887}
         m_TargetAssemblyTypeName: PlayerCustomizationUI, Assembly-CSharp
-        m_MethodName: OnNameEndEdit
-        m_Mode: 0
+        m_MethodName: OnNameChanged
+        m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -3604,7 +3604,7 @@ MonoBehaviour:
         m_MethodName: OnColorSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1009347419}
+          m_ObjectArgument: {fileID: 1806171578}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -3961,81 +3961,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: d8f8186916b554b4a8b233c0f6f91b5a, type: 3}
---- !u!1 &1159108101
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1159108102}
-  - component: {fileID: 1159108104}
-  - component: {fileID: 1159108103}
-  m_Layer: 5
-  m_Name: Image
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1159108102
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1159108101}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 2550021612593802955}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -581.1907, y: -63.912964}
-  m_SizeDelta: {x: 100, y: 302}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1159108103
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1159108101}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
---- !u!222 &1159108104
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1159108101}
-  m_CullTransparentMesh: 1
 --- !u!1 &1209790424
 GameObject:
   m_ObjectHideFlags: 0
@@ -5089,18 +5014,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 8709301893223747887}
-        m_TargetAssemblyTypeName: PlayerCustomizationUI, Assembly-CSharp
-        m_MethodName: SaveCustomization
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &1633172534
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5423,7 +5336,7 @@ MonoBehaviour:
         m_MethodName: OnColorSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1743334061}
+          m_ObjectArgument: {fileID: 1806171578}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -5555,7 +5468,7 @@ MonoBehaviour:
         m_MethodName: OnColorSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1756854719}
+          m_ObjectArgument: {fileID: 1806171578}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -5819,7 +5732,7 @@ MonoBehaviour:
         m_MethodName: OnColorSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1807420763}
+          m_ObjectArgument: {fileID: 1806171578}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -6078,7 +5991,7 @@ MonoBehaviour:
         m_MethodName: OnColorSelected
         m_Mode: 2
         m_Arguments:
-          m_ObjectArgument: {fileID: 1878429101}
+          m_ObjectArgument: {fileID: 1806171578}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.UI.Image, UnityEngine.UI
           m_IntArgument: 0
           m_FloatArgument: 0
@@ -6996,7 +6909,6 @@ RectTransform:
   - {fileID: 557145091}
   - {fileID: 949154571}
   - {fileID: 1633172532}
-  - {fileID: 1159108102}
   m_Father: {fileID: 134563599}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -7252,7 +7164,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerCustomizationUI
   nameInputField: {fileID: 557145092}
-  colorPreviewImage: {fileID: 1159108103}
+  colorPreviewImage: {fileID: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

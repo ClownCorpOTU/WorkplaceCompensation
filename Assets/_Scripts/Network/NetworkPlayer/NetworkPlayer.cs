@@ -20,6 +20,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     
     // Player number is networked so it can be synced across all clients
     [Networked, OnChangedRender(nameof(OnPlayerIdentityChanged))] public PlayerRef PlayerRefValue { get; set; }
+    [Networked, OnChangedRender(nameof(OnCustomizationChanged))] public PlayerCustomizationData CustomizationData { get; set; }
 
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
@@ -156,7 +157,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
         
         // Called on every instance when the object spawns locally. OnChangedRender is NOT invoked on initial spawn, so initialize here as well
-        UpdatePlayerNumberUI();
+        // UpdatePlayerNumberUI();
+        //OnCustomizationChanged();
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
@@ -192,6 +194,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
                 }
             }
             
+            // Load from PlayerPrefs and tell the host
+            string localName = PlayerPrefs.GetString("PlayerName", "JOHN");
+            string localHexColor = PlayerPrefs.GetString("PlayerColor", "#FFFFFF");
+            ColorUtility.TryParseHtmlString(localHexColor, out Color localColor);
+            
+            RPC_SetCustomization(localName, localColor);
+            
             // Enable InputReader for local player
             if (inputReader != null) inputReader.enabled = true;
         }
@@ -204,6 +213,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             // Disable stamina bar UI for non-local players
             if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
+        
+        OnCustomizationChanged();
     }
 
     public void AssignPlayerIdentity(PlayerRef playerRef)
@@ -213,7 +224,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     private void OnPlayerIdentityChanged()
     {
-        UpdatePlayerNumberUI();
+        OnCustomizationChanged();
     }
     
     private void UpdatePlayerNumberUI()
@@ -238,6 +249,21 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         float rimV = Mathf.Clamp01(1.2f - v); // brighter rims on darker colors
         Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
         
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
+    }
+
+    private void OnCustomizationChanged()
+    {
+        if (playerNumberText == null) return;
+
+        playerNumberText.text = CustomizationData.PlayerName.ToString();
+        playerNumberText.color = CustomizationData.PlayerColor;
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", CustomizationData.PlayerColor);
+        
+        // Calculate and apply the rim color
+        Color.RGBToHSV(CustomizationData.PlayerColor, out float h, out float s, out float v);
+        float rimV = Mathf.Clamp01(1.2f - v); // Brighter rims on darker colors
+        Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
         bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
@@ -384,6 +410,31 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             playerVest.gameObject.SetActive(true);
         }
     }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetCustomization(string newName, Color color)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(newName)) 
+                newName = "JOHN";
+
+            if (newName.Length > 4) 
+                newName = newName.Substring(0, 4);
+            
+            CustomizationData = new PlayerCustomizationData()
+            {
+                PlayerName = newName,
+                PlayerColor = color
+            };
+        }
+        catch (Exception e)
+        {
+            // If ANYTHING goes wrong, it prints the exact reason instead of crashing!
+            Debug.LogError("Error in Customization RPC: " + e.Message);
+        }
+    }
+
     #endregion
     
     #region Network Functions
