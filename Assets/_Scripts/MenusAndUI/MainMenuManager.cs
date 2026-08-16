@@ -6,13 +6,12 @@ using UnityEngine.SceneManagement;
 public class MainMenuManager : MonoBehaviour
 {
     [SerializeField] string gameplayScene = "FallExpo_FinalReview";
-    [SerializeField] string testA_EarthCanyon = "FallExpo_FinalReview";
-    [SerializeField] string testB_MarsCanyon = "FallExpo_FinalReview";
     [SerializeField] string lobbyScene = "Lobby";
-    
+
+    [SerializeField] private GameObject mainMenu;
     [SerializeField] GameObject notesMenu;
     [SerializeField] GameObject fakeLoadingScreen;
-    
+    [SerializeField] private GameObject tutorialMenu; 
     
     private void Start()
     {
@@ -32,9 +31,16 @@ public class MainMenuManager : MonoBehaviour
         SceneManager.LoadScene(gameplayScene);
     }
 
-    public void ABTestingPlay(bool isA)
+    public void PlayLevel(string levelName)
     {
-        SceneManager.LoadScene(isA ? testA_EarthCanyon : testB_MarsCanyon);
+        SceneManager.LoadScene(levelName);
+    }
+
+    public void ShowTutorialMenu(string levelName)
+    {
+        tutorialMenu.SetActive(true);
+        mainMenu.SetActive(false);
+        TutorialManager.Instance.SetLevel(levelName);
     }
 
     public void GoToLobbyMenu()

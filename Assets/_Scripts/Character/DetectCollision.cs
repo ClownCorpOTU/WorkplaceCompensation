@@ -23,6 +23,7 @@ public class DetectCollision : MonoBehaviour
     {
         if (!networkPlayer.HasStateAuthority) return;
         if (!networkPlayer.IsActiveRagdoll) return;
+        
         if (!collision.gameObject.CompareTag("CauseDamage")) return;
         if (collision.collider.transform.root == networkPlayer.transform) return;
         
@@ -35,7 +36,6 @@ public class DetectCollision : MonoBehaviour
             
             // Get the contact impulse
             Vector3 contactImpulse = contactPoint.impulse / Time.fixedDeltaTime;
-            print(contactImpulse.magnitude);
             if (contactImpulse.magnitude < knockoutThreshold) continue;
             
             // Player knockout (Ragdoll)

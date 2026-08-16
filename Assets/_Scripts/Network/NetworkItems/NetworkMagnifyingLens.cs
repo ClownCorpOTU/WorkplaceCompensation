@@ -11,9 +11,12 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     [SerializeField] private float playerCookTime = 2.0f;
     [SerializeField] private float fossilCookTime = 1.3f;
     
-    private bool hasHitPlayer;
-    private NetworkGameManager networkGameManager;
+    //[Networked] private NetworkBool hasHitPlayer { get; set; }
+    //[Networked] private byte burnSignal { get; set; }
 
+    private ChangeDetector changes;
+    private NetworkGameManager networkGameManager;
+    
     // Tracks Object ID -> Time spent cooking
     private Dictionary<NetworkId, float> cookTrackers = new Dictionary<NetworkId, float>();
 
@@ -24,28 +27,15 @@ public class NetworkMagnifyingLens : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        switch (other.gameObject.tag)
+        if (!Object.HasStateAuthority) return;
+    
+        if (other.CompareTag("Fossil"))
         {
-            case "Player":
-                if (!hasHitPlayer) HitPlayer(other);
-                break;
-            case "Fossil":
-                CookFossil(other);
-                break;
-            default:
-                break;
+            CookFossil(other);
         }
-    }
-
-    private void HitPlayer(Collider other)
-    {
-        hasHitPlayer = true;
-        print("hits");
-        
-        if (other.transform.root.TryGetComponent(out NetworkPlayer networkPlayer))
+        else if (other.transform.root.TryGetComponent(out NetworkPlayer player))
         {
-            networkPlayer.MakeRagdoll();
-            hasHitPlayer = false;
+            player.Burn();
         }
     }
     
@@ -53,7 +43,7 @@ public class NetworkMagnifyingLens : NetworkBehaviour
     {
         // Give point to whoever was holding the fossil last
         if (other.gameObject.TryGetComponent(out GrabbedByTracker grabTracker))
-            networkGameManager.AddScore(grabTracker.LastHeldBy, 1);
+            networkGameManager.AddScore(grabTracker.LastHeldBy, 2);
         
         // Despawn fossil
         NetworkObject no = other.gameObject.GetComponent<NetworkObject>();

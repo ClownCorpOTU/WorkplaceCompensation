@@ -4,14 +4,16 @@ using UnityEngine;
 
 public class NetworkFossilManager : NetworkBehaviour
 {
-    [Networked, Capacity(5)] public NetworkArray<Vector3> ActiveFossilPositions => default;
+    [Networked, Capacity(8)] public NetworkArray<Vector3> ActiveFossilPositions { get; }
     private GameObject[] allSpawnPoints;
 
     public override void Spawned()
     {
-        allSpawnPoints = GameObject.FindGameObjectsWithTag("FossilSpawnPoint");
-
-        SelectRandomFossils();
+        if (Object.HasStateAuthority)
+        {
+            allSpawnPoints = GameObject.FindGameObjectsWithTag("FossilSpawnPoint");
+            SelectRandomFossils();
+        }
     }
 
     private void SelectRandomFossils()
@@ -21,21 +23,20 @@ public class NetworkFossilManager : NetworkBehaviour
         List<int> indices = new List<int>();
         for (int i = 0; i < allSpawnPoints.Length; i++) indices.Add(i);
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < 8; i++)
         {
-            int randomIndex = Random.Range(0, indices.Count);
-            int selectedPointIndex = indices[randomIndex];
+            // Only fill if the slot is currently "empty" (Vector3.zero)
+            if (ActiveFossilPositions[i] == Vector3.zero)
+            {
+                int randomIndex = Random.Range(0, indices.Count);
+                int selectedPointIndex = indices[randomIndex];
 
-            ActiveFossilPositions.Set(i, allSpawnPoints[selectedPointIndex].transform.position);
-            
-            // Remove to ensure no duplicates
-            indices.RemoveAt(randomIndex);
+                ActiveFossilPositions.Set(i, allSpawnPoints[selectedPointIndex].transform.position);
+
+                // Remove to ensure no duplicates
+                indices.RemoveAt(randomIndex);
+            }
         }
-    }
-
-    public override void FixedUpdateNetwork()
-    {
-        if (ActiveFossilPositions.Length < 1) SelectRandomFossils();
     }
 
     public int GetClosestFossilIndex(Vector3 playerPos, out Vector3 position)
@@ -69,5 +70,15 @@ public class NetworkFossilManager : NetworkBehaviour
         {
             ActiveFossilPositions.Set(index, Vector3.zero);
         }
+        
+        // Manual count of active fossils
+        int activeCount = 0;
+        foreach (Vector3 fossilPos in ActiveFossilPositions)
+        {
+            if (fossilPos != Vector3.zero) activeCount++;
+        }
+
+        // Trigger respawn if we drop below threshold
+        if (activeCount < 3) SelectRandomFossils();
     }
 }

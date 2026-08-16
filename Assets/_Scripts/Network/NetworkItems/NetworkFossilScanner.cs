@@ -25,6 +25,13 @@ public class NetworkFossilScanner : NetworkBehaviour
     [SerializeField] private MeshRenderer batteryBarRend;
     [SerializeField] private Gradient batteryGradient;
     [SerializeField] private Axis batteryScalingAxis = Axis.Z;
+    [SerializeField] private Transform rechargeStation;
+    
+    [Header("Confetti Settings")]
+    [SerializeField] private GameObject confettiFX;
+    [SerializeField] private float confettiActivationRange = 2.5f;
+    [SerializeField] private float confettiActivationWaiTime = 0.3f;
+    [SerializeField] private Transform fxSpawnPos;
     
     [Header("Audio Settings")]
     [SerializeField] private Vector2 tickDelayRange = new Vector2(0.1f, 1.5f);
@@ -40,6 +47,9 @@ public class NetworkFossilScanner : NetworkBehaviour
     private float currentVolume;
     private Vector3 batteryOriginalScale;
     private Rigidbody rb;
+    private float fossilDetectionTimer;
+    private bool hasPlayedConfetti;
+    
     
     public override void Spawned()
     {
@@ -55,26 +65,25 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
         
-        if (IsInRechargeZone && !IsActive && CurrentBattery < maxBatteryLife)
-        {
-            CurrentBattery += Runner.DeltaTime * rechargeRate;
-        }
-        
         if (CurrentBattery > 0)
         {
             if (IsActive)
             {
                 CurrentBattery -= Runner.DeltaTime * drainRate;
                 
-                // Keep model grounded
-                if (Physics.Raycast(transform.position, Vector3.down, out RaycastHit hit, 2f))
+                /*
+                // Make scanner stick to ground (using) Vector3.back (0, 0, -1) because Z is the vertical axis on this model)
+                if (Physics.Raycast(transform.position, Vector3.back, out RaycastHit hit, 2f))
                 {
-                    float targetY = hit.point.y + heightOffset;
-                    transform.position = new Vector3(transform.position.x, targetY, transform.position.z);
-                    
-                    // Align rotation to slope
-                    transform.rotation = Quaternion.FromToRotation(transform.up, hit.normal) * transform.rotation;
+                    // Apply the offset to the Z axis instead of Y
+                    float targetZ = hit.point.z + heightOffset;
+                    transform.position = new Vector3(transform.position.x, transform.position.y, targetZ);
+    
+                    // Align the model's 'forward' (local Z) to the surface normal
+                    // We use transform.forward because that is the 'Up' axis for a Z-up model
+                    transform.rotation = Quaternion.FromToRotation(transform.forward, hit.normal) * transform.rotation;
                 }
+                */
             }
         }
         else
@@ -103,7 +112,29 @@ public class NetworkFossilScanner : NetworkBehaviour
 
             if (distance <= detectionRange)
             {
-                print($"Closest fossil is {distance} units away.");
+                // === CONFETTI START ===
+                if (distance < confettiActivationRange)
+                {
+                    fossilDetectionTimer += Time.deltaTime;
+
+                    if (fossilDetectionTimer >= confettiActivationWaiTime && !hasPlayedConfetti)
+                    {
+                        if (AudioManager.instance != null) AudioManager.instance.Play("FoundFossilJingle", fossilPos);
+
+                        if (confettiFX != null)
+                            Instantiate(confettiFX, fxSpawnPos.position, Quaternion.identity);
+
+                        hasPlayedConfetti = true;
+                    }
+                }
+                else
+                {
+                    // Reset if they wander out of the "sweet spot"
+                    fossilDetectionTimer = 0f;
+                    hasPlayedConfetti = false;
+                }
+                // === CONFETTI END ===
+                
                 
                 // Normalize distance (0 = at fossil; 1 = max range)
                 float t = Mathf.Clamp01(distance / detectionRange);
@@ -122,6 +153,10 @@ public class NetworkFossilScanner : NetworkBehaviour
                 
                 // Lights
                 UpdateCompass(fossilPos, t);
+            }
+            else
+            {
+                SpinArrowAimlessly();
             }
         }
     }
@@ -162,10 +197,16 @@ public class NetworkFossilScanner : NetworkBehaviour
         }
         else
         {
-            arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
-            arrowRend.material.SetColor("_EmissionColor",
-                signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
+            SpinArrowAimlessly();
         }
+    }
+
+    private void SpinArrowAimlessly()
+    {
+        arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
+        arrowRend.material.SetColor("_BaseColor", signalGradient.Evaluate(0));
+        arrowRend.material.SetColor("_EmissionColor",
+            signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
     }
 
     private void UpdateBatteryVisuals()
@@ -205,7 +246,24 @@ public class NetworkFossilScanner : NetworkBehaviour
 
     private void OnBatteryDead()
     {
-        arrowPivot.Rotate(Vector3.up, 100f * Time.deltaTime);
+        // 1. Calculate the direction vector from the arrow TO the station
+        Vector3 direction = rechargeStation.position - arrowPivot.position;
+    
+        // 2. Flatten it on the Y axis so the arrow doesn't tilt into the ground
+        direction.y = 0; 
+
+        // 3. Ensure the direction isn't zero to avoid console errors
+        if (direction != Vector3.zero)
+        {
+            // 4. Create the target rotation based on that direction
+            Quaternion targetRot = Quaternion.LookRotation(direction);
+        
+            // Smoothly rotate
+            arrowPivot.rotation = Quaternion.Slerp(arrowPivot.rotation, targetRot, Time.deltaTime * 5f);
+        }
+    
+        // Set colors
+        arrowRend.material.SetColor("_BaseColor", signalGradient.Evaluate(0));
         arrowRend.material.SetColor("_EmissionColor",
             signalGradient.Evaluate(0) * Mathf.LinearToGammaSpace(signalEmissionRange.x));
     }
@@ -220,5 +278,13 @@ public class NetworkFossilScanner : NetworkBehaviour
     {
         if (other.CompareTag("RechargeStation"))
             IsInRechargeZone = false;
+    }
+
+    private void OnTriggerStay(Collider other)
+    {
+        if (!IsActive && CurrentBattery < maxBatteryLife)
+        {
+            CurrentBattery += Runner.DeltaTime * rechargeRate;
+        }
     }
 }

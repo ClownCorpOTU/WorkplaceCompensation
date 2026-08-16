@@ -4,6 +4,7 @@ using Fusion.Addons.Physics;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 /// <summary>
 /// Base class for the networked player. This script takes care of the input, component setup, syncing joints, calling
@@ -19,12 +20,18 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     
     // Player number is networked so it can be synced across all clients
     [Networked, OnChangedRender(nameof(OnPlayerIdentityChanged))] public PlayerRef PlayerRefValue { get; set; }
+    [Networked, OnChangedRender(nameof(OnCustomizationChanged))] public PlayerCustomizationData CustomizationData { get; set; }
 
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
     [SerializeField] private TextMeshProUGUI playerNumberText;
     [SerializeField] private Animator animatedModel;
     [SerializeField] private SkinnedMeshRenderer bodyMeshRenderer;
+    [SerializeField] private Transform playerVest;
+    [SerializeField] private GameObject burntPlayerVest;
+    [SerializeField] private Image staminaFillImage;
+    [SerializeField] private GameObject staminaBarParentObj;
+    public Image StaminaFillImage => staminaFillImage;
     
     [Header("Juice - Dust Trail")]
     [SerializeField] private ParticleSystem dustFXParticles;
@@ -32,7 +39,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [SerializeField] private Vector2 startSizeRange = new Vector2(0.1f, 0.4f);
     [SerializeField] private Vector2 startSpeedRange = new Vector2(0.5f, 2f);
     
-    [Networked] public float NetworkedMovementSpeed { get; set; }
+    [Networked, HideInInspector] public float NetworkedMovementSpeed { get; set; }
+    [Networked, OnChangedRender(nameof(OnBurnedChanged)), HideInInspector] public NetworkBool IsBurned { get; set; } 
     
     // References (SubSystems)
     private NetworkPlayerRespawn playerRespawn;
@@ -52,12 +60,15 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkGameManager networkGameManager;
     private LocalPlayerUIManager localPlayerUIManager;
     private AudioListener audioListener; // This is on the main camera
+    private DissolvingController dissolvingController;
+    private ChangeDetector ragdollChanges; // Change detector for flattening Blobby
+
+    public NetworkPlayerCamera PlayerCamera => playerCamera;
     
     // Input
     private NetworkInputData networkInputData;
     private bool isReviveButtonPressed = false;
     private bool isGrabButtonPressed, isLeftGrabButtonPressed, isRightGrabButtonPressed, isLiftButtonPressed = false;
-    private bool isPauseButtonPressed, previousPausePressed = false;
     
     // States
     private bool isGrabbingActive = false;
@@ -76,8 +87,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #region Setup
     private void Awake()
     {
-        GetReferences();
-        InitializeSubSystems();
+        //GetReferences();
+        //InitializeSubSystems();
     }
 
     private void GetReferences()
@@ -90,8 +101,9 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         inputReader = GetComponent<InputReader>();
         audioManager = FindFirstObjectByType<AudioManager>();
         themeSong = FindFirstObjectByType<ThemeSong>();
+        dissolvingController = GetComponent<DissolvingController>();
         
-        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
+        syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>(); 
     }
 
     private void InitializeSubSystems()
@@ -100,7 +112,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerRespawn = GetComponent<NetworkPlayerRespawn>();
         if (playerRespawn == null)
             playerRespawn = gameObject.AddComponent<NetworkPlayerRespawn>();
-        playerRespawn.Initialize(this, networkRB);
+        playerRespawn.Initialize(this, networkRB, dissolvingController);
         
         // SubSystem Setup: Player Camera
         playerCamera = GetComponent<NetworkPlayerCamera>();
@@ -112,6 +124,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (playerGrab == null)
             playerGrab = gameObject.AddComponent<NetworkPlayerGrab>();
         playerGrab.Initialize(this);
+        
+        // (Not a sub-system) Send local player location to barriers
+        if (Object.HasInputAuthority && Local != null)
+        {
+            var barriers = GameObject.FindObjectsByType<BarrierSection>(FindObjectsSortMode.None);
+            foreach (BarrierSection barrier in barriers)
+            {
+                barrier.InitializeBarrierSections(Local.transform);
+            }
+        }
     }
 
     private void Start()
@@ -119,21 +141,39 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
 
-        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        //startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
     }
 
     public override void Spawned()
     {
+        GetReferences();
+        
+        // Set local first so sub-systems don't throw a null reference error
+        if (Object.HasInputAuthority)
+            Local = this;
+        
+        InitializeSubSystems();
+        
+        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
+        
         // Called on every instance when the object spawns locally. OnChangedRender is NOT invoked on initial spawn, so initialize here as well
-        UpdatePlayerNumberUI();
+        // UpdatePlayerNumberUI();
+        //OnCustomizationChanged();
         
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
+        ragdollChanges = GetChangeDetector(ChangeDetector.Source.SimulationState);
         transform.name = $"Player_{Object.Id}";
+
 
         if (Object.HasInputAuthority)
         {
-            Local = this;
+            // Observer pattern for the UI manager (to handle pause)
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                uiManager.SetInputSource(inputReader);
+            
+            // Player camera
             playerCamera.SetupCamera(Object.HasInputAuthority);
             networkGameManager.ScoreText.text = 0.ToString();
             
@@ -154,6 +194,13 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
                 }
             }
             
+            // Load from PlayerPrefs and tell the host
+            string localName = PlayerPrefs.GetString("PlayerName", "JOHN");
+            string localHexColor = PlayerPrefs.GetString("PlayerColor", "#FFFFFF");
+            ColorUtility.TryParseHtmlString(localHexColor, out Color localColor);
+            
+            RPC_SetCustomization(localName, localColor);
+            
             // Enable InputReader for local player
             if (inputReader != null) inputReader.enabled = true;
         }
@@ -162,7 +209,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             // Disable PlayerInput for non-local players
             if (playerInput != null) playerInput.enabled = false;
             if (inputReader != null) inputReader.enabled = false;
+            
+            // Disable stamina bar UI for non-local players
+            if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
+        
+        OnCustomizationChanged();
     }
 
     public void AssignPlayerIdentity(PlayerRef playerRef)
@@ -172,7 +224,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     private void OnPlayerIdentityChanged()
     {
-        UpdatePlayerNumberUI();
+        OnCustomizationChanged();
     }
     
     private void UpdatePlayerNumberUI()
@@ -190,14 +242,29 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         playerNumberText.color = color;
         
         // Update player body color to be the same as their name
-        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);;
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", color);
         
         // Update rim color to complement their body color
         Color.RGBToHSV(color, out float h, out float s, out float v);
         float rimV = Mathf.Clamp01(1.2f - v); // brighter rims on darker colors
         Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
         
-        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);;
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
+    }
+
+    private void OnCustomizationChanged()
+    {
+        if (playerNumberText == null) return;
+
+        playerNumberText.text = CustomizationData.PlayerName.ToString();
+        playerNumberText.color = CustomizationData.PlayerColor;
+        bodyMeshRenderer.material.SetColor("_ChromaKeyColorReplacement", CustomizationData.PlayerColor);
+        
+        // Calculate and apply the rim color
+        Color.RGBToHSV(CustomizationData.PlayerColor, out float h, out float s, out float v);
+        float rimV = Mathf.Clamp01(1.2f - v); // Brighter rims on darker colors
+        Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
+        bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
     public void RemovePlayerInputAuthority()
@@ -211,10 +278,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private void Update()
     {
         if (!Object || !Object.IsValid) return;
-
-        // TODO: This architecture is terrible. I'm checking for escape input outside of the loop so players can unpause
-        isPauseButtonPressed = Object.HasInputAuthority && inputReader.IsPauseButtonPressed;
-
         if (!localPlayerUIManager.IsLocalGamePaused) ReadInputFromUnity();
     }
 
@@ -254,10 +317,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         isLeftHandGrabbingActive = networkInputData.IsLeftGrabPressed;
         isRightHandGrabbingActive = networkInputData.IsRightGrabPressed;
         isLiftingActive = networkInputData.IsLiftPressed;
-        
-        // Pause game (Called from here because right now there's no other way to know player input)
-        if (inputReader.IsPauseButtonPressed && !previousPausePressed) localPlayerUIManager.TogglePause();
-        previousPausePressed = isPauseButtonPressed;
         
         HandlePlayer();
     }
@@ -300,13 +359,93 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
-    public void RPC_UpdateScoreUI(int newScore)
+    public void RPC_UpdateScoreUI(int newScore, int addedScore)
     {
         networkGameManager.ScoreText.text = newScore.ToString();
+        ScorePopupManager.Instance.ShowScore(addedScore);
     }
+    #endregion
+
+    #region Other functions
+
+    public void SpawnVestAfterBurning()
+    {
+        var vest = Runner.Spawn(burntPlayerVest, playerVest.position, playerVest.localRotation);
+        vest.transform.parent = playerVest.transform.parent;
+        playerVest.gameObject.SetActive(false);
+    }
+    
+    private void TriggerBurnVisuals()
+    {
+        // Visuals/FX
+        if (dissolvingController != null) dissolvingController.BeginFx();
+    
+        SpawnVestAfterBurning();
+    
+        if (audioManager != null) 
+            audioManager.Play("PlayerBurn", transform.position);
+    }
+
+    // This function gets called from other objects to burn the player
+    public void Burn()
+    {
+        if (Object.HasStateAuthority)
+        {
+            if (IsBurned) return; // Don't burn twice
+        
+            IsBurned = true;
+            MakeRagdoll(); // Flatten the player
+        }
+    }
+
+    private void ResetBurnVisuals()
+    {
+        if (dissolvingController != null) 
+        {
+            dissolvingController.ResetBurningFx(); 
+        }
+        
+        if (playerVest != null) 
+        {
+            playerVest.gameObject.SetActive(true);
+        }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SetCustomization(string newName, Color color)
+    {
+        try
+        {
+            if (string.IsNullOrEmpty(newName)) 
+                newName = "JOHN";
+
+            if (newName.Length > 4) 
+                newName = newName.Substring(0, 4);
+            
+            CustomizationData = new PlayerCustomizationData()
+            {
+                PlayerName = newName,
+                PlayerColor = color
+            };
+        }
+        catch (Exception e)
+        {
+            // If ANYTHING goes wrong, it prints the exact reason instead of crashing!
+            Debug.LogError("Error in Customization RPC: " + e.Message);
+        }
+    }
+
     #endregion
     
     #region Network Functions
+    private void OnBurnedChanged()
+    {
+        if (IsBurned)
+            TriggerBurnVisuals();
+        else
+            ResetBurnVisuals();
+    }
+    
     public void PlayerLeft(PlayerRef player)
     {
         if (Object.InputAuthority == player)
@@ -317,6 +456,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     {
         if (Object.HasInputAuthority)
         {
+            // Unsubscribe from the pause function
+            var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
+            if (uiManager != null && inputReader != null)
+                inputReader.OnPausePressed -= uiManager.TogglePause;
+            
             playerCamera.DespawnCamera();
         }
     }
@@ -363,6 +507,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         
         UpdateSpineLean(NetworkedMovementSpeed);
         UpdateDustFX(NetworkedMovementSpeed);
+        
+        foreach (var change in ragdollChanges.DetectChanges(this))
+        {
+            if (change == nameof(flattenSignal) && flattenSignal > 0)
+                LocalFlattenBlobby();
+        }
 
         // Smoother camera movement for clients
         if (Object.HasInputAuthority)

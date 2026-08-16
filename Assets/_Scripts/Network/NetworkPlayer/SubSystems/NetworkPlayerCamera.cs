@@ -15,7 +15,7 @@ public class NetworkPlayerCamera : MonoBehaviour
     private CinemachineCamera cinemachineCamera;
     private CinemachineBrain cinemachineBrain;
     private GameObject localCameraInstance;
-    
+    private CinemachineInputAxisController inputController;
 
     public void SetupCamera(bool hasInputAuthority)
     {
@@ -25,9 +25,13 @@ public class NetworkPlayerCamera : MonoBehaviour
         cam = localCameraInstance.GetComponentInChildren<Camera>();
         cinemachineCamera = localCameraInstance.GetComponentInChildren<CinemachineCamera>();
         cinemachineBrain = localCameraInstance.GetComponentInChildren<CinemachineBrain>();
+        inputController = cinemachineCamera.GetComponent<CinemachineInputAxisController>();
 
         cinemachineCamera.Follow = camFollow;
         cinemachineCamera.LookAt = camFollow;
+        
+        // Update sensitivity
+        UpdateSensitivity();
         
         // Enable audio listener
         var audioListener = cam.GetComponent<AudioListener>();
@@ -54,6 +58,19 @@ public class NetworkPlayerCamera : MonoBehaviour
         else
         {
             data.MoveDirection = Vector3.zero;
+        }
+    }
+
+    public void UpdateSensitivity()
+    {
+        if (cinemachineCamera == null) return;
+
+        float value = PlayerPrefs.GetFloat("MouseSensitivity", 1.0f);
+        
+        if (inputController != null)
+        {
+            inputController.Controllers[0].Input.Gain = value;
+            inputController.Controllers[1].Input.Gain = -value;
         }
     }
 

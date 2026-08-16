@@ -322,6 +322,8 @@ MonoBehaviour:
   NestedObjects: []
   NetworkedBehaviours:
   - {fileID: 2493267425925242617}
+  - {fileID: 749277329229923003}
+  - {fileID: 2478158593236904759}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &2493267425925242617
 MonoBehaviour:
@@ -339,7 +341,7 @@ MonoBehaviour:
   vialPrefab: {fileID: 5740931859412630769, guid: 4acf39da215b9294faf4b91fd9600048, type: 3}
   trashPrefab: {fileID: 9017009847148644083, guid: 0e14b055c1fd7364486021971562ef20, type: 3}
   vialSpawnPoint: {fileID: 8524091277765371778}
-  spawnDelay: 0.5
+  spawnDelay: 1
   model: {fileID: 218204406516520368}
   light1: {fileID: 3054068924213290391}
   light2: {fileID: 8952024387517904820}
@@ -1187,6 +1189,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7eae32a9bb89267459f91f16d8dce32a, type: 3}
+--- !u!114 &2478158593236904759 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8548975294900178013, guid: 7eae32a9bb89267459f91f16d8dce32a, type: 3}
+  m_PrefabInstance: {fileID: 6106951051828143978}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7709348186996537967}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78962b515ffa69d4caff867690227f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrabbedByTracker
 --- !u!4 &6290824245154839716 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 255932162832096206, guid: 7eae32a9bb89267459f91f16d8dce32a, type: 3}
@@ -1285,6 +1298,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 7eae32a9bb89267459f91f16d8dce32a, type: 3}
+--- !u!114 &749277329229923003 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8548975294900178013, guid: 7eae32a9bb89267459f91f16d8dce32a, type: 3}
+  m_PrefabInstance: {fileID: 8989739554095058662}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4826975386003674083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78962b515ffa69d4caff867690227f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrabbedByTracker
 --- !u!1 &4826975386003674083 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4484781437262814469, guid: 7eae32a9bb89267459f91f16d8dce32a, type: 3}

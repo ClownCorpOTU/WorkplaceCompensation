@@ -1,21 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Fusion;
 using Fusion.Sockets;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Spawns the player and collects local input to send to the host.
 /// </summary>
 public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
 {
-    [SerializeField] private NetworkPlayer networkPlayerPrefab;
-    
+    [SerializeField] private NetworkPlayer regularBlobbyPrefab;
+    [SerializeField] private NetworkPlayer martianBlobbyPrefab;
+    [SerializeField] private string level1Name, level2Name; 
+
+    private NetworkPlayer playerToSpawn;
     private Vector3 spawnPoint;
 
-    public void Initialize(Vector3 pos)
+    public void Initialize(Vector3 pos, NetworkPlayer playerPrefabOverride = null)
     {
         spawnPoint = pos;
+
+        playerToSpawn = playerPrefabOverride ? playerPrefabOverride : regularBlobbyPrefab;
     }
     
     public void OnObjectExitAOI(NetworkRunner runner, NetworkObject obj, PlayerRef player)
@@ -32,14 +39,22 @@ public class Spawner : SimulationBehaviour, INetworkRunnerCallbacks
     {
         if (runner.IsServer)
         {
-            var spawnedPlayer = runner.Spawn(networkPlayerPrefab.gameObject, spawnPoint, Quaternion.identity, player);
+            var sceneName = SceneManager.GetActiveScene().name;
+            // Only spawn Martian Blobby on the second level. For everything else, use regular
+            playerToSpawn = (sceneName == level2Name) ? martianBlobbyPrefab : regularBlobbyPrefab; 
+            
+            var spawnedPlayer = runner.Spawn(playerToSpawn.gameObject, spawnPoint, Quaternion.identity, player);
             spawnedPlayer.GetComponent<NetworkPlayer>().AssignPlayerIdentity(player);
         }
+
+        var activePlayers = Runner.ActivePlayers.Count();
+        if (DiscordManager.Instance != null) DiscordManager.Instance.UpdatePlayerCount(activePlayers);
     }
 
     public void OnPlayerLeft(NetworkRunner runner, PlayerRef player)
     {
-        
+        var activePlayers = Runner.ActivePlayers.Count();
+        if (DiscordManager.Instance != null) DiscordManager.Instance.UpdatePlayerCount(activePlayers);
     }
 
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)

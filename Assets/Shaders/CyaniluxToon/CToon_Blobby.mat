@@ -17,7 +17,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses:
@@ -98,6 +98,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _FalloffThreshold: 10
+    - _HalfToneIntensity: 1
     - _LIGHTMAP_SHADOW_MIXING: 0
     - _LightPosterizationSteps: 4
     - _LitThreshold: 0.4
@@ -125,7 +126,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
-    - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
+    - _ChromaKeyColorReplacement: {r: 1, g: 1, b: 1, a: 1}
     - _CrossHatchFade: {r: 10, g: 30, b: 0, a: 0}
     - _DiffuseColor: {r: 0.26274508, g: 0.8862745, b: 0.8155137, a: 0}
     - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}
