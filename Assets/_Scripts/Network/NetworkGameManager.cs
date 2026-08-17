@@ -33,8 +33,10 @@ public class NetworkGameManager : NetworkBehaviour
 
     public float RemainingTime => remainingTime;
 
+    public Dictionary<PlayerRef, NetworkPlayer> NetworkPlayers = new();
     private Dictionary<PlayerRef, int> playerScores = new();
     private int lastPlayerCount = 0;
+    private float prevSeconds = 99999f;
     
     
     #region Spawning and Setup
@@ -58,12 +60,7 @@ public class NetworkGameManager : NetworkBehaviour
     
     private NetworkPlayer FindPlayerByRef(PlayerRef playerRef)
     {
-        foreach (var player in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
-        {
-            if (player.Object.InputAuthority == playerRef)
-                return player;
-        }
-        return null;
+        return NetworkPlayers.GetValueOrDefault(playerRef);
     }
     
     #endregion
@@ -87,9 +84,9 @@ public class NetworkGameManager : NetworkBehaviour
         if (!GameTimer.IsRunning || IsGameOver) return;
         
         // Refresh leaderboard if someone joins or leaves
-        if (Object.HasStateAuthority && Runner.ActivePlayers.Count() != lastPlayerCount)
+        if (Object.HasStateAuthority && NetworkPlayers.Count != lastPlayerCount)
         {
-            lastPlayerCount = Runner.ActivePlayers.Count();
+            lastPlayerCount = NetworkPlayers.Count;
             UpdateLeaderboardData();
         }
 
@@ -104,7 +101,9 @@ public class NetworkGameManager : NetworkBehaviour
     {
         int minutes = Mathf.FloorToInt(remainingTime / 60f);
         int seconds = Mathf.FloorToInt(remainingTime % 60f);
-        timerText.text = $"{minutes:00}:{seconds:00}";
+        
+        if (prevSeconds != seconds) timerText.text = $"{minutes:00}:{seconds:00}";
+        prevSeconds = seconds;
         
         timerClockFill.fillAmount = remainingTime / (gameRuntime*60f);
         timerClockHand.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Lerp(360, 0, remainingTime / (gameRuntime*60f)));
