@@ -44,6 +44,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
             // Play juice
             RPC_PlayWind();
             
+            RPC_TriggerTutorialEvent(vial.LastHeldBy, (int)GameEvent.BoxProcessed);
             
             // Record the vial object and start the first timer
             vialToDespawn = vial.Object;
@@ -64,13 +65,6 @@ public class NetworkOutputReceiver : NetworkBehaviour
             }
 
             hasFlown = true;
-            
-            if (!hasDepositedBoxBefore)
-            {
-                GameEventManager.TriggerEvent(GameEvent.OutputBoxDelivered);
-                hasDepositedBoxBefore = true;
-            }
-            
             despawnTimer = TickTimer.CreateFromSeconds(Runner, despawnDelay);
         }
 
@@ -94,7 +88,17 @@ public class NetworkOutputReceiver : NetworkBehaviour
 
         GameObject fx = Instantiate(windPrefab, windSpawnPoint.position, Quaternion.Euler(-90f,0f,0f));
         
-        // Auto-destroy if vfx didn't destory itself
+        // Auto-destroy if vfx didn't destroy itself
         if (fx != null) Destroy(fx, fxDespawnDelay);
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasDepositedBoxBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.OutputBoxDelivered);
+            hasDepositedBoxBefore = true;
+        }
     }
 }

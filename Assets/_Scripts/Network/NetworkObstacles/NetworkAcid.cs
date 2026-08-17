@@ -2,7 +2,7 @@ using System;
 using Fusion;
 using UnityEngine;
 
-public class Acid : NetworkBehaviour
+public class NetworkAcid : NetworkBehaviour
 {
     [SerializeField] private float acidKillDelay = 5f;
     [SerializeField] private int scoreToAdd = 1;
@@ -30,12 +30,7 @@ public class Acid : NetworkBehaviour
         if (other.TryGetComponent(out Vial vial) && vial.Type == VialType.TrashBag)
         {
             networkGameManager.AddScore(vial.LastHeldBy, scoreToAdd);
-            
-            if (!hasThrownTrashBefore)
-            {
-                GameEventManager.TriggerEvent(GameEvent.TrashDeposited);
-                hasThrownTrashBefore = true;
-            }
+            RPC_TriggerTutorialEvent(vial.LastHeldBy, (int)GameEvent.VialsMixed);
 
             // Start timer
             vialToDespawn = vial;
@@ -53,6 +48,16 @@ public class Acid : NetworkBehaviour
             Runner.Despawn(vialToDespawn.Object);
             vialToDespawn = null;
             acidKillTimer = TickTimer.None;
+        }
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasThrownTrashBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.TrashDeposited);
+            hasThrownTrashBefore = true;
         }
     }
 }

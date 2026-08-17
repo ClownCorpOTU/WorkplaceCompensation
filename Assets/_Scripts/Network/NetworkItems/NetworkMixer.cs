@@ -58,12 +58,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         if (!Object.HasStateAuthority) return;
         if (vial.Type != VialType.OutputVial) return;
-        
-        if (!hasAddedVialBefore)
-        {
-            GameEventManager.TriggerEvent(GameEvent.VialsMixed);
-            hasAddedVialBefore = true;
-        }
 
         currentInputs.Add(vial.Type);
         
@@ -71,6 +65,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
         {
             networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+            RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
         }
 
         Runner.Despawn(vial.Object);
@@ -153,6 +148,15 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     }
 
     // --- RPC Helpers ---
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasAddedVialBefore)
+        {
+            GameEventManager.TriggerEvent((GameEvent)eventEnumInt);
+            hasAddedVialBefore = true;
+        }
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_SetLightsGreen()
@@ -223,7 +227,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         if (countBeforeAdd >= 1)
         {
-            print("Here!");
             RPC_SetSingleLightAndVial(true, true);
             RPC_SetSingleLightAndVial(false, true);
         }

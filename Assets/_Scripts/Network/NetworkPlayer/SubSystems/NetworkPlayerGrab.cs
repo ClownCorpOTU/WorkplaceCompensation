@@ -129,18 +129,18 @@ public class NetworkPlayerGrab : MonoBehaviour
         float forceMagnitude = magnetForce * (1f - (closestDist / grabRadius));
         closestRb.AddForce(-direction * forceMagnitude, ForceMode.Impulse);
         
+        // === GAMEPLAY TUTORIALS === //
         // Gameplay tutorial step for grabbing boxes (Technically checks if we grabbed anything)
         if (!hasGrabbedBefore)
         {
-            GameEventManager.TriggerEvent(GameEvent.BoxGrabbed);
+            networkPlayer.RPC_TriggerTutorialEvent(networkPlayer.PlayerRefValue, (int)GameEvent.BoxGrabbed);
             hasGrabbedBefore = true;
         }
         
         // Gameplay tutorial step for grabbing vials for the first time
-        if (closestRb.GetComponent<Vial>().Type == VialType.OutputVial && !hasGrabbedVialBefore)
+        if (!hasGrabbedVialBefore && closestRb.TryGetComponent(out Vial vial) && vial.Type == VialType.OutputVial)
         {
-            print("Grabbed vial!");
-            GameEventManager.TriggerEvent(GameEvent.VialsGrabbed);
+            networkPlayer.RPC_TriggerTutorialEvent(networkPlayer.PlayerRefValue, (int)GameEvent.VialsGrabbed);
             hasGrabbedVialBefore = true;
         }
     }

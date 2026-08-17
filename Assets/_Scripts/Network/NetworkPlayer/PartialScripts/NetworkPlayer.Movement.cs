@@ -42,7 +42,7 @@ public partial class NetworkPlayer
             if (NetworkedMovementSpeed < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
-                if (!hasMovedBefore)
+                if (!hasMovedBefore && Object.HasInputAuthority)
                 {
                     GameEventManager.TriggerEvent(GameEvent.PlayerMoved);
                     hasMovedBefore = true;

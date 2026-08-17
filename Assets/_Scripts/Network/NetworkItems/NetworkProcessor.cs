@@ -67,6 +67,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
             var scoreToAdd = vial.Type == VialType.VIPCrate ? 2 : 1;
             
             networkGameManager.AddScore(grabbedByTracker.LastHeldBy, scoreToAdd);
+            RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
         }
 
         // --- Despawn vial ---
@@ -144,12 +145,6 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     {
         if (!Object.HasStateAuthority) return;
         
-        if (!hasAddedBoxBefore)
-        {
-            GameEventManager.TriggerEvent(GameEvent.BoxProcessed);
-            hasAddedBoxBefore = true;
-        }
-        
         // --- Turn on correct light based on input count ---
         if (vialType == VialType.VIPCrate) RPC_SetLightsGreen();
         
@@ -189,6 +184,17 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
                 // Send an RPC so all players play fireworks
                 RPC_PlayFireworks();
             }
+        }
+    }
+    
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasAddedBoxBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.BoxProcessed);
+            hasAddedBoxBefore = true;
         }
     }
 
