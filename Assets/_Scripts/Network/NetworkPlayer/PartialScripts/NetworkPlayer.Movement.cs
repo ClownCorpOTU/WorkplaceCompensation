@@ -9,6 +9,9 @@ public partial class NetworkPlayer
     [SerializeField] private float rotationAngle = 300f;
     [SerializeField] private float jumpForce = 20f;
     [SerializeField] private float jumpHeight = 1.5f;
+    [SerializeField] private float jumpCooldownAmount = 0.4f;
+    [SerializeField] private float jumpStaminaReduction = 3f;
+    [SerializeField, Range(0, 1)] private float jumpStaminaDecreaseMultiplierWhileHolding = 0.6f; 
 
     [Header("Audio Settings")] 
     [SerializeField] private float footstepInterval = 0.2f;
@@ -16,6 +19,7 @@ public partial class NetworkPlayer
     private Vector2 moveInputVector = Vector2.zero;
     public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
+    private bool hasMovedBefore;
 
     private float footstepTimer;
     //private TickTimer jumpBuffer;
@@ -38,6 +42,11 @@ public partial class NetworkPlayer
             if (NetworkedMovementSpeed < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
+                if (!hasMovedBefore && Object.HasInputAuthority)
+                {
+                    GameEventManager.TriggerEvent(GameEvent.PlayerMoved);
+                    hasMovedBefore = true;
+                }
 
                 if (IsGrounded)
                 {
@@ -86,9 +95,15 @@ public partial class NetworkPlayer
 
     private void ExecuteJump()
     {
-        CurrentStamina -= 3f;
+        var staminaToReduce = 0f;
+        if (IsLeftHandGrabbingActive || IsRightHandGrabbingActive || IsGrabbingActive)
+            staminaToReduce = jumpStaminaReduction * jumpStaminaDecreaseMultiplierWhileHolding;
+        else
+            staminaToReduce = jumpStaminaReduction;
         
-        jumpCooldown = TickTimer.CreateFromSeconds(Runner, 0.35f);
+        CurrentStamina -= staminaToReduce;
+        
+        jumpCooldown = TickTimer.CreateFromSeconds(Runner, jumpCooldownAmount);
         jumpCount++;
 
         Vector3 jumpDir = (networkInputData.MoveDirection + Vector3.up).normalized;

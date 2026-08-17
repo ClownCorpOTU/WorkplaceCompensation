@@ -116,8 +116,8 @@ MonoBehaviour:
     source: {fileID: 0}
     loop: 0
     is3D: 1
-    usePooling: 0
-    allowOverlap: 0
+    usePooling: 1
+    allowOverlap: 1
   - name: Ragdoll
     clip: {fileID: 8300000, guid: be1d2a3287edf4b4db6b0ca9fe83561b, type: 3}
     hasVariations: 0
@@ -237,7 +237,7 @@ MonoBehaviour:
     loop: 0
     is3D: 1
     usePooling: 0
-    allowOverlap: 0
+    allowOverlap: 1
   - name: Processor
     clip: {fileID: 8300000, guid: d3de15230e3bae34eba85e936ab78bb8, type: 3}
     hasVariations: 0
@@ -249,7 +249,7 @@ MonoBehaviour:
     loop: 0
     is3D: 1
     usePooling: 0
-    allowOverlap: 0
+    allowOverlap: 1
   - name: Suction
     clip: {fileID: 8300000, guid: 24fdc5265f7b40546bbe2ce8cc5f891a, type: 3}
     hasVariations: 0
@@ -471,7 +471,7 @@ MonoBehaviour:
     hasVariations: 0
     variations: []
     audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
-    volume: 0.3
+    volume: 0.7
     pitch: 1
     source: {fileID: 0}
     loop: 0
@@ -501,13 +501,13 @@ MonoBehaviour:
     loop: 0
     is3D: 1
     usePooling: 0
-    allowOverlap: 0
+    allowOverlap: 1
   - name: UFOSuction
     clip: {fileID: 8300000, guid: 1d75035246405d944934bbfd4eefd7e0, type: 3}
     hasVariations: 0
     variations: []
     audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
-    volume: 0.3
+    volume: 1
     pitch: 1
     source: {fileID: 0}
     loop: 0
@@ -549,4 +549,28 @@ MonoBehaviour:
     loop: 0
     is3D: 0
     usePooling: 0
+    allowOverlap: 1
+  - name: ScoreJingle
+    clip: {fileID: 8300000, guid: b0727731fa9f3de4f9d00daa7a0ed268, type: 3}
+    hasVariations: 1
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 0
+    usePooling: 1
+    allowOverlap: 1
+  - name: FoundFossilJingle
+    clip: {fileID: 8300000, guid: 506cb28ab1fb9b04c9aa1dd2350b8725, type: 3}
+    hasVariations: 1
+    variations: []
+    audioMixerGroup: {fileID: 4682116215321434258, guid: d79df84a7ec4df04ab88e7b56d79a84e, type: 2}
+    volume: 0.5
+    pitch: 1
+    source: {fileID: 0}
+    loop: 0
+    is3D: 1
+    usePooling: 1
     allowOverlap: 1

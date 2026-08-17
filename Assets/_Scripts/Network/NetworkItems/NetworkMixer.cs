@@ -33,6 +33,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new();
+    private NetworkGameManager networkGameManager;
     private int vialCount;
     private Vector3 originalPos;
 
@@ -41,12 +42,14 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [Networked] private bool lightsAreGreen { get; set; }
 
     private AudioManager audioManager;
+    private bool hasAddedVialBefore;
 
     public override void Spawned()
     {
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
-
+        networkGameManager = FindFirstObjectByType<NetworkGameManager>();
+        
         if (Object.HasStateAuthority)
             RPC_ResetMixerVisuals();
     }
@@ -57,7 +60,13 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         if (vial.Type != VialType.OutputVial) return;
 
         currentInputs.Add(vial.Type);
-        Utils.DebugLog($"Added vial: {vial.Type}");
+        
+        // --- Give the correct player a score ---
+        if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
+        {
+            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+            RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
+        }
 
         Runner.Despawn(vial.Object);
 
@@ -78,7 +87,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
     private void Mix()
     {
-        AudioManager.instance.Play("Processor", transform.position);
+        RPC_Play("Processor", transform.position);
 
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
         var matchingRecipe = recipes.FirstOrDefault(r =>
@@ -139,6 +148,15 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     }
 
     // --- RPC Helpers ---
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasAddedVialBefore)
+        {
+            GameEventManager.TriggerEvent((GameEvent)eventEnumInt);
+            hasAddedVialBefore = true;
+        }
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_SetLightsGreen()
@@ -189,6 +207,12 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         if (fx != null) Destroy(fx, fxDespawnDelay);
     }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
+    }
 
     // --- Trigger Interface ---
     public void OnChildTriggerEnter(Collider other, TriggerType tType = TriggerType.Left)
@@ -203,7 +227,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         if (countBeforeAdd >= 1)
         {
-            print("Here!");
             RPC_SetSingleLightAndVial(true, true);
             RPC_SetSingleLightAndVial(false, true);
         }

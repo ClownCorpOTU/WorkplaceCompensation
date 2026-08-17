@@ -79,7 +79,7 @@ public class RadiationZone : NetworkBehaviour
 
     private void UpdateLocalEffects(float intensity, NetworkPlayer player)
     {
-        print("Updating local effect!");
+        Debug.Log("Updating local effect!");
         localPlayerUIManager.UpdateRadiationFullScreenEffect(intensity);
 
         if (intensity > 0 && nextTickTimer.ExpiredOrNotRunning(Runner))

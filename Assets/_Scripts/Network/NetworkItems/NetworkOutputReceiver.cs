@@ -8,6 +8,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
     [SerializeField] private float flyDelay = 0.5f;
     [SerializeField] private float flySpeed = 5f;
     [SerializeField] private float despawnDelay = 3f;
+    [SerializeField] private int scoreToAdd = 2;
     
     [Header("Juice")]
     [SerializeField] private GameObject windPrefab;
@@ -21,6 +22,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
 
     private NetworkGameManager networkGameManager;
     private bool hasFlown;
+    private bool hasDepositedBoxBefore;
     
     
     public override void Spawned()
@@ -42,6 +44,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
             // Play juice
             RPC_PlayWind();
             
+            RPC_TriggerTutorialEvent(vial.LastHeldBy, (int)GameEvent.BoxProcessed);
             
             // Record the vial object and start the first timer
             vialToDespawn = vial.Object;
@@ -69,7 +72,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
         if (despawnTimer.Expired(Runner) && vialToDespawn != null)
         {
             Vial v = vialToDespawn.gameObject.GetComponent<Vial>();
-            networkGameManager.AddScore(v.LastHeldBy, 2);
+            networkGameManager.AddScore(v.LastHeldBy, scoreToAdd);
             Runner.Despawn(vialToDespawn);
             vialToDespawn = null;
             v = null;
@@ -85,7 +88,17 @@ public class NetworkOutputReceiver : NetworkBehaviour
 
         GameObject fx = Instantiate(windPrefab, windSpawnPoint.position, Quaternion.Euler(-90f,0f,0f));
         
-        // Auto-destroy if vfx didn't destory itself
+        // Auto-destroy if vfx didn't destroy itself
         if (fx != null) Destroy(fx, fxDespawnDelay);
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasDepositedBoxBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.OutputBoxDelivered);
+            hasDepositedBoxBefore = true;
+        }
     }
 }
