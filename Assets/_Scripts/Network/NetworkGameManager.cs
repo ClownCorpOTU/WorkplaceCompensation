@@ -60,6 +60,7 @@ public class NetworkGameManager : NetworkBehaviour
     
     private NetworkPlayer FindPlayerByRef(PlayerRef playerRef)
     {
+        print(NetworkPlayers.GetValueOrDefault(playerRef).gameObject.name);
         return NetworkPlayers.GetValueOrDefault(playerRef);
     }
     

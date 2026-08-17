@@ -11646,6 +11646,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 240801837505239448, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -49.32666
+      objectReference: {fileID: 0}
     - target: {fileID: 1184707553524664301, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
       propertyPath: m_Name
       value: Canvas
@@ -11797,6 +11801,10 @@ PrefabInstance:
     - target: {fileID: 4903371745183580749, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
       propertyPath: m_AnchorMax.y
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5400376679357048992, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: -49.32666
       objectReference: {fileID: 0}
     - target: {fileID: 5557298244728902598, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
