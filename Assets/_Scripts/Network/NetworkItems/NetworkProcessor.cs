@@ -34,6 +34,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     [Networked] private bool lightsAreGreen { get; set; } // track current light state
 
     private AudioManager audioManager;
+    private bool hasAddedBoxBefore;
 
 
     public override void Spawned()
@@ -63,7 +64,10 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         // --- Give the correct player a score ---
         if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
         {
-            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+            var scoreToAdd = vial.Type == VialType.VIPCrate ? 2 : 1;
+            
+            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, scoreToAdd);
+            RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
         }
 
         // --- Despawn vial ---
@@ -180,6 +184,17 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
                 // Send an RPC so all players play fireworks
                 RPC_PlayFireworks();
             }
+        }
+    }
+    
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasAddedBoxBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.BoxProcessed);
+            hasAddedBoxBefore = true;
         }
     }
 

@@ -145,13 +145,14 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         // Now that you've added .AddCallbacks(this), you will see this print!
         Debug.Log($"<color=orange>NetworkManager:</color> Game Shutdown! Reason: {shutdownReason}");
 
-        if (shutdownReason == ShutdownReason.Ok)
+        if (networkRunnerHandler != null)
         {
-            return;
+            networkRunnerHandler.sessionList.Clear();
         }
+
         // 0 is 'Ok' (the user left normally). 
         // Anything else means a disconnect, host-quit, or error.
-        else 
+        if (shutdownReason != ShutdownReason.Ok)
         {
             var uiManager = FindFirstObjectByType<LocalPlayerUIManager>();
             if (uiManager != null)
@@ -164,6 +165,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         Cursor.lockState = CursorLockMode.None;
         
 
+        Destroy(runner.gameObject);
         // if (SceneManager.GetActiveScene().name != "Lobby")
         // {
         //     SceneManager.LoadScene(lobbyMenuBuildIndex);
@@ -194,13 +196,12 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         //lobbyMenuManager.ClearLobbyDisplay();
 
-        if (sessionList.Count != 0)
-        {
-            // foreach (SessionInfo session in sessionList)
-            // {
-            //     lobbyMenuManager.CreateEntry(session);
-            // }
-            networkRunnerHandler.sessionList = sessionList;
-        }
+        // if (sessionList.Count != 0)
+        // {
+        //     foreach (SessionInfo session in sessionList)
+        //     {
+        //         lobbyMenuManager.CreateEntry(session);
+        //     }
+        // }
     }
 }

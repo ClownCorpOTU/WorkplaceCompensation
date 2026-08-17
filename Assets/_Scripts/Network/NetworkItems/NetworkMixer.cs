@@ -42,6 +42,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [Networked] private bool lightsAreGreen { get; set; }
 
     private AudioManager audioManager;
+    private bool hasAddedVialBefore;
 
     public override void Spawned()
     {
@@ -64,6 +65,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
         {
             networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+            RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
         }
 
         Runner.Despawn(vial.Object);
@@ -146,6 +148,15 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     }
 
     // --- RPC Helpers ---
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasAddedVialBefore)
+        {
+            GameEventManager.TriggerEvent((GameEvent)eventEnumInt);
+            hasAddedVialBefore = true;
+        }
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_SetLightsGreen()
@@ -216,7 +227,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         if (countBeforeAdd >= 1)
         {
-            print("Here!");
             RPC_SetSingleLightAndVial(true, true);
             RPC_SetSingleLightAndVial(false, true);
         }

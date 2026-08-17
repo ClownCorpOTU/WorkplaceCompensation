@@ -124,6 +124,6 @@ public class SettingsManager : MonoBehaviour
         // We clamp to 0.0001 because Log10 of 0 is undefined (and causes errors)
         float volumeInDb = Mathf.Log10(Mathf.Max(0.0001f, sliderValue)) * 20;
         mainMixer.SetFloat(parameterName, volumeInDb);
-        print($"Setting {parameterName} to {volumeInDb}");
+        Debug.Log($"Setting {parameterName} to {volumeInDb}");
     }
 }

@@ -1,4 +1,5 @@
-﻿using Fusion;
+﻿using System.Collections.Generic;
+using Fusion;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -33,6 +34,9 @@ public class TutorialManager : MonoBehaviour
     [SerializeField] private Button nextButton;
     [SerializeField] private Button prevButton;
 
+    [Header("Lobby System")]
+    [SerializeField] private NetworkRunnerHandler networkRunnerHandler;
+
     private TutorialStepSO[] steps;
     private int currentIndex = -1; // Start at -1 to represent the Cover Page
     private string chosenLevel;
@@ -53,6 +57,12 @@ public class TutorialManager : MonoBehaviour
     {
         currentIndex = -1;
         UpdateUI();
+
+        networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
+        if (networkRunnerHandler != null)
+        {
+            networkRunnerHandler.OnJoinLobbyList(networkRunnerHandler.MainLobbyListName);
+        }
     }
 
     public void SetLevel(string levelName)
@@ -70,8 +80,6 @@ public class TutorialManager : MonoBehaviour
     // NOTE: UI needs to be updated for multiple lobbies of the same map.
     public void JoinGameButton(string hostOrClient)
     {
-        NetworkRunnerHandler networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
-
         string mapScenePath = "";
         if (chosenLevel == level1Name)
         {
@@ -105,6 +113,13 @@ public class TutorialManager : MonoBehaviour
         }
         else if (hostOrClient == "CLIENT")
         {
+            if (networkRunnerHandler.sessionList.Count == 0)
+            {
+                Debug.LogWarning("No sessions found. Attempting to restart lobby search...");
+                networkRunnerHandler.OnJoinLobbyList(networkRunnerHandler.MainLobbyListName);
+                return;
+            }
+
             foreach (SessionInfo sessionInfo in networkRunnerHandler.sessionList)
             {
                 if (sessionInfo.Name.Contains(chosenLevel))
