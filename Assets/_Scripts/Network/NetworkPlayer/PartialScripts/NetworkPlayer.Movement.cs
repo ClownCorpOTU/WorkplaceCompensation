@@ -19,6 +19,7 @@ public partial class NetworkPlayer
     private Vector2 moveInputVector = Vector2.zero;
     public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
+    private bool hasMovedBefore;
 
     private float footstepTimer;
     //private TickTimer jumpBuffer;
@@ -41,6 +42,11 @@ public partial class NetworkPlayer
             if (NetworkedMovementSpeed < maxSpeed)
             {
                 rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
+                if (!hasMovedBefore)
+                {
+                    GameEventManager.TriggerEvent(GameEvent.PlayerMoved);
+                    hasMovedBefore = true;
+                }
 
                 if (IsGrounded)
                 {

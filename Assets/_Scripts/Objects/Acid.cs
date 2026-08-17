@@ -9,6 +9,7 @@ public class Acid : NetworkBehaviour
     
     private NetworkGameManager networkGameManager;
     private Vial vialToDespawn;
+    private bool hasThrownTrashBefore;
     
     [Networked] private TickTimer acidKillTimer { get; set; }
     
@@ -29,6 +30,12 @@ public class Acid : NetworkBehaviour
         if (other.TryGetComponent(out Vial vial) && vial.Type == VialType.TrashBag)
         {
             networkGameManager.AddScore(vial.LastHeldBy, scoreToAdd);
+            
+            if (!hasThrownTrashBefore)
+            {
+                GameEventManager.TriggerEvent(GameEvent.TrashDeposited);
+                hasThrownTrashBefore = true;
+            }
 
             // Start timer
             vialToDespawn = vial;

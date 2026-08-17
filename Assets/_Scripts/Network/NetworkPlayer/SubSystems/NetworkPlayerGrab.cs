@@ -31,11 +31,13 @@ public class NetworkPlayerGrab : MonoBehaviour
     [SerializeField] private LayerMask grabbableLayer;
     private Collider[] grabResults = new Collider[8];
     
-    
     private NetworkPlayer networkPlayer;
     private HandGrabHandler[] handGrabHandlers;
     private float leftVelocity, rightVelocity;
     private float originalArmJointValue, originalArmDampingValue;
+    private bool hasGrabbedBefore;
+    private bool hasGrabbedVialBefore;
+    
     
     public void Initialize(NetworkPlayer player)
     {
@@ -126,6 +128,21 @@ public class NetworkPlayerGrab : MonoBehaviour
         Vector3 direction = (handTransform.position - closestRb.worldCenterOfMass).normalized;
         float forceMagnitude = magnetForce * (1f - (closestDist / grabRadius));
         closestRb.AddForce(-direction * forceMagnitude, ForceMode.Impulse);
+        
+        // Gameplay tutorial step for grabbing boxes (Technically checks if we grabbed anything)
+        if (!hasGrabbedBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.BoxGrabbed);
+            hasGrabbedBefore = true;
+        }
+        
+        // Gameplay tutorial step for grabbing vials for the first time
+        if (closestRb.GetComponent<Vial>().Type == VialType.OutputVial && !hasGrabbedVialBefore)
+        {
+            print("Grabbed vial!");
+            GameEventManager.TriggerEvent(GameEvent.VialsGrabbed);
+            hasGrabbedVialBefore = true;
+        }
     }
 
     public void ForceRelease()

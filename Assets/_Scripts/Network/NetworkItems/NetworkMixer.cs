@@ -42,6 +42,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [Networked] private bool lightsAreGreen { get; set; }
 
     private AudioManager audioManager;
+    private bool hasAddedVialBefore;
 
     public override void Spawned()
     {
@@ -57,6 +58,12 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         if (!Object.HasStateAuthority) return;
         if (vial.Type != VialType.OutputVial) return;
+        
+        if (!hasAddedVialBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.VialsMixed);
+            hasAddedVialBefore = true;
+        }
 
         currentInputs.Add(vial.Type);
         

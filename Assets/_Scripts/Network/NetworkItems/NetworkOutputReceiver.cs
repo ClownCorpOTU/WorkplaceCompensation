@@ -22,6 +22,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
 
     private NetworkGameManager networkGameManager;
     private bool hasFlown;
+    private bool hasDepositedBoxBefore;
     
     
     public override void Spawned()
@@ -63,6 +64,13 @@ public class NetworkOutputReceiver : NetworkBehaviour
             }
 
             hasFlown = true;
+            
+            if (!hasDepositedBoxBefore)
+            {
+                GameEventManager.TriggerEvent(GameEvent.OutputBoxDelivered);
+                hasDepositedBoxBefore = true;
+            }
+            
             despawnTimer = TickTimer.CreateFromSeconds(Runner, despawnDelay);
         }
 

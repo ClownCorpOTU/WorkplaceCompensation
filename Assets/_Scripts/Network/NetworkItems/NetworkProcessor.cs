@@ -34,6 +34,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     [Networked] private bool lightsAreGreen { get; set; } // track current light state
 
     private AudioManager audioManager;
+    private bool hasAddedBoxBefore;
 
 
     public override void Spawned()
@@ -142,6 +143,12 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     private void OnBoxAdded(VialType vialType)
     {
         if (!Object.HasStateAuthority) return;
+        
+        if (!hasAddedBoxBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.BoxProcessed);
+            hasAddedBoxBefore = true;
+        }
         
         // --- Turn on correct light based on input count ---
         if (vialType == VialType.VIPCrate) RPC_SetLightsGreen();
