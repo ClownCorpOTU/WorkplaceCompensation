@@ -24,6 +24,8 @@ public class InputReader : MonoBehaviour
     private InputAction rightHandGrabAction;
     private InputAction pauseAction;
     private InputAction liftAction;
+    
+    public event System.Action OnPausePressed;
 
     private void Awake()
     {
@@ -119,7 +121,10 @@ public class InputReader : MonoBehaviour
     private void OnJump(InputAction.CallbackContext context)
     {
         if (context.performed)
+        {
             IsJumpButtonPressed = true;
+            //testing score popup using jump ScorePopupManager.Instance.ShowScore(2);
+        }
         else if (context.canceled)
             IsJumpButtonPressed = false;
     }
@@ -159,9 +164,14 @@ public class InputReader : MonoBehaviour
     private void OnPause(InputAction.CallbackContext context)
     {
         if (context.performed)
+        {
             IsPauseButtonPressed = true;
+            OnPausePressed?.Invoke();
+        }
         else if (context.canceled)
+        {
             IsPauseButtonPressed = false;
+        }
     }
     
     private void OnLift(InputAction.CallbackContext context)

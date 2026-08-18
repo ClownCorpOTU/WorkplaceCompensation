@@ -21,7 +21,9 @@ public partial class NetworkPlayer
         }
         */
 
-        animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
+        if (IsGrounded) animatedModel.SetFloat("movementSpeed", localForwardVelocity * 0.4f);
+        else animatedModel.SetFloat("movementSpeed", 0f);
+        
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
         {
             syncPhysicsObjects[i].UpdateJointFromAnimation();
@@ -48,8 +50,8 @@ public partial class NetworkPlayer
         var main = dustFXParticles.main;
 
         // Only show dust when grounded
-        emission.enabled = isGrounded;
-        if (!isGrounded)
+        emission.enabled = IsGrounded;
+        if (!IsGrounded)
             return;
 
         // Clamp velocity
@@ -63,5 +65,11 @@ public partial class NetworkPlayer
         // Change particle size and speed - Dust spreads more when sprinting
         main.startSize = Mathf.Lerp(startSizeRange.x, startSizeRange.y, clampedSpeed / 15f);
         //main.startSpeed = Mathf.Lerp(startSpeedRange.x, startSpeedRange.y, clampedSpeed / 15f);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        GameEventManager.TriggerEvent((GameEvent)eventEnumInt);
     }
 }

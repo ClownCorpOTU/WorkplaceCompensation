@@ -36,7 +36,7 @@ public class NetworkButton : NetworkBehaviour, ICollisionReceiver
 
         IsButtonPressed = true;
         targetLocalPos = initialLocalPos - pressDepth;
-        AudioManager.instance.Play("ButtonPress", transform.position); // Can I just use the instance?
+        RPC_Play("ButtonPress", transform.position); // Can I just use the instance?
     }
     
     public void OnChildCollisionExit(Collision collision)
@@ -45,5 +45,11 @@ public class NetworkButton : NetworkBehaviour, ICollisionReceiver
         
         IsButtonPressed = false;
         targetLocalPos = initialLocalPos;
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (AudioManager.instance != null) AudioManager.instance.Play(audioName, position);
     }
 }

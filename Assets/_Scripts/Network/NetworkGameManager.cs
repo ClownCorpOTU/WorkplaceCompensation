@@ -7,18 +7,36 @@ using UnityEngine.UI;
 
 public class NetworkGameManager : NetworkBehaviour
 {
+    [Header("Game Settings")]
     [SerializeField, Tooltip("Game runtime in minutes")] private float gameRuntime = 5f;
     [SerializeField] private TextMeshProUGUI timerText;
     [SerializeField] private Image timerClockFill;
     [SerializeField] private Image timerClockHand;
     [SerializeField] private GameObject gameOverPanel;
+    
+    [Header("Score UI")]
     public TextMeshProUGUI ScoreText;
+    [SerializeField] private TextMeshProUGUI leaderboardText;
     [SerializeField] private TextMeshProUGUI finalScoreText;
+
+    [Header("Medal UI")] [SerializeField] 
+    private TextMeshProUGUI rankNumberText;
+    [SerializeField] private Image localRankMedalImage;
+    [SerializeField] private Sprite firstPlaceSprite;
+    [SerializeField] private Sprite secondPlaceSprite;
+    [SerializeField] private Sprite thirdPlaceSprite;
+    [SerializeField] private Sprite noPlaceSprite;
     
     [Networked] private TickTimer GameTimer { get; set; }
     [Networked] private bool IsGameOver { get; set; }
+    [Networked] private float remainingTime { get; set; }
 
+    public float RemainingTime => remainingTime;
+
+    public Dictionary<PlayerRef, NetworkPlayer> NetworkPlayers = new();
     private Dictionary<PlayerRef, int> playerScores = new();
+    private int lastPlayerCount = 0;
+    private float prevSeconds = 99999f;
     
     
     #region Spawning and Setup
@@ -26,23 +44,23 @@ public class NetworkGameManager : NetworkBehaviour
     public override void Spawned()
     {
         gameOverPanel.SetActive(false);
+        leaderboardText.text = "";
         
         if (Object.HasStateAuthority)
         {
             // Start a timer based on the runtime
             float gameTime = gameRuntime * 60f;
             GameTimer = TickTimer.CreateFromSeconds(Runner, gameTime);
+            
+            // Update Discord with the countdown!
+            if (DiscordManager.Instance != null)
+                DiscordManager.Instance.StartLevelTimer(gameTime);
         }
     }
     
     private NetworkPlayer FindPlayerByRef(PlayerRef playerRef)
     {
-        foreach (var player in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
-        {
-            if (player.Object.InputAuthority == playerRef)
-                return player;
-        }
-        return null;
+        return NetworkPlayers.GetValueOrDefault(playerRef);
     }
     
     #endregion
@@ -51,10 +69,12 @@ public class NetworkGameManager : NetworkBehaviour
     
     private void Update()
     {
+        if (!Object || !Object.IsValid) return;
+        
         // UI updates are client-only (not networked)
         if (GameTimer.IsRunning)
         {
-            float remainingTime = GameTimer.RemainingTime(Runner).GetValueOrDefault();
+            remainingTime = GameTimer.RemainingTime(Runner).GetValueOrDefault();
             UpdateTimerUI(remainingTime);
         }
     }
@@ -62,6 +82,13 @@ public class NetworkGameManager : NetworkBehaviour
     public override void FixedUpdateNetwork()
     {
         if (!GameTimer.IsRunning || IsGameOver) return;
+        
+        // Refresh leaderboard if someone joins or leaves
+        if (Object.HasStateAuthority && NetworkPlayers.Count != lastPlayerCount)
+        {
+            lastPlayerCount = NetworkPlayers.Count;
+            UpdateLeaderboardData();
+        }
 
         if (GameTimer.Expired(Runner))
         {
@@ -74,7 +101,9 @@ public class NetworkGameManager : NetworkBehaviour
     {
         int minutes = Mathf.FloorToInt(remainingTime / 60f);
         int seconds = Mathf.FloorToInt(remainingTime % 60f);
-        timerText.text = $"{minutes:00}:{seconds:00}";
+        
+        if (prevSeconds != seconds) timerText.text = $"{minutes:00}:{seconds:00}";
+        prevSeconds = seconds;
         
         timerClockFill.fillAmount = remainingTime / (gameRuntime*60f);
         timerClockHand.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Lerp(360, 0, remainingTime / (gameRuntime*60f)));
@@ -93,13 +122,37 @@ public class NetworkGameManager : NetworkBehaviour
 
         playerScores[playerRef] += amount;
 
-        // Find that player's object
+        // Update the specific player's personal score UI
         NetworkPlayer player = FindPlayerByRef(playerRef);
-
         if (player != null)
-            player.RPC_UpdateScoreUI(playerScores[playerRef]);
+            player.RPC_UpdateScoreUI(playerScores[playerRef], amount);
+        
+        // Broadcast top scores to everyone's leaderbox
+        UpdateLeaderboardData();
     }
-    
+
+    private void UpdateLeaderboardData()
+    {
+        // Sort EVERYONE to find everyone's true rank
+        var allSorted = playerScores
+            .OrderByDescending(kvp => kvp.Value)
+            .ToList();
+        
+        // Prepare top 3 for the leaderboard
+        PlayerRef[] topRefs = allSorted.Take(3).Select(x => x.Key).ToArray();
+        int[] topScores = allSorted.Take(3).Select(x => x.Value).ToArray();
+        
+        // Find rank for every specific player
+        foreach (var player in Runner.ActivePlayers)
+        {
+            int actualRank = allSorted.FindIndex(x => x.Key == player) + 1;
+
+            if (actualRank <= 0) actualRank = Runner.ActivePlayers.Count();
+
+            RPC_SyncPlayerRank(player, actualRank, topRefs, topScores);
+        }
+    }
+
     private void ShowPlayerScores()
     {
         // Build a complete list of all players with their scores (default 0 if not in dictionary)
@@ -144,6 +197,63 @@ public class NetworkGameManager : NetworkBehaviour
     #endregion
 
     #region RPCs
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)] 
+    private void RPC_SyncPlayerRank(PlayerRef targetPlayer, int myRank, PlayerRef[] topRefs, int[] topScores)
+    {
+        // Only execute logic for the player this message is intended for
+        if (Runner.LocalPlayer != targetPlayer) return;
+
+        // --- Update the Medal & Rank Number ---
+        if (localRankMedalImage != null)
+        {
+            localRankMedalImage.sprite = myRank switch
+            {
+                1 => firstPlaceSprite,
+                2 => secondPlaceSprite,
+                3 => thirdPlaceSprite,
+                _ => noPlaceSprite
+            };
+
+            rankNumberText.text = myRank.ToString();
+        }
+
+        // --- Update the "Others" Leaderboard Text ---
+        UpdateLeaderboardText(topRefs, topScores);
+    }
+    
+    private void UpdateLeaderboardText(PlayerRef[] topRefs, int[] topScores)
+    {
+        if (leaderboardText == null) return;
+        
+        PlayerRef localPlayer = Runner.LocalPlayer;
+
+        // Single player edge case
+        if (Runner.ActivePlayers.Count() <= 1)
+        {
+            leaderboardText.text = "<size=60%>WAITING FOR\nCHALLENGERS</size>";
+            return;
+        }
+
+        List<string> displayEntries = new List<string>();
+        
+        // Who do we show?
+        for (int i = 0; i < topRefs.Length; i++)
+        {
+            // Skip MYSELF - We only want to see others in this box
+            if (topRefs[i] == localPlayer) continue;
+            
+            // Format player string
+            int pNum = (topRefs[i].RawEncoded % 1000) - 1;
+            displayEntries.Add($"<size=80%>P{pNum}:</size> {topScores[i]}");
+            
+            // We only have room for 2 "others"
+            if (displayEntries.Count >=2) break;
+        }
+        
+        // Final display
+        leaderboardText.text = string.Join("\n", displayEntries);
+    }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_OnGameOver()

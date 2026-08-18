@@ -17,7 +17,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses:
@@ -38,11 +38,27 @@ Material:
         m_Texture: {fileID: 2800000, guid: a1a4108227a8a8b4f9067f80f37c33ec, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_0926863c21ee40ab89edef43b294e8bb_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_37b0f26b23a442479443b8b1ddb96bbf_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_a790875aa8764e949e611796b223eb78_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_afbf4cf51ed7421598bc2b6dc8459672_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 6905d2d44435faf47b69503b0d52b250, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_cff56cc2b94344e683c805240458d908_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 6905d2d44435faf47b69503b0d52b250, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_f3515e6cd4934050b8772f8e7aa06670_Texture_1_Texture2D:
         m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
@@ -82,6 +98,7 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _FalloffThreshold: 10
+    - _HalfToneIntensity: 1
     - _LIGHTMAP_SHADOW_MIXING: 0
     - _LightPosterizationSteps: 4
     - _LitThreshold: 0.4
@@ -100,6 +117,7 @@ Material:
     - _SrcBlendAlpha: 1
     - _Surface: 0
     - _TimePosterization: 3
+    - _UseDotPattern: 0
     - _UseScreenSpace: 1
     - _WorldSpaceHalfstoneScale: 1
     - _ZTest: 4
@@ -108,7 +126,7 @@ Material:
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 0}
     - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
-    - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
+    - _ChromaKeyColorReplacement: {r: 1, g: 1, b: 1, a: 1}
     - _CrossHatchFade: {r: 10, g: 30, b: 0, a: 0}
     - _DiffuseColor: {r: 0.26274508, g: 0.8862745, b: 0.8155137, a: 0}
     - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}

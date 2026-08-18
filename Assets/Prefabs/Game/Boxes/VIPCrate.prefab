@@ -107,6 +107,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
       insertIndex: -1
       addedObject: {fileID: 156966886985284441}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4714052559718100709}
   m_SourcePrefab: {fileID: 100100000, guid: 764b60fd9f40b114792ef89e250eb7c9, type: 3}
 --- !u!1 &6058250346617018402 stripped
 GameObject:
@@ -203,6 +206,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 8998105275294017976}
   - {fileID: 156966886985284441}
+  - {fileID: 4714052559718100709}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &156966886985284441
 MonoBehaviour:
@@ -217,3 +221,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _Type: 4
+--- !u!114 &4714052559718100709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6058250346617018402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78962b515ffa69d4caff867690227f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrabbedByTracker

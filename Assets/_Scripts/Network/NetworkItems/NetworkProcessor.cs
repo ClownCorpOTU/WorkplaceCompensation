@@ -26,6 +26,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     private List<RecipeSO> recipes;
     private List<VialType> currentInputs = new();
     private Queue<VialType> pendingResults = new(); // queue for multiple results
+    private NetworkGameManager networkGameManager;
     private int vialCount;
 
     // --- Network timers ---
@@ -33,12 +34,14 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     [Networked] private bool lightsAreGreen { get; set; } // track current light state
 
     private AudioManager audioManager;
+    private bool hasAddedBoxBefore;
 
 
     public override void Spawned()
     {
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
+        networkGameManager = FindFirstObjectByType<NetworkGameManager>();
 
         if (Object.HasStateAuthority) RPC_ResetLights();
     }
@@ -57,7 +60,17 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         Utils.DebugLog($"Added vial: {vial.Type}");
 
         OnBoxAdded(vial.Type);
+        
+        // --- Give the correct player a score ---
+        if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
+        {
+            var scoreToAdd = vial.Type == VialType.VIPCrate ? 2 : 1;
+            
+            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, scoreToAdd);
+            RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
+        }
 
+        // --- Despawn vial ---
         Runner.Despawn(vial.Object);
 
         // --- Check if current inputs match any recipe exactly ---
@@ -81,7 +94,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
     private void Mix()
     {
-        AudioManager.instance.Play("Processor", transform.position);
+        RPC_Play("Processor", transform.position);
 
         // Order inputs alphabetically
         var sortedInput = currentInputs.OrderBy(x => x).ToList();
@@ -173,6 +186,17 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
             }
         }
     }
+    
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasAddedBoxBefore)
+        {
+            GameEventManager.TriggerEvent(GameEvent.BoxProcessed);
+            hasAddedBoxBefore = true;
+        }
+    }
 
     // --- Light helpers ---
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -212,6 +236,12 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
         // Auto-destroy if vfx didn't destory itself
         if (fx != null) Destroy(fx, fxDespawnDelay);
+    }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 
     // --- Trigger interface ---

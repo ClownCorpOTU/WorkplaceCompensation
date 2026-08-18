@@ -17,8 +17,6 @@ public class ThemeSong : MonoBehaviour
             Destroy(gameObject);
             return;
         }
-
-        DontDestroyOnLoad(gameObject);
     }
 
     private void Start() {
