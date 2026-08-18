@@ -29,3 +29,10 @@ public static class Utils
         return key;
     } 
 }
+
+public enum ItemCategory
+{
+    Hat = 0,
+    Suit = 1,
+    Boots = 2,
+}
