@@ -15,9 +15,9 @@ RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 10
   m_Fog: 1
-  m_FogColor: {r: 0.4198113, g: 0.7520562, b: 1, a: 1}
+  m_FogColor: {r: 0.5613208, g: 0.813265, b: 1, a: 1}
   m_FogMode: 3
-  m_FogDensity: 0.006
+  m_FogDensity: 0.012
   m_LinearFogStart: 0
   m_LinearFogEnd: 300
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
@@ -6087,7 +6087,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Intensity
@@ -9358,7 +9358,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 605033939}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 0.5254902, b: 0.8664398, a: 1}
@@ -10896,7 +10896,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 728380278}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 11
   m_Type: 0
   m_Color: {r: 1, g: 0.99030155, b: 0.5254902, a: 1}
@@ -14059,7 +14059,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 916667775}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
   m_Color: {r: 0.4481132, g: 0.9182246, b: 1, a: 1}
@@ -14480,7 +14480,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Intensity
@@ -18150,7 +18150,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1186442763}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
   m_Color: {r: 1, g: 0, b: 0.6509804, a: 1}
@@ -19548,7 +19548,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Intensity
@@ -28322,7 +28322,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1657568283}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -32255,9 +32255,9 @@ Light:
     m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 0.42
+    m_Strength: 0.45
     m_Bias: 0
-    m_NormalBias: 0
+    m_NormalBias: 10
     m_NearPlane: 0.1
     m_CullingMatrixOverride:
       e00: 1
@@ -34200,7 +34200,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2004245033}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
   m_Color: {r: 0.32156864, g: 1, b: 0, a: 1}
@@ -36145,7 +36145,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Enabled
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Intensity
@@ -36664,7 +36664,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Intensity
@@ -37616,7 +37616,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4861475652337948140, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4861475652337948140, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Intensity
