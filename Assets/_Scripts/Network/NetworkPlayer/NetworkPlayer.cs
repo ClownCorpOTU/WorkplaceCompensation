@@ -310,7 +310,10 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     public override void FixedUpdateNetwork()
     {
         float localForwardVelocity = 0f;
-        GetInput(out networkInputData);
+
+        // Check if input was sucessfully retrieved this tick
+        if (GetInput(out NetworkInputData currentInput))
+            networkInputData = currentInput;
 
         // Set local flags based on network input
         isGrabbingActive = networkInputData.IsGrabPressed;
@@ -358,7 +361,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         SyncAnimations(NetworkedMovementSpeed);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     public void RPC_UpdateScoreUI(int newScore, int addedScore)
     {
         Debug.Log("Updating score!");
