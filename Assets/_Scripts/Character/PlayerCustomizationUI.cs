@@ -7,6 +7,7 @@ public class PlayerCustomizationUI : MonoBehaviour
 {
     [SerializeField] private TMP_InputField nameInputField;
     [SerializeField] private Image colorPreviewImage;
+    [SerializeField] private TextMeshProUGUI coinValue;
     
     private string currentName = "JOHN";
     private Color currentColor = Color.white;
@@ -42,6 +43,9 @@ public class PlayerCustomizationUI : MonoBehaviour
             currentColor = color;
             if (colorPreviewImage != null) colorPreviewImage.color = currentColor;
         }
+
+        if (coinValue != null)
+            coinValue.text = LocalEconomyManager.GetCoins().ToString();
     }
 
     public void OnNameEndEdit(string newName)
@@ -76,8 +80,20 @@ public class PlayerCustomizationUI : MonoBehaviour
 
     public void SaveCustomization()
     {
-        PlayerPrefs.SetString("PlayerName", currentName);
-        PlayerPrefs.SetString("PlayerColor", hexColor);
+        PlayerPrefs.SetString(GetKey("PlayerName"), currentName);
+        PlayerPrefs.SetString(GetKey("PlayerColor"), hexColor);
         PlayerPrefs.Save();
     }
+    
+    private static string GetKey(string ogKey)
+    {
+        string key = ogKey;
+        
+#if UNITY_EDITOR
+        if (ParrelSync.ClonesManager.IsClone())
+            key += "_clone";
+#endif
+
+        return key;
+    } 
 }

@@ -358,7 +358,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         SyncAnimations(NetworkedMovementSpeed);
     }
 
-    [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     public void RPC_UpdateScoreUI(int newScore, int addedScore)
     {
         networkGameManager.ScoreText.text = newScore.ToString();
