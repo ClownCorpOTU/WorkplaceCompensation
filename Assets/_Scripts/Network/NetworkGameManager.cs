@@ -29,7 +29,7 @@ public class NetworkGameManager : NetworkBehaviour
     
     [Networked] private TickTimer GameTimer { get; set; }
     [Networked] private bool IsGameOver { get; set; }
-    [Networked] private float remainingTime { get; set; }
+    private float remainingTime { get; set; }
 
     public float RemainingTime => remainingTime;
 
@@ -60,7 +60,21 @@ public class NetworkGameManager : NetworkBehaviour
     
     private NetworkPlayer FindPlayerByRef(PlayerRef playerRef)
     {
-        return NetworkPlayers.GetValueOrDefault(playerRef);
+        // Try the dictionary first
+        if (NetworkPlayers.TryGetValue(playerRef, out var player)) 
+            return player;
+    
+        // Fallback: search the scene for the active NetworkPlayer
+        foreach (var p in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
+        {
+            if (p.Object != null && p.Object.InputAuthority == playerRef)
+            {
+                NetworkPlayers[playerRef] = p; // Cache it for next time
+                return p;
+            }
+        }
+    
+        return null;
     }
     
     #endregion
@@ -182,8 +196,7 @@ public class NetworkGameManager : NetworkBehaviour
             if (topRefs[i] == localPlayer) continue;
             
             // Format player string
-            int pNum = (topRefs[i].RawEncoded % 1000) - 1;
-            displayEntries.Add($"<size=80%>P{pNum}:</size> {topScores[i]}");
+            displayEntries.Add($"<size=60%>{GetPlayerDisplayName(topRefs[i], 4)}:</size> {topScores[i]}");
             
             // We only have room for 2 "others"
             if (displayEntries.Count >=2) break;
@@ -193,69 +206,82 @@ public class NetworkGameManager : NetworkBehaviour
         leaderboardText.text = string.Join("\n", displayEntries);
     }
     
-    // Called when we are building the final score string
-    private void RewardCoins(PlayerRef targetPlayer, int coinsAwarded)
+    // Helper function for the leaderboard
+    private string GetPlayerDisplayName(PlayerRef playerRef, int maxChars = 0)
     {
-        if (Runner.LocalPlayer != targetPlayer) return;
+        NetworkPlayer player = FindPlayerByRef(playerRef);
+        string playerName = null;
 
-        // This code only runs on the specific player's machine who won the coins
-        LocalEconomyManager.AddCoins(coinsAwarded);
-        
-        // Optional: Trigger a cool UI animation here showing "+100 Coins!"
+        if (player != null)
+            playerName = player.CustomizationData.PlayerName.ToString();
+
+        // Fallback if name is empty or player object is not found yet
+        if (string.IsNullOrWhiteSpace(playerName))
+        {
+            int pNum = (playerRef.RawEncoded % 1000) - 1;
+            playerName = $"Player {pNum}";
+        }
+
+        // Safely clamp length if maxChars is specified
+        if (maxChars > 0 && playerName.Length > maxChars)
+        {
+            playerName = playerName.Substring(0, maxChars);
+        }
+
+        return playerName;
     }
 
     // Runs on the host at the end of the game
     private string BuildFinalScoreString(out List<KeyValuePair<PlayerRef, int>> sortedScores)
+    {
+        // Build a complete list of all players with their scores (default 0 if not in dictionary)
+        var allScores = new List<KeyValuePair<PlayerRef, int>>();
+        foreach (var player in Runner.ActivePlayers)
         {
-            // Build a complete list of all players with their scores (default 0 if not in dictionary)
-            var allScores = new List<KeyValuePair<PlayerRef, int>>();
-            foreach (var player in Runner.ActivePlayers)
-            {
-                int score = playerScores.ContainsKey(player) ? playerScores[player] : 0;
-                allScores.Add(new KeyValuePair<PlayerRef, int>(player, score));
-            }
-    
-            // Sort descending by score
-            sortedScores = allScores
-                .OrderByDescending(kvp => kvp.Value)
-                .ToList();
-    
-            // Build display text
-            System.Text.StringBuilder sb = new System.Text.StringBuilder();
-    
-            int rank = 1;
-            foreach (var kvp in sortedScores)
-            {
-                int playerNumber = kvp.Key.RawEncoded % 1000;
-                int score = kvp.Value;
-    
-                string colorTag;
-    
-                switch (rank)
-                {
-                    case 1:
-                        colorTag = "#FFD700"; // Gold
-                        RewardCoins(kvp.Key, 100);
-                        break;
-                    case 2:
-                        colorTag = "#FFA500"; // Orange
-                        RewardCoins(kvp.Key, 75);
-                        break;
-                    case 3:
-                        colorTag = "#CD7F32"; // Bronze
-                        RewardCoins(kvp.Key, 50);
-                        break;
-                    default:
-                        colorTag = "#FFFFFF"; // White for others
-                        break;
-                }
-    
-                sb.AppendLine($"<color={colorTag}>Player {playerNumber-1}: {score}</color>");
-                rank++;
-            }
-    
-            return sb.ToString();
+            int score = playerScores.ContainsKey(player) ? playerScores[player] : 0;
+            allScores.Add(new KeyValuePair<PlayerRef, int>(player, score));
         }
+
+        // Sort descending by score
+        sortedScores = allScores
+            .OrderByDescending(kvp => kvp.Value)
+            .ToList();
+
+        // Build display text
+        System.Text.StringBuilder sb = new System.Text.StringBuilder();
+
+        int rank = 1;
+        foreach (var kvp in sortedScores)
+        {
+            int score = kvp.Value;
+
+            string colorTag;
+
+            switch (rank)
+            {
+                case 1:
+                    colorTag = "#FFD700"; // Gold
+                    RPC_RewardCoins(kvp.Key, 100);
+                    break;
+                case 2:
+                    colorTag = "#FFA500"; // Orange
+                    RPC_RewardCoins(kvp.Key, 75);
+                    break;
+                case 3:
+                    colorTag = "#CD7F32"; // Bronze
+                    RPC_RewardCoins(kvp.Key, 50);
+                    break;
+                default:
+                    colorTag = "#FFFFFF"; // White for others
+                    break;
+            }
+
+            sb.AppendLine($"<color={colorTag}>{GetPlayerDisplayName(kvp.Key)}: {score}</color>");
+            rank++;
+        }
+
+        return sb.ToString();
+    }
     
     
     #endregion
@@ -284,6 +310,18 @@ public class NetworkGameManager : NetworkBehaviour
 
         // --- Update the "Others" Leaderboard Text ---
         UpdateLeaderboardText(topRefs, topScores);
+    }
+    
+    // Called when we are building the final score string
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)] 
+    private void RPC_RewardCoins(PlayerRef targetPlayer, int coinsAwarded)
+    {
+        if (Runner.LocalPlayer != targetPlayer) return;
+
+        // This code only runs on the specific player's machine who won the coins
+        LocalEconomyManager.AddCoins(coinsAwarded);
+        
+        // Optional: Trigger a cool UI animation here showing "+100 Coins!"
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]

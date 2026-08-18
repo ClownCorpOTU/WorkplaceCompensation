@@ -16,4 +16,16 @@ public static class Utils
     {
         Debug.LogError($"{Time.time}  {message}");
     }
+    
+    public static string GetKey(string ogKey)
+    {
+        string key = ogKey;
+        
+#if UNITY_EDITOR
+        if (ParrelSync.ClonesManager.IsClone())
+            key += "_clone";
+#endif
+
+        return key;
+    } 
 }

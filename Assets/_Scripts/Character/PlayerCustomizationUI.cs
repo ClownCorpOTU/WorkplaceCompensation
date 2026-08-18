@@ -35,10 +35,10 @@ public class PlayerCustomizationUI : MonoBehaviour
 
     private void LoadSaveData()
     {
-        currentName = PlayerPrefs.GetString(GetKey("PlayerName"), "John");
+        currentName = PlayerPrefs.GetString(Utils.GetKey("PlayerName"), "John");
         nameInputField.text = currentName;
         
-        string savedColor = PlayerPrefs.GetString(GetKey("PlayerColor"), "#FFFFFF");
+        string savedColor = PlayerPrefs.GetString(Utils.GetKey("PlayerColor"), "#FFFFFF");
         if (ColorUtility.TryParseHtmlString(savedColor, out Color color))
         {
             currentColor = color;
@@ -82,20 +82,8 @@ public class PlayerCustomizationUI : MonoBehaviour
     // Called when user closes the menu
     public void SaveCustomization()
     {
-        PlayerPrefs.SetString(GetKey("PlayerName"), currentName);
-        PlayerPrefs.SetString(GetKey("PlayerColor"), hexColor);
+        PlayerPrefs.SetString(Utils.GetKey("PlayerName"), currentName);
+        PlayerPrefs.SetString(Utils.GetKey("PlayerColor"), hexColor);
         PlayerPrefs.Save();
     }
-    
-    private static string GetKey(string ogKey)
-    {
-        string key = ogKey;
-        
-#if UNITY_EDITOR
-        if (ParrelSync.ClonesManager.IsClone())
-            key += "_clone";
-#endif
-
-        return key;
-    } 
 }

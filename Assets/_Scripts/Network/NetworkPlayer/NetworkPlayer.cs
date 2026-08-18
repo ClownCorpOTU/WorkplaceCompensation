@@ -165,6 +165,11 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         ragdollChanges = GetChangeDetector(ChangeDetector.Source.SimulationState);
         transform.name = $"Player_{Object.Id}";
 
+        if (Object.HasStateAuthority)
+        {
+            if (!networkGameManager.NetworkPlayers.ContainsKey(Object.InputAuthority))
+                networkGameManager.NetworkPlayers.Add(Object.InputAuthority, this);
+        }
 
         if (Object.HasInputAuthority)
         {
@@ -195,8 +200,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             }
             
             // Load from PlayerPrefs and tell the host
-            string localName = PlayerPrefs.GetString("PlayerName", "JOHN");
-            string localHexColor = PlayerPrefs.GetString("PlayerColor", "#FFFFFF");
+            string localName = PlayerPrefs.GetString(Utils.GetKey("PlayerName"), "JOHN");
+            string localHexColor = PlayerPrefs.GetString(Utils.GetKey("PlayerColor"), "#FFFFFF");
             ColorUtility.TryParseHtmlString(localHexColor, out Color localColor);
             
             RPC_SetCustomization(localName, localColor);
@@ -422,9 +427,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             if (string.IsNullOrEmpty(newName)) 
                 newName = "JOHN";
-
-            if (newName.Length > 4) 
-                newName = newName.Substring(0, 4);
             
             CustomizationData = new PlayerCustomizationData()
             {
@@ -458,6 +460,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
+        if (Object.HasStateAuthority && networkGameManager != null)
+        {
+            networkGameManager.NetworkPlayers.Remove(Object.InputAuthority);
+        }
+
+        
         if (Object.HasInputAuthority)
         {
             // Unsubscribe from the pause function
