@@ -29,15 +29,16 @@ public class PlayerCustomizationUI : MonoBehaviour
             Debug.LogWarning("BannedNames check skipped (File not found or empty).");
             bannedWords = Array.Empty<string>();
         }
+
+        LoadSaveData();
     }
 
-    private void Start()
+    private void LoadSaveData()
     {
-        // Load saved data when the menu opens
-        currentName = PlayerPrefs.GetString("PlayerName", "JOHN");
+        currentName = PlayerPrefs.GetString(GetKey("PlayerName"), "John");
         nameInputField.text = currentName;
         
-        string savedColor = PlayerPrefs.GetString("PlayerColor", "#FFFFFF");
+        string savedColor = PlayerPrefs.GetString(GetKey("PlayerColor"), "#FFFFFF");
         if (ColorUtility.TryParseHtmlString(savedColor, out Color color))
         {
             currentColor = color;
@@ -78,6 +79,7 @@ public class PlayerCustomizationUI : MonoBehaviour
         hexColor = "#" + ColorUtility.ToHtmlStringRGB(currentColor);
     }
 
+    // Called when user closes the menu
     public void SaveCustomization()
     {
         PlayerPrefs.SetString(GetKey("PlayerName"), currentName);
