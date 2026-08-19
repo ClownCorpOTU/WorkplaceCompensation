@@ -227,6 +227,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         }
         
         OnPlayerCustomizationChanged();
+        OnEquippedCustomizationChanged();
     }
 
     public void AssignPlayerIdentity(PlayerRef playerRef)
@@ -462,7 +463,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     }
 
     [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
-    private void RPC_SyncEquippedItems(int[] myEquippedItems)
+    public void RPC_SyncEquippedItems(int[] myEquippedItems)
     {
         for (int i = 0; i < myEquippedItems.Length; i++)
         {

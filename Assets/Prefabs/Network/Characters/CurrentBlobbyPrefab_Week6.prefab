@@ -1715,7 +1715,10 @@ MonoBehaviour:
   SortKey: 1114404454
   ObjectInterest: 1
   Flags: 262145
-  NestedObjects: []
+  NestedObjects:
+  - {fileID: 7435846932038985767}
+  - {fileID: 1868569209159328788}
+  - {fileID: 4758770735814416691}
   NetworkedBehaviours:
   - {fileID: -1693148756473457870}
   - {fileID: 6175336033889365616}
@@ -1930,6 +1933,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c81f2aa96436a8e4dbb3bd319ab7f7ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _EquippedItemIDs: 
   spawnPoint: {x: 0, y: 0, z: 0}
   playerNumberText: {fileID: 828541765834795369}
   animatedModel: {fileID: 5866156221909163747}
@@ -4118,6 +4122,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2a5780e680fec354ab7ded98d25a7bb8, type: 3}
       insertIndex: -1
       addedObject: {fileID: 7712879753898748472}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 2a5780e680fec354ab7ded98d25a7bb8, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4758770735814416691}
   m_SourcePrefab: {fileID: 100100000, guid: 2a5780e680fec354ab7ded98d25a7bb8, type: 3}
 --- !u!1 &2829156848346331797 stripped
 GameObject:
@@ -4274,6 +4281,24 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &4758770735814416691
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2829156848346331797}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 4063515321
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours: []
+  ForceRemoteRenderTimeframe: 0
 --- !u!4 &3173066885876654127 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 2a5780e680fec354ab7ded98d25a7bb8, type: 3}
@@ -5778,6 +5803,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5b33d474bb3081a4fbee3c5b2d2c419b, type: 3}
       insertIndex: -1
       addedObject: {fileID: 8809543157262023749}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 5b33d474bb3081a4fbee3c5b2d2c419b, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7435846932038985767}
   m_SourcePrefab: {fileID: 100100000, guid: 5b33d474bb3081a4fbee3c5b2d2c419b, type: 3}
 --- !u!1 &5152258273768835348 stripped
 GameObject:
@@ -5935,6 +5963,24 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &7435846932038985767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5152258273768835348}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 223610554
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours: []
+  ForceRemoteRenderTimeframe: 0
 --- !u!4 &5533709216801313710 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 5b33d474bb3081a4fbee3c5b2d2c419b, type: 3}
@@ -6096,6 +6142,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4b95bfd7c58692c41acde675ddc5b4d7, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1912717217491829178}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 4b95bfd7c58692c41acde675ddc5b4d7, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1868569209159328788}
   m_SourcePrefab: {fileID: 100100000, guid: 4b95bfd7c58692c41acde675ddc5b4d7, type: 3}
 --- !u!1 &6122380224786723775 stripped
 GameObject:
@@ -6252,6 +6301,24 @@ ConfigurableJoint:
   m_EnablePreprocessing: 1
   m_MassScale: 1
   m_ConnectedMassScale: 1
+--- !u!114 &1868569209159328788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6122380224786723775}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
+  SortKey: 1320238198
+  ObjectInterest: 1
+  Flags: 262145
+  NestedObjects: []
+  NetworkedBehaviours: []
+  ForceRemoteRenderTimeframe: 0
 --- !u!4 &6898600715740621061 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4b95bfd7c58692c41acde675ddc5b4d7, type: 3}
