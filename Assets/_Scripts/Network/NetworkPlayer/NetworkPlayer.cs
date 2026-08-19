@@ -20,7 +20,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     
     // Player number is networked so it can be synced across all clients
     [Networked, OnChangedRender(nameof(OnPlayerIdentityChanged))] public PlayerRef PlayerRefValue { get; set; }
-    [Networked, OnChangedRender(nameof(OnCustomizationChanged))] public PlayerCustomizationData CustomizationData { get; set; }
+    [Networked, OnChangedRender(nameof(OnPlayerCustomizationChanged))] public PlayerCustomizationData CustomizationData { get; set; }
+    [Networked, OnChangedRender(nameof(OnEquippedCustomizationChanged)), Capacity(3)] public NetworkArray<int> EquippedItemIDs { get; }
 
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
@@ -46,6 +47,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkPlayerRespawn playerRespawn;
     private NetworkPlayerCamera playerCamera;
     private NetworkPlayerGrab playerGrab;
+    private PlayerCustomizationVisuals playerCustomizationVisuals;
     
     // References
     private Rigidbody rb;
@@ -102,6 +104,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         audioManager = FindFirstObjectByType<AudioManager>();
         themeSong = FindFirstObjectByType<ThemeSong>();
         dissolvingController = GetComponent<DissolvingController>();
+        playerCustomizationVisuals = GetComponent<PlayerCustomizationVisuals>();
         
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>(); 
     }
@@ -206,6 +209,10 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             
             RPC_SetCustomization(localName, localColor);
             
+            // Load our equipped items and tell the host
+            int[] mySavedItems = LocalPlayerInventoryManager.LoadInventory().EquippedItemIDs;
+            RPC_SyncEquippedItems(mySavedItems);
+            
             // Enable InputReader for local player
             if (inputReader != null) inputReader.enabled = true;
         }
@@ -219,7 +226,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
         
-        OnCustomizationChanged();
+        OnPlayerCustomizationChanged();
     }
 
     public void AssignPlayerIdentity(PlayerRef playerRef)
@@ -229,7 +236,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     private void OnPlayerIdentityChanged()
     {
-        OnCustomizationChanged();
+        OnPlayerCustomizationChanged();
     }
     
     private void UpdatePlayerNumberUI()
@@ -257,7 +264,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
-    private void OnCustomizationChanged()
+    private void OnPlayerCustomizationChanged()
     {
         if (playerNumberText == null) return;
 
@@ -270,6 +277,19 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         float rimV = Mathf.Clamp01(1.2f - v); // Brighter rims on darker colors
         Color rimColor = Color.HSVToRGB((h + 180f) % 1f, s * 0.5f, rimV);
         bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
+    }
+
+    private void OnEquippedCustomizationChanged()
+    {
+        if (playerCustomizationVisuals == null) return;
+        
+        // Copy the networked array into a standard C# array
+        int[] ids = new int[3];
+        for (int i = 0; i < 3; i++)
+            ids[i] = EquippedItemIDs[i];
+        
+        // Update the visuals
+        playerCustomizationVisuals.UpdateVisuals(ids);
     }
 
     public void RemovePlayerInputAuthority()
@@ -438,6 +458,15 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             // If ANYTHING goes wrong, it prints the exact reason instead of crashing!
             Debug.LogError("Error in Customization RPC: " + e.Message);
+        }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    private void RPC_SyncEquippedItems(int[] myEquippedItems)
+    {
+        for (int i = 0; i < myEquippedItems.Length; i++)
+        {
+            EquippedItemIDs.Set(i, myEquippedItems[i]);
         }
     }
 

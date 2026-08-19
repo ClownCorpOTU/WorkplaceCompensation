@@ -31,6 +31,19 @@ public class PlayerCustomizationUI : MonoBehaviour
         }
 
         LoadSaveData();
+        
+        
+        // --- TEMPORARY HACK FOR TESTING ---
+        // Load our inventory
+        PlayerInventory testInv = LocalPlayerInventoryManager.LoadInventory();
+
+        // Force equip Hat ID #1 (Make sure you set your Hat ScriptableObject's ItemID to 1!)
+        testInv.EquippedItemIDs[0] = 3; 
+
+        // Save it back to PlayerPrefs
+        LocalPlayerInventoryManager.SaveInventory(testInv);
+        // ----------------------------------
+
     }
 
     private void LoadSaveData()
