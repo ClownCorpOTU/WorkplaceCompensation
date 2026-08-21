@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Wall_Secondary_C
+  m_Name: Wall_Secondary
   m_Shader: {fileID: -6465566751694194690, guid: 205e052655cda7a459c12d7cfead4efd, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -190,7 +190,7 @@ Material:
     - _ZWrite: 1
     - _ZWriteControl: 0
     m_Colors:
-    - _BaseColor: {r: 0, g: 0.6132076, b: 0.59500873, a: 1}
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
     - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
     - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
     - _Color: {r: 0.35766026, g: 0.5227945, b: 0.3341416, a: 1}
