@@ -7,7 +7,7 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
     [SerializeField] private Transform handHoldPoint;
     
     [Networked, Capacity(4), OnChangedRender(nameof(UpdateVisuals))] public NetworkArray<int> InventorySlots { get; }
-    [Networked, OnChangedRender(nameof(UpdateVisuals))] public int NetworkSelectedSlot { get; set; }
+    [Networked, OnChangedRender(nameof(UpdateVisuals))] private int NetworkSelectedSlot { get; set; }
 
     private GameObject currentlySpawnedVisual;
 
