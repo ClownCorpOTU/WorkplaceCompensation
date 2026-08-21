@@ -8,6 +8,7 @@ public class NetworkPowerUpPickup : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        if (!Object.IsValid) return;
         if (!Object.HasStateAuthority) return;
         
         NetworkPlayer player = other.GetComponentInParent<NetworkPlayer>();

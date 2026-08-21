@@ -11,6 +11,9 @@ public class PowerUpItemSO : ScriptableObject
     public PowerUpType PowerUpType;
     public GameObject HeldPrefab;        // Visual model that appears in players hands
     public GameObject DeployablePrefab;  // Optional object that gets physically placed (like a landmine)
+    public ConsumableEffectSO ConsumableEffect;
     
-    public Vector3 HeldScale = new Vector3(1, 1, 1); // Some objects are way too big when spawned in hand
+    public Vector3 HeldPos = Vector3.zero;
+    public Vector3 HeldRot = Vector3.zero;
+    public Vector3 HeldScale = Vector3.one; // Some objects are way too big when spawned in hand
 }

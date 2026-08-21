@@ -56,7 +56,11 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
         }
         else if (itemToUse.PowerUpType == PowerUpType.Consumable)
         {
-            Debug.Log("Consumed " + itemToUse.PowerUpName);
+            if (itemToUse.ConsumableEffect != null)
+            {
+                NetworkPlayer player = GetComponent<NetworkPlayer>();
+                itemToUse.ConsumableEffect.ApplyEffect(player);
+            }
         }
         
         // Remove item from the inventory
@@ -81,10 +85,13 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
                 currentlySpawnedVisual = Instantiate(item.HeldPrefab, handHoldPoint);
                 currentlySpawnedVisual.transform.parent = handHoldPoint;
                 
+                currentlySpawnedVisual.transform.localPosition = item.HeldPos;
                 currentlySpawnedVisual.transform.localScale = item.HeldScale;
                 
-                currentlySpawnedVisual.transform.localPosition = Vector3.zero;
-                currentlySpawnedVisual.transform.localRotation = Quaternion.identity;
+                currentlySpawnedVisual.transform.localRotation = item.HeldRot == Vector3.zero 
+                    ? Quaternion.identity 
+                    : Quaternion.Euler(item.HeldRot);
+                    
                 break;
             }
         }

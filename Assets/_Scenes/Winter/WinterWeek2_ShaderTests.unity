@@ -32759,8 +32759,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::NetworkPowerUpVendingMachine
   pickupPrefabs:
   - {fileID: 890852800163428057, guid: eb259586d44d549468d842857a0e94c6, type: 3}
+  - {fileID: 5926982554985980528, guid: e7a7e4c08f8a4fc4989dc28b6cb5f62f, type: 3}
   spawnPoint: {fileID: 989696471}
-  spawnCooldown: 5
+  spawnCooldown: 6
 --- !u!114 &1938207329
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42578,6 +42579,10 @@ PrefabInstance:
     - target: {fileID: 3381966607061555945, guid: 1afae41c133072341af038d281081e8b, type: 3}
       propertyPath: m_Name
       value: Vending_Machine
+      objectReference: {fileID: 0}
+    - target: {fileID: 3381966607061555945, guid: 1afae41c133072341af038d281081e8b, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

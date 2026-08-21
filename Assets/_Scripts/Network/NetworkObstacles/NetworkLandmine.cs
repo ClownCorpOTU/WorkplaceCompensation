@@ -84,13 +84,10 @@ public class NetworkLandmine : NetworkBehaviour
 
         for (int i = 0; i < numFound; i++)
         {
-            print(colliders[i].name);
-            
             // Handle Physics (Boxes/Debris)
             // We apply force to every Rigidbody we find (this is good for ragdolls)
             if (colliders[i].TryGetComponent(out Rigidbody rb))
             {
-                print("Applying explosion force!");
                 rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 3f);
             }
         
@@ -101,7 +98,6 @@ public class NetworkLandmine : NetworkBehaviour
                 // .Add() returns true only if the player wasn't already in the set
                 if (uniquePlayersHit.Add(player))
                 {
-                    print("Unique players added: "  + uniquePlayersHit.Count);
                     player.MakeRagdoll();
                 }
             }
