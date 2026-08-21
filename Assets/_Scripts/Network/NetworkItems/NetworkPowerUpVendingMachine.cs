@@ -9,9 +9,13 @@ public class NetworkPowerUpVendingMachine : NetworkBehaviour
     
     [Networked] private TickTimer spawnTimer { get; set; }
 
+    private AudioManager audioManager;
+    
     
     public override void Spawned()
     {
+        audioManager = FindFirstObjectByType<AudioManager>();
+        
         if (Object.HasStateAuthority)
             spawnTimer = TickTimer.CreateFromSeconds(Runner, spawnCooldown);
     }
@@ -35,7 +39,15 @@ public class NetworkPowerUpVendingMachine : NetworkBehaviour
                 rb.AddTorque(Random.insideUnitSphere * 5f, ForceMode.Impulse);
             }
             
+            RPC_Play("VendingMachinePowerUpSpawn",  spawnPoint.position);
+            
             spawnTimer = TickTimer.CreateFromSeconds(Runner, spawnCooldown);
         }
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 }
