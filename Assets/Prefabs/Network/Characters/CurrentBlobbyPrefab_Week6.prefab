@@ -1524,6 +1524,7 @@ GameObject:
   - component: {fileID: 6684367574873010999}
   - component: {fileID: 8862086684754836719}
   - component: {fileID: 6076939743767959030}
+  - component: {fileID: 6313215486543178165}
   m_Layer: 6
   m_Name: CurrentBlobbyPrefab_Week6
   m_TagString: Player
@@ -1723,6 +1724,7 @@ MonoBehaviour:
   - {fileID: -1693148756473457870}
   - {fileID: 6175336033889365616}
   - {fileID: 4792794702188045732}
+  - {fileID: 6313215486543178165}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &-1693148756473457870
 MonoBehaviour:
@@ -1814,20 +1816,8 @@ MonoBehaviour:
     m_ActionName: 'Player/Interact[/Keyboard/e]'
   - m_PersistentCalls:
       m_Calls: []
-    m_ActionId: 27c5f898-bc57-4ee1-8800-db469aca5fe3
-    m_ActionName: 'Player/Crouch[/Keyboard/c]'
-  - m_PersistentCalls:
-      m_Calls: []
     m_ActionId: f1ba0d36-48eb-4cd5-b651-1c94a6531f70
     m_ActionName: 'Player/Jump[/Keyboard/space]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: 2776c80d-3c14-4091-8c56-d04ced07a2b0
-    m_ActionName: 'Player/Previous[/Keyboard/1]'
-  - m_PersistentCalls:
-      m_Calls: []
-    m_ActionId: b7230bb6-fc9b-4f52-8b25-f5e19cb2c2ba
-    m_ActionName: 'Player/Next[/Keyboard/2]'
   - m_PersistentCalls:
       m_Calls: []
     m_ActionId: 641cd816-40e6-41b4-8c3d-04687c349290
@@ -1904,6 +1894,26 @@ MonoBehaviour:
       m_Calls: []
     m_ActionId: 292d12ec-8220-4621-b8bf-2433da85ab8d
     m_ActionName: 'Player/Lift[/Keyboard/e]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 273429a4-e394-49c2-ad9e-72778cf7d6b7
+    m_ActionName: 'Player/SelectItem1[/Keyboard/1]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 37876a1f-2fb9-4985-b365-2796f88d317c
+    m_ActionName: 'Player/SelectItem2[/Keyboard/2]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9d6ccd78-baa7-4bcd-b6b7-f38bbabb81a4
+    m_ActionName: 'Player/SelectItem3[/Keyboard/3]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: fe80f272-2767-443a-a1db-68978063195a
+    m_ActionName: 'Player/SelectItem4[/Keyboard/4]'
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: c9c74589-476b-4e36-8e81-8ff1c076339d
+    m_ActionName: 'Player/UseItem[/Keyboard/f]'
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
@@ -2060,6 +2070,24 @@ MonoBehaviour:
     Model: {fileID: 6122380224786723775}
   - ItemData: {fileID: 11400000, guid: dea867993c28be0409133b7d66d2fcd4, type: 2}
     Model: {fileID: 2829156848346331797}
+--- !u!114 &6313215486543178165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5245577787463167790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5151d65bc2234c128d6ea05fd89fb0e8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NetworkPlayerPowerUpInventory
+  allPowerUpItems:
+  - {fileID: 11400000, guid: 11179e44cd3fb5a43964e529129d0b79, type: 2}
+  - {fileID: 11400000, guid: 8ea1c276d80820e45b285c3ef1b1291b, type: 2}
+  handHoldPoint: {fileID: 290047406927722144}
+  _InventorySlots: 
+  _NetworkSelectedSlot: 0
 --- !u!1 &5402621469381414880
 GameObject:
   m_ObjectHideFlags: 0

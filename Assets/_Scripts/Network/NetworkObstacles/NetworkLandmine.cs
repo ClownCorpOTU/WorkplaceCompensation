@@ -81,6 +81,7 @@ public class NetworkLandmine : NetworkBehaviour
 
         // 3. Track which players we've already hit to avoid redundant logic
         HashSet<NetworkPlayer> uniquePlayersHit = new HashSet<NetworkPlayer>();
+        print("Unique players: "  + uniquePlayersHit.Count);
 
         for (int i = 0; i < numFound; i++)
         {
@@ -88,6 +89,7 @@ public class NetworkLandmine : NetworkBehaviour
             // We apply force to every Rigidbody we find (this is good for ragdolls)
             if (colliders[i].TryGetComponent(out Rigidbody rb))
             {
+                print("Applying explosion force!");
                 rb.AddExplosionForce(explosionForce, transform.position, explosionRadius, 3f);
             }
         

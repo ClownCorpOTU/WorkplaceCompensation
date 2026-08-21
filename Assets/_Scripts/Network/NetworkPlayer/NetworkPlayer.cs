@@ -71,6 +71,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkInputData networkInputData;
     private bool isReviveButtonPressed = false;
     private bool isGrabButtonPressed, isLeftGrabButtonPressed, isRightGrabButtonPressed, isLiftButtonPressed = false;
+    private bool isUseItemButtonPressed = false;
+    private byte localSelectedSlot = 0;
     
     // States
     private bool isGrabbingActive = false;
@@ -87,11 +89,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #endregion
     
     #region Setup
-    private void Awake()
-    {
-        //GetReferences();
-        //InitializeSubSystems();
-    }
 
     private void GetReferences()
     {
@@ -166,7 +163,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
         ragdollChanges = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        transform.name = $"Player_{Object.Id}";
 
         if (Object.HasStateAuthority)
         {
@@ -208,6 +204,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             ColorUtility.TryParseHtmlString(localHexColor, out Color localColor);
             
             RPC_SetCustomization(localName, localColor);
+            transform.name = $"Player_{localName}";
             
             // Load our equipped items and tell the host
             int[] mySavedItems = LocalPlayerInventoryManager.LoadInventory().EquippedItemIDs;
@@ -295,7 +292,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public void RemovePlayerInputAuthority()
     {
-        Object.RemoveInputAuthority();
+        Local.Object.RemoveInputAuthority();
     }
     
     #endregion
@@ -319,6 +316,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             isLeftGrabButtonPressed = inputReader.IsLeftGrabButtonPressed;
             isRightGrabButtonPressed = inputReader.IsRightGrabButtonPressed;
             isLiftButtonPressed = inputReader.IsLiftButtonPressed;
+            isUseItemButtonPressed = isUseItemButtonPressed || inputReader.IsUseItemPressed;
+            
+            if (inputReader.IsSelectItem1Pressed) localSelectedSlot = 0;
+            else if (inputReader.IsSelectItem2Pressed) localSelectedSlot = 1;
+            else if (inputReader.IsSelectItem3Pressed) localSelectedSlot = 2;
+            else if (inputReader.IsSelectItem4Pressed) localSelectedSlot = 3;
         }
         else
         {
@@ -330,6 +333,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             isLeftGrabButtonPressed = false;
             isRightGrabButtonPressed = false;
             isLiftButtonPressed = false;
+            isUseItemButtonPressed = false;
         }
     }
 
@@ -390,7 +394,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     [Rpc(RpcSources.StateAuthority, RpcTargets.InputAuthority)]
     public void RPC_UpdateScoreUI(int newScore, int addedScore)
     {
-        Debug.Log("Updating score!");
         networkGameManager.ScoreText.text = newScore.ToString();
         ScorePopupManager.Instance.ShowScore(addedScore);
     }
@@ -521,9 +524,14 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (isRightGrabButtonPressed) data.IsRightGrabPressed = true;
         if (isLiftButtonPressed) data.IsLiftPressed = true;
         
+        if (isUseItemButtonPressed) data.IsUseItemPressed = true;
+        data.SelectedSlotIndex = localSelectedSlot;
+
+        
         // Clear local flags since they've been sent to the host (We don't need to reset our grab buttons as they are a continuous press)
         isJumpButtonPressed = false;
-        isReviveButtonPressed = false;
+        //isReviveButtonPressed = false; // Not sure if this should be cleared anymore since I switched it to a hold
+        isUseItemButtonPressed = false;
         
         // Compute camera-relative world direction only on the local client (passing data by ref since struct value is changed)
         playerCamera.ComputeCameraRelativeWorldDirection(Object.HasInputAuthority, ref data);
