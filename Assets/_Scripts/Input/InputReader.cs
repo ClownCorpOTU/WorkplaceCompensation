@@ -13,6 +13,13 @@ public class InputReader : MonoBehaviour
     public bool IsPauseButtonPressed { get; private set; }
     public bool IsLiftButtonPressed { get; private set; }
 
+    public bool IsSelectItem1Pressed { get; private set; }
+    public bool IsSelectItem2Pressed { get; private set; }
+    public bool IsSelectItem3Pressed { get; private set; }
+    public bool IsSelectItem4Pressed { get; private set; }
+    public bool IsUseItemPressed { get; private set; }
+
+    
     private PlayerInput playerInput;
 
     private InputAction moveAction;
@@ -25,8 +32,16 @@ public class InputReader : MonoBehaviour
     private InputAction pauseAction;
     private InputAction liftAction;
     
+    private InputAction selectItem1Action;
+    private InputAction selectItem2Action;
+    private InputAction selectItem3Action;
+    private InputAction selectItem4Action;
+    private InputAction useItemAction;
+    
+    
     public event System.Action OnPausePressed;
 
+    
     private void Awake()
     {
         playerInput = GetComponent<PlayerInput>();
@@ -41,6 +56,12 @@ public class InputReader : MonoBehaviour
         rightHandGrabAction = playerInput.actions["RightHandInteract"];
         pauseAction = playerInput.actions["Pause"];
         liftAction = playerInput.actions["Lift"];
+        
+        selectItem1Action = playerInput.actions["SelectItem1"];
+        selectItem2Action = playerInput.actions["SelectItem2"];
+        selectItem3Action = playerInput.actions["SelectItem3"];
+        selectItem4Action = playerInput.actions["SelectItem4"];
+        useItemAction = playerInput.actions["UseItem"];
 
         // Subscribe to input events
         moveAction.performed += OnMove;
@@ -69,6 +90,21 @@ public class InputReader : MonoBehaviour
         
         liftAction.performed += OnLift;
         liftAction.canceled += OnLift;
+        
+        selectItem1Action.performed += OnSelectItem1;
+        selectItem1Action.canceled += OnSelectItem1;
+        
+        selectItem2Action.performed += OnSelectItem2;
+        selectItem2Action.canceled += OnSelectItem2;
+        
+        selectItem3Action.performed += OnSelectItem3;
+        selectItem3Action.canceled += OnSelectItem3;
+        
+        selectItem4Action.performed += OnSelectItem4;
+        selectItem4Action.canceled += OnSelectItem4;
+        
+        useItemAction.performed += OnUseItem;
+        useItemAction.canceled += OnUseItem;
     }
 
     private void OnEnable()
@@ -104,6 +140,21 @@ public class InputReader : MonoBehaviour
         
         liftAction.performed -= OnLift;
         liftAction.canceled -= OnLift;
+        
+        selectItem1Action.performed -= OnSelectItem1;
+        selectItem1Action.canceled -= OnSelectItem1;
+        
+        selectItem2Action.performed -= OnSelectItem2;
+        selectItem2Action.canceled -= OnSelectItem2;
+        
+        selectItem3Action.performed -= OnSelectItem3;
+        selectItem3Action.canceled -= OnSelectItem3;
+        
+        selectItem4Action.performed -= OnSelectItem4;
+        selectItem4Action.canceled -= OnSelectItem4;
+        
+        useItemAction.performed -= OnUseItem;
+        useItemAction.canceled -= OnUseItem;
 
         playerInput.actions.Disable();
     }
@@ -180,5 +231,35 @@ public class InputReader : MonoBehaviour
             IsLiftButtonPressed = true;
         else if (context.canceled)
             IsLiftButtonPressed = false;
+    }
+    
+    private void OnSelectItem1(InputAction.CallbackContext context)
+    {
+        if (context.performed) IsSelectItem1Pressed = true;
+        else if (context.canceled) IsSelectItem1Pressed = false;
+    }
+
+    private void OnSelectItem2(InputAction.CallbackContext context)
+    {
+        if (context.performed) IsSelectItem2Pressed = true;
+        else if (context.canceled) IsSelectItem2Pressed = false;
+    }
+    
+    private void OnSelectItem3(InputAction.CallbackContext context)
+    {
+        if (context.performed) IsSelectItem3Pressed = true;
+        else if (context.canceled) IsSelectItem3Pressed = false;
+    }
+    
+    private void OnSelectItem4(InputAction.CallbackContext context)
+    {
+        if (context.performed) IsSelectItem4Pressed = true;
+        else if (context.canceled) IsSelectItem4Pressed = false;
+    }
+    
+    private void OnUseItem(InputAction.CallbackContext context)
+    {
+        if (context.performed) IsUseItemPressed = true;
+        else if (context.canceled) IsUseItemPressed = false;
     }
 }
