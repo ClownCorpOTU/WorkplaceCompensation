@@ -23,7 +23,7 @@ RenderSettings:
   m_AmbientSkyColor: {r: 0.212, g: 0.227, b: 0.259, a: 1}
   m_AmbientEquatorColor: {r: 0.114, g: 0.125, b: 0.133, a: 1}
   m_AmbientGroundColor: {r: 0.047, g: 0.043, b: 0.035, a: 1}
-  m_AmbientIntensity: 0.25
+  m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.28635636, g: 0.35216144, b: 0.5188679, a: 1}
   m_SkyboxMaterial: {fileID: 2100000, guid: 77715b8b6b248994891d3ccad1ad330b, type: 2}
@@ -1460,7 +1460,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &85326347
 BoxCollider:
@@ -4864,7 +4864,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &266320700
 Transform:
@@ -6023,6 +6023,18 @@ PrefabInstance:
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Intensity
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_BounceIntensity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Name
+      value: StorageRoomSpotLight2
       objectReference: {fileID: 0}
     - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -9485,7 +9497,7 @@ GameObject:
   - component: {fileID: 605033942}
   - component: {fileID: 605033941}
   m_Layer: 0
-  m_Name: Spot Light
+  m_Name: ProcessingRoomSpotLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9552,7 +9564,7 @@ Light:
   m_InnerSpotAngle: 46.187027
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -9588,7 +9600,7 @@ Light:
   m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 2
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -11023,7 +11035,7 @@ GameObject:
   - component: {fileID: 728380281}
   - component: {fileID: 728380280}
   m_Layer: 0
-  m_Name: Spot Light
+  m_Name: MixingRoomSpotLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11090,7 +11102,7 @@ Light:
   m_InnerSpotAngle: 46.187027
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 1
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -11126,7 +11138,7 @@ Light:
   m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 2
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -12062,6 +12074,18 @@ PrefabInstance:
     - target: {fileID: 1910781720801478946, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3551997603163121076, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: DefaultVelocity.x
+      value: 0.6459808
+      objectReference: {fileID: 0}
+    - target: {fileID: 3551997603163121076, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: DefaultVelocity.y
+      value: -0.256752
+      objectReference: {fileID: 0}
+    - target: {fileID: 3551997603163121076, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
+      propertyPath: DefaultVelocity.z
+      value: -0.3762452
       objectReference: {fileID: 0}
     - target: {fileID: 5688660929626349330, guid: 72a6428e50b9a084eae1acce1db7e212, type: 3}
       propertyPath: m_AnchorMax.y
@@ -13377,7 +13401,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &867667878
 Transform:
@@ -14206,10 +14230,10 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 916667775}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
-  m_Color: {r: 0.4481132, g: 0.9182246, b: 1, a: 1}
+  m_Color: {r: 1, g: 0.7688679, b: 0.9630189, a: 1}
   m_Intensity: 1.3
   m_Range: 7
   m_SpotAngle: 30
@@ -14252,7 +14276,7 @@ Light:
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 19.696598, y: 19.624226}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 2
   m_ColorTemperature: 15993
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -14628,6 +14652,14 @@ PrefabInstance:
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Intensity
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Name
+      value: StorageRoomSpotLight
       objectReference: {fileID: 0}
     - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -15374,7 +15406,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &1011427380
 BoxCollider:
@@ -16459,7 +16491,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1098938408
 Transform:
@@ -17776,7 +17808,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Unity.RenderPipelines.Core.Runtime::UnityEngine.Rendering.ProbeVolume
   mode: 2
-  size: {x: 109.0293, y: 46.385517, z: 87.353165}
+  size: {x: 109.0293, y: 46.38552, z: 87.353165}
   overrideRendererFilters: 0
   minRendererVolumeSize: 0.1
   objectLayerMask:
@@ -17794,16 +17826,16 @@ MonoBehaviour:
     e10: 0
     e11: 1
     e12: 0
-    e13: -3.7947845
+    e13: -3.7947865
     e20: 0
     e21: 0
     e22: 1
-    e23: 3.2323837
+    e23: 3.2323875
     e30: 0
     e31: 0
     e32: 0
     e33: 1
-  cachedHashCode: 568381901
+  cachedHashCode: -2040263529
   fillEmptySpaces: 1
   version: 2
   globalVolume: 0
@@ -17816,7 +17848,7 @@ Transform:
   m_GameObject: {fileID: 1153354146}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -3.6166458, y: 3.7947845, z: -3.2323837}
+  m_LocalPosition: {x: -3.6166458, y: 3.7947865, z: -3.2323875}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -18326,7 +18358,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1186442763}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
   m_Color: {r: 1, g: 0, b: 0.6509804, a: 1}
@@ -18372,7 +18404,7 @@ Light:
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 19.594147, y: 15.153847}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 2
   m_ColorTemperature: 11587
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -19725,6 +19757,18 @@ PrefabInstance:
     - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_Intensity
       value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_BounceIntensity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Name
+      value: MainHubSpotLight
       objectReference: {fileID: 0}
     - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -24430,6 +24474,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -6733177361254619370, guid: 0106fadf125c43a499681165d15e8133, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -6615453741792359824, guid: 0106fadf125c43a499681165d15e8133, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: -6558866893508585581, guid: 0106fadf125c43a499681165d15e8133, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -24437,6 +24489,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 0106fadf125c43a499681165d15e8133, type: 3}
       propertyPath: m_Name
       value: Hanging Lights (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0106fadf125c43a499681165d15e8133, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -26140,7 +26196,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &1484904093
 BoxCollider:
@@ -28577,7 +28633,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1657568283}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -28623,7 +28679,7 @@ Light:
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 32.885403, y: 49.37196}
-  m_BounceIntensity: 1.1
+  m_BounceIntensity: 2
   m_ColorTemperature: 3376
   m_UseColorTemperature: 1
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -30172,7 +30228,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1759406569
 Transform:
@@ -32417,7 +32473,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &1875078940
 Transform:
@@ -32488,7 +32544,7 @@ Light:
   serializedVersion: 11
   m_Type: 1
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 0.625
+  m_Intensity: 0.4
   m_Range: 10
   m_SpotAngle: 30
   m_InnerSpotAngle: 21.80208
@@ -32550,13 +32606,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1878844169}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.2604189, y: -0.47685844, z: 0.8259431, w: 0.15035291}
+  m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 120, y: -145, z: 0}
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!114 &1878844172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32703,6 +32759,14 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -6733177361254619370, guid: 0106fadf125c43a499681165d15e8133, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: -6615453741792359824, guid: 0106fadf125c43a499681165d15e8133, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
+      objectReference: {fileID: 0}
     - target: {fileID: -6558866893508585581, guid: 0106fadf125c43a499681165d15e8133, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
@@ -32710,6 +32774,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 0106fadf125c43a499681165d15e8133, type: 3}
       propertyPath: m_Name
       value: Hanging Lights
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0106fadf125c43a499681165d15e8133, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 2147483647
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -33383,7 +33451,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &1926747018
 BoxCollider:
@@ -34650,7 +34718,7 @@ Light:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2004245033}
-  m_Enabled: 0
+  m_Enabled: 1
   serializedVersion: 11
   m_Type: 3
   m_Color: {r: 0.32156864, g: 1, b: 0, a: 1}
@@ -34696,7 +34764,7 @@ Light:
   m_Lightmapping: 2
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 15.074745, y: 19.752628}
-  m_BounceIntensity: 1
+  m_BounceIntensity: 2
   m_ColorTemperature: 6483
   m_UseColorTemperature: 0
   m_BoundingSphereOverride: {x: 0, y: 0, z: 0, w: 0}
@@ -36568,6 +36636,18 @@ PrefabInstance:
       propertyPath: m_Intensity
       value: 0.5
       objectReference: {fileID: 0}
+    - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Shadows.m_Type
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3161994977057069191, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_BounceIntensity
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
+      propertyPath: m_Name
+      value: MainHubSpotLight2
+      objectReference: {fileID: 0}
     - target: {fileID: 8211741068724749643, guid: 661d672f956e6884bb448a0d5d4af113, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -37527,6 +37607,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 1067066347791860364, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1071209748893242342, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -37852,8 +37936,20 @@ PrefabInstance:
       value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_Color.b
+      value: 0.5707547
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7845357
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Intensity
@@ -37869,6 +37965,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Lightmapping
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_BounceIntensity
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1598015333376194303, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
@@ -38471,6 +38571,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 2403860530622876113, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2408289243527023306, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
@@ -38969,7 +39073,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3128168157933984564, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3129727322488274815, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -38989,7 +39093,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3152598798776543989, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3153743803377428907, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
@@ -39575,6 +39679,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 3955282996615473512, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3972922980291909411, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -39713,7 +39821,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4157325086253351097, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
-      value: 2147483647
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4160123540888662951, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
@@ -40193,7 +40301,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4861475652337948140, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4861475652337948140, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Intensity
@@ -40209,6 +40317,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4861475652337948140, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Lightmapping
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4861475652337948140, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_BounceIntensity
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4861475652337948140, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
@@ -41307,6 +41419,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 8
       objectReference: {fileID: 0}
+    - target: {fileID: 6416925105688294056, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6428798106838339392, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
       value: 8
@@ -41654,6 +41770,10 @@ PrefabInstance:
     - target: {fileID: 6888841186199266499, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 6889641630112510967, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6893906611284306196, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
@@ -42834,6 +42954,10 @@ PrefabInstance:
     - target: {fileID: 8483321985308206273, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
       value: 2147483647
+      objectReference: {fileID: 0}
+    - target: {fileID: 8488590847276138968, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_StaticEditorFlags
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8507425641429149891, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
