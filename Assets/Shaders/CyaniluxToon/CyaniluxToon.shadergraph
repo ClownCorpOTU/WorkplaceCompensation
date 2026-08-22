@@ -393,6 +393,9 @@
         },
         {
             "m_Id": "566a4fd6a3c540c59f232a606bf9d5bb"
+        },
+        {
+            "m_Id": "dcaa75c4fcb74d889de2d761d900340a"
         }
     ],
     "m_GroupDatas": [
@@ -469,7 +472,11 @@
             "m_Id": "09c5d36026fc4567b655b87b548a8b92"
         }
     ],
-    "m_StickyNoteDatas": [],
+    "m_StickyNoteDatas": [
+        {
+            "m_Id": "0cfd2e3e7853406197460e987bd7276b"
+        }
+    ],
     "m_Edges": [
         {
             "m_OutputSlot": {
@@ -497,20 +504,6 @@
                     "m_Id": "91da99ccbc8b48b9b72bb727a9d135d0"
                 },
                 "m_SlotId": 2
-            }
-        },
-        {
-            "m_OutputSlot": {
-                "m_Node": {
-                    "m_Id": "02e21fcc65edb2818235f004c292d106"
-                },
-                "m_SlotId": 2
-            },
-            "m_InputSlot": {
-                "m_Node": {
-                    "m_Id": "1940cd2af1a34547ad9345b8bdc9e8e5"
-                },
-                "m_SlotId": 0
             }
         },
         {
@@ -971,6 +964,20 @@
             "m_InputSlot": {
                 "m_Node": {
                     "m_Id": "cc021b20268b488eacc518c9d2372b9b"
+                },
+                "m_SlotId": 1
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "566a4fd6a3c540c59f232a606bf9d5bb"
+                },
+                "m_SlotId": 1
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "dcaa75c4fcb74d889de2d761d900340a"
                 },
                 "m_SlotId": 0
             }
@@ -1826,7 +1833,7 @@
                 "m_Node": {
                     "m_Id": "cc021b20268b488eacc518c9d2372b9b"
                 },
-                "m_SlotId": 1
+                "m_SlotId": 0
             }
         },
         {
@@ -1855,6 +1862,20 @@
                     "m_Id": "02e21fcc65edb2818235f004c292d106"
                 },
                 "m_SlotId": 1
+            }
+        },
+        {
+            "m_OutputSlot": {
+                "m_Node": {
+                    "m_Id": "e1f3be3930cbcd868d9adb76bc7d683e"
+                },
+                "m_SlotId": 4
+            },
+            "m_InputSlot": {
+                "m_Node": {
+                    "m_Id": "1940cd2af1a34547ad9345b8bdc9e8e5"
+                },
+                "m_SlotId": 0
             }
         },
         {
@@ -2302,10 +2323,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2322.999755859375,
-            "y": 520.0,
+            "x": -2323.000244140625,
+            "y": 604.0,
             "width": 145.0,
-            "height": 117.99993896484375
+            "height": 118.00006103515625
         }
     },
     "m_Slots": [
@@ -2551,8 +2572,8 @@
     "m_ObjectId": "097f9f8a1b984454978b5bbc64570946",
     "m_Title": "Ramp Texture",
     "m_Position": {
-        "x": -672.0000610351563,
-        "y": 460.9999694824219
+        "x": -672.0001220703125,
+        "y": 461.0000305175781
     }
 }
 
@@ -2584,7 +2605,7 @@
     "m_Title": "Combine Ramp with Shadows",
     "m_Position": {
         "x": -2024.000244140625,
-        "y": 1088.0001220703125
+        "y": 1088.0
     }
 }
 
@@ -2867,6 +2888,26 @@
         "e31": 0.0,
         "e32": 0.0,
         "e33": 1.0
+    }
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.StickyNoteData",
+    "m_ObjectId": "0cfd2e3e7853406197460e987bd7276b",
+    "m_Title": "Dark Shadows",
+    "m_Content": "Step 0.6 makes the main light shadows super dark for some reason. Lab has no main light shadows, but Mars does",
+    "m_TextSize": 0,
+    "m_Theme": 0,
+    "m_Position": {
+        "serializedVersion": "2",
+        "x": -2013.0,
+        "y": 541.0,
+        "width": 200.0,
+        "height": 160.0
+    },
+    "m_Group": {
+        "m_Id": ""
     }
 }
 
@@ -3261,7 +3302,7 @@
     "m_ObjectId": "146345151fa543cf816e8e34b0ec7e72",
     "m_Title": "Apply Light Colour",
     "m_Position": {
-        "x": -972.0000610351563,
+        "x": -972.0001220703125,
         "y": -282.0
     }
 }
@@ -3300,7 +3341,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "X",
     "m_StageCapability": 3,
-    "m_Value": 0.4000000059604645,
+    "m_Value": 0.20000000298023225,
     "m_DefaultValue": 0.0,
     "m_Labels": [
         "X"
@@ -3529,10 +3570,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -2122.999755859375,
-            "y": 565.0,
+            "x": -2132.000244140625,
+            "y": 568.0000610351563,
             "width": 56.0,
-            "height": 23.9998779296875
+            "height": 23.99993896484375
         }
     },
     "m_Slots": [
@@ -3559,8 +3600,8 @@
     "m_ObjectId": "19f30dbdbc684771a63b9422924274a0",
     "m_Title": "Apply Albedo (ambient)",
     "m_Position": {
-        "x": 1228.0001220703125,
-        "y": -530.0
+        "x": 1228.0,
+        "y": -530.0000610351563
     }
 }
 
@@ -4201,8 +4242,8 @@
     "m_ObjectId": "276717f8744e4cfd98d6d66b1a471d4c",
     "m_Title": "Combine Diffuse + Specular",
     "m_Position": {
-        "x": 870.0,
-        "y": -56.0
+        "x": 893.000244140625,
+        "y": -50.99995803833008
     }
 }
 
@@ -4212,8 +4253,8 @@
     "m_ObjectId": "27eb79f253824734a480830016679092",
     "m_Title": "Rim lighting",
     "m_Position": {
-        "x": 2268.0,
-        "y": -294.00006103515627
+        "x": 2268.000244140625,
+        "y": -294.0
     }
 }
 
@@ -4722,7 +4763,7 @@
     "m_ObjectId": "324bad7fde7b4984b08be7faa44d04ae",
     "m_Title": "Light Layer Test",
     "m_Position": {
-        "x": 1248.0001220703125,
+        "x": 1248.0,
         "y": -247.0
     }
 }
@@ -5022,10 +5063,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 894.9998779296875,
-            "y": 2.999972343444824,
-            "width": 130.0001220703125,
-            "height": 117.99996185302735
+            "x": 917.9999389648438,
+            "y": 8.000092506408692,
+            "width": 129.99993896484376,
+            "height": 117.99989318847656
         }
     },
     "m_Slots": [
@@ -5227,7 +5268,7 @@
     "m_Title": "Shadows",
     "m_Position": {
         "x": -2698.000244140625,
-        "y": 485.0
+        "y": 485.0000915527344
     }
 }
 
@@ -5312,7 +5353,7 @@
     "m_ObjectId": "45d36482ab444f869f5edb7b25113a27",
     "m_Title": "+ Additional Lights",
     "m_Position": {
-        "x": 1727.0001220703125,
+        "x": 1727.0,
         "y": -22.0
     }
 }
@@ -5840,10 +5881,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 208.99996948242188,
-            "y": -48.99998092651367,
-            "width": 56.000030517578128,
-            "height": 24.00002670288086
+            "x": -183.0,
+            "y": -397.9999694824219,
+            "width": 56.0,
+            "height": 24.000030517578126
         }
     },
     "m_Slots": [
@@ -6848,7 +6889,7 @@
     "m_ObjectId": "6a6e6860776c451582de082bfd39f5c7",
     "m_Title": "Combine Ramp with Shadows",
     "m_Position": {
-        "x": -2018.0001220703125,
+        "x": -2018.000244140625,
         "y": -107.0
     }
 }
@@ -7055,8 +7096,8 @@
     "m_ObjectId": "7142348eaaa346d5a25d0d6d14c52666",
     "m_Title": "Ambient + Main Light",
     "m_Position": {
-        "x": 1525.0001220703125,
-        "y": -366.99993896484377
+        "x": 1525.0,
+        "y": -367.0
     }
 }
 
@@ -7751,10 +7792,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1178.0,
-            "y": 329.00006103515627,
-            "width": 56.0001220703125,
-            "height": 24.0
+            "x": -1796.0001220703125,
+            "y": 429.0,
+            "width": 56.0,
+            "height": 24.000030517578126
         }
     },
     "m_Slots": [
@@ -7951,7 +7992,7 @@
     "m_Title": "Apply Albedo (diffuse)",
     "m_Position": {
         "x": 494.0,
-        "y": 126.0
+        "y": 125.99998474121094
     }
 }
 
@@ -8943,7 +8984,7 @@
     "m_Hidden": false,
     "m_ShaderOutputName": "Spot_Bands",
     "m_StageCapability": 3,
-    "m_Value": 2.0,
+    "m_Value": 3.0,
     "m_DefaultValue": 0.0,
     "m_Labels": []
 }
@@ -9021,8 +9062,8 @@
     "m_ObjectId": "99647d98b1ec4cffbfc011ee5e4f48ab",
     "m_Title": "Specular",
     "m_Position": {
-        "x": -1154.0,
-        "y": 460.9999694824219
+        "x": -1154.0001220703125,
+        "y": 461.0000305175781
     }
 }
 
@@ -9383,8 +9424,8 @@
     "m_ObjectId": "a3e656127c1049da9890a8b3220c7032",
     "m_Title": "Apply Light Color & Shadows",
     "m_Position": {
-        "x": -229.0000762939453,
-        "y": 369.0
+        "x": -229.0001220703125,
+        "y": 369.00006103515627
     }
 }
 
@@ -9453,6 +9494,30 @@
     "m_PerRendererData": false,
     "m_customAttributes": [],
     "m_Value": false
+}
+
+{
+    "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "a53a4dbf25d94e6ebe197362e9a74f6c",
+    "m_Id": 0,
+    "m_DisplayName": "",
+    "m_SlotType": 0,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    }
 }
 
 {
@@ -9782,7 +9847,7 @@
         "scalar product"
     ],
     "m_Precision": 0,
-    "m_PreviewExpanded": false,
+    "m_PreviewExpanded": true,
     "m_DismissedVersion": 0,
     "m_PreviewMode": 0,
     "m_CustomColors": {
@@ -10185,7 +10250,7 @@
     "m_Title": "Diffuse, N Dot L",
     "m_Position": {
         "x": -3254.000244140625,
-        "y": -318.0
+        "y": -317.9999694824219
     }
 }
 
@@ -10359,8 +10424,8 @@
     "m_ObjectId": "b57f5ced9e504dc8bc6cdb49b3744685",
     "m_Title": "Culling Mask",
     "m_Position": {
-        "x": -1311.0001220703125,
-        "y": -262.0
+        "x": -1308.0001220703125,
+        "y": -249.0
     }
 }
 
@@ -11941,8 +12006,8 @@
     "m_ObjectId": "d05ee2f3810f446fbabf30a5e25a65d5",
     "m_Title": "Additional Lights (Toon)",
     "m_Position": {
-        "x": 343.9998779296875,
-        "y": 791.0
+        "x": 344.0001220703125,
+        "y": 791.0000610351563
     }
 }
 
@@ -12126,12 +12191,36 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
+    "m_ObjectId": "d6385d06a55040c9ac31fabb73299c95",
+    "m_Id": 1,
+    "m_DisplayName": "",
+    "m_SlotType": 1,
+    "m_Hidden": false,
+    "m_ShaderOutputName": "",
+    "m_StageCapability": 3,
+    "m_Value": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "m_DefaultValue": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    }
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.GroupData",
     "m_ObjectId": "d71ec0a8d7894bed8b3e4b37872c3ba7",
     "m_Title": "Main Light Cookie",
     "m_Position": {
-        "x": -2470.0,
-        "y": -405.0
+        "x": -2470.000244140625,
+        "y": -405.0000305175781
     }
 }
 
@@ -12498,6 +12587,42 @@
 
 {
     "m_SGVersion": 0,
+    "m_Type": "UnityEditor.ShaderGraph.RedirectNodeData",
+    "m_ObjectId": "dcaa75c4fcb74d889de2d761d900340a",
+    "m_Group": {
+        "m_Id": ""
+    },
+    "m_Name": "Redirect Node",
+    "m_DrawState": {
+        "m_Expanded": true,
+        "m_Position": {
+            "serializedVersion": "2",
+            "x": 490.9999694824219,
+            "y": -202.0,
+            "width": 55.999908447265628,
+            "height": 23.999908447265626
+        }
+    },
+    "m_Slots": [
+        {
+            "m_Id": "a53a4dbf25d94e6ebe197362e9a74f6c"
+        },
+        {
+            "m_Id": "d6385d06a55040c9ac31fabb73299c95"
+        }
+    ],
+    "synonyms": [],
+    "m_Precision": 0,
+    "m_PreviewExpanded": true,
+    "m_DismissedVersion": 0,
+    "m_PreviewMode": 0,
+    "m_CustomColors": {
+        "m_SerializableColors": []
+    }
+}
+
+{
+    "m_SGVersion": 0,
     "m_Type": "UnityEditor.ShaderGraph.DynamicVectorMaterialSlot",
     "m_ObjectId": "dd3e6e65aa44ff8eb574f4700f6088f4",
     "m_Id": 1,
@@ -12755,10 +12880,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": 129.99996948242188,
-            "y": -815.9999389648438,
-            "width": 56.00013732910156,
-            "height": 23.99993896484375
+            "x": 130.00001525878907,
+            "y": -633.9999389648438,
+            "width": 55.999969482421878,
+            "height": 24.0
         }
     },
     "m_Slots": [
@@ -13128,8 +13253,8 @@
     "m_ObjectId": "e55cb56e639245c4b510115fc4273ac8",
     "m_Title": "Specular Colour",
     "m_Position": {
-        "x": 143.99993896484376,
-        "y": 369.0
+        "x": 143.9998779296875,
+        "y": 369.00006103515627
     }
 }
 
@@ -13542,10 +13667,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -1286.0,
-            "y": -203.0,
+            "x": -1283.0001220703125,
+            "y": -190.00009155273438,
             "width": 126.0,
-            "height": 118.00001525878906
+            "height": 118.00006103515625
         }
     },
     "m_Slots": [
@@ -13621,10 +13746,10 @@
         "m_Expanded": true,
         "m_Position": {
             "serializedVersion": "2",
-            "x": -335.99993896484377,
-            "y": 306.99993896484377,
-            "width": 56.000030517578128,
-            "height": 24.000030517578126
+            "x": -380.0000305175781,
+            "y": 303.0000915527344,
+            "width": 56.0,
+            "height": 23.99993896484375
         }
     },
     "m_Slots": [
@@ -13739,8 +13864,8 @@
     "m_ObjectId": "f8709b9010d045249e88f5948d9a686e",
     "m_Title": "Apply Fog",
     "m_Position": {
-        "x": 3324.000244140625,
-        "y": -502.00006103515627
+        "x": 3324.0,
+        "y": -502.0000305175781
     }
 }
 
