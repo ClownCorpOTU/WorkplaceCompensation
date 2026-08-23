@@ -101,7 +101,7 @@ public class EdgeDetection : ScriptableRendererFeature
         
         if (edgeDetectionMaterial == null)
         {
-            edgeDetectionMaterial = CoreUtils.CreateEngineMaterial(Shader.Find("Hidden/Edge Detection"));
+            edgeDetectionMaterial = CoreUtils.CreateEngineMaterial(Shader.Find("Outline/Edge Detection"));
             if (edgeDetectionMaterial == null)
             {
                 Debug.LogWarning("Not all required materials could be created. Edge Detection will not render.");
