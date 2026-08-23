@@ -26,10 +26,15 @@ Material:
     m_Ints: []
     m_Floats:
     - _DepthSensitivity: 10
-    - _EdgeThreshold: 0.1
-    - _NormalSensitivity: 1
+    - _EdgeThreshold: 0.9
+    - _LuminanceSensitivity: 2
+    - _MaxOutlineDistance: 30
+    - _NormalSensitivity: 3
     - _OutlineThickness: 1
     m_Colors:
+    - _InnerCreaseColor: {r: 0.764151, g: 0.764151, b: 0.764151, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor2: {r: 0.31132078, g: 0.31132078, b: 0.31132078, a: 1}
+    - _SilhouetteColor: {r: 0.46226418, g: 0.46226418, b: 0.46226418, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
