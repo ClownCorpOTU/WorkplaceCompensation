@@ -1,5 +1,6 @@
 ﻿using Fusion;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NetworkPlayerPowerUpInventory : NetworkBehaviour
 {
@@ -10,7 +11,6 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
     [Networked, OnChangedRender(nameof(UpdateVisuals))] private int NetworkSelectedSlot { get; set; }
 
     private GameObject currentlySpawnedVisual;
-
 
     public override void Spawned()
     {
@@ -69,12 +69,23 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
 
     private void UpdateVisuals()
     {
+        // Update inventory selection visuals
+        if (Object.HasInputAuthority && PowerUpInventoryUI.Instance != null)
+        {
+            int[] currentItems = new int[4];
+            for (int i = 0; i < 4; i++)
+                currentItems[i] = InventorySlots[i];
+            
+            PowerUpInventoryUI.Instance.RefreshUI(currentItems, NetworkSelectedSlot, allPowerUpItems);
+        }
+        
         // Destroy whatever we were holding before
         if (currentlySpawnedVisual != null)
             Destroy(currentlySpawnedVisual);
         
         // Check if current slot has an item
         int currentItemID = InventorySlots[NetworkSelectedSlot];
+        
         if (currentItemID == 0) return;
         
         // Find the item and spawn it's visual
