@@ -8,15 +8,16 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Generator
-  m_Shader: {fileID: 4800000, guid: 933532a4fcc9baf4fa0491de14d08ed7, type: 3}
+  m_Shader: {fileID: -6465566751694194690, guid: 205e052655cda7a459c12d7cfead4efd, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _SPECULAR_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
+  m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Opaque
   disabledShaderPasses:
@@ -26,7 +27,7 @@ Material:
     serializedVersion: 3
     m_TexEnvs:
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 2589a1c4d6ded4a41993b2b767861c53, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -57,12 +58,28 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 2800000, guid: 4b91b2fca7499dc42b6692238056d01e, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _OcclusionMap:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _ParallaxMap:
         m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _RampTexture:
+        m_Texture: {fileID: 2800000, guid: a1a4108227a8a8b4f9067f80f37c33ec, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_37b0f26b23a442479443b8b1ddb96bbf_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _SampleTexture2D_a790875aa8764e949e611796b223eb78_Texture_1_Texture2D:
+        m_Texture: {fileID: 2800000, guid: 3087e8dd9e8b0e542b414a46827031d9, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
@@ -83,12 +100,17 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - LIGHTMAP_SHADOW_MIXING: 0
+    - SHADOWS_SHADOWMASK: 0
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
+    - _AlphaClipThreshold: 0.5
     - _AlphaToMask: 0
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CastShadows: 1
+    - _ChromaKey: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
@@ -98,28 +120,53 @@ Material:
     - _DstBlend: 0
     - _DstBlendAlpha: 0
     - _EnvironmentReflections: 1
+    - _FalloffThreshold: 2.5
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
+    - _HalfToneIntensity: 1
+    - _LIGHTMAP_SHADOW_MIXING: 0
+    - _LitThreshold: 1
     - _Metallic: 0
+    - _NormalStrength: 0.2
     - _OcclusionStrength: 1
     - _Parallax: 0.005
+    - _PatternDensity: 13
+    - _PatternDensityFar: 0
+    - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
+    - _RimLightPower: 10
+    - _Rotation: 45
+    - _Rotation2: -45
+    - _SPECULAR: 1
+    - _ShadingMultiplier: 0.1
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
+    - _Softness: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
     - _SrcBlendAlpha: 1
     - _Surface: 0
+    - _TimePosterization: 4
+    - _UseScreenSpace: 1
     - _WorkflowMode: 1
     - _XRMotionVectorsPass: 1
+    - _ZTest: 4
     - _ZWrite: 1
+    - _ZWriteControl: 0
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
+    - _ChromaKeyColor: {r: 0, g: 1, b: 0, a: 1}
+    - _ChromaKeyColorReplacement: {r: 1, g: 0, b: 0.95471853, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _CrossHatchFade: {r: 5, g: 20, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OffsetJitterRange: {r: -0.2, g: 0.2, b: 0, a: 0}
+    - _RimLightColor: {r: 0, g: 0, b: 0, a: 1}
+    - _RotationJitterRange: {r: -5, g: -5, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _SpecularColour: {r: 1, g: 1, b: 1, a: 0}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
 --- !u!114 &468697123437207538
