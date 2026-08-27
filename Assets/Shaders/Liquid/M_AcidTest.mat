@@ -20,7 +20,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: M_GreenLiquid
+  m_Name: M_AcidTest
   m_Shader: {fileID: -6465566751694194690, guid: 9c3ed4dae6e0a674cb6e1a9d9af924a6, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -51,14 +51,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _FillAmount: 0.03
+    - _FillAmount: 0
     - _FresnelPower: 5
     - _QueueControl: 0
     - _QueueOffset: 0
     - _WobbleX: 0
     - _WobbleZ: 0
     m_Colors:
-    - _FresnelColor: {r: 0.74071914, g: 11.984313, b: 0, a: 1}
+    - _FresnelColor: {r: 0.04629495, g: 0.7490196, b: 0, a: 1}
     - _LiqudColor: {r: 0.3960786, g: 1, b: 0, a: 1}
     - _SurfaceColor: {r: 0.45882356, g: 1, b: 0.043137252, a: 1}
   m_BuildTextureStacks: []

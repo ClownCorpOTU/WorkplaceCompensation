@@ -234,7 +234,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         audioManager.Play("FireworksExplosion", transform.position);
         audioManager.Play("FireworksHighPitch", transform.position);
 
-        // Auto-destroy if vfx didn't destory itself
+        // Auto-destroy if vfx didn't destroy itself
         if (fx != null) Destroy(fx, fxDespawnDelay);
     }
 
@@ -248,6 +248,8 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     public void OnChildTriggerEnter(Collider other, TriggerType tType=TriggerType.Left)
     {
         if (!Object.HasStateAuthority) return;
+
+        print("Triggered");
 
         if (other.TryGetComponent(out Vial vial) && vial.Type is (VialType.InputCrate or VialType.VIPCrate))
             AddBox(vial);
