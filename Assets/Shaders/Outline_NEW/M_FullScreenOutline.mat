@@ -25,17 +25,17 @@ Material:
     m_TexEnvs: []
     m_Ints: []
     m_Floats:
-    - _DepthSensitivity: 40
+    - _DepthSensitivity: 25
     - _EdgeSoftness: 0.4
-    - _EdgeThreshold: 0.9
+    - _EdgeThreshold: 1
     - _LineBoilFPS: 0
     - _LuminanceSensitivity: 2
     - _MaxOutlineDistance: 15
-    - _NormalSensitivity: 5
+    - _NormalSensitivity: 6
     - _OutlineThickness: 1
-    - _ThicknessVariation: 0.5
+    - _ThicknessVariation: 0.45
     - _WiggleFrequency: 25
-    - _WiggleStrength: 0.5
+    - _WiggleStrength: 0.2
     m_Colors:
     - _InnerCreaseColor: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
     - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
