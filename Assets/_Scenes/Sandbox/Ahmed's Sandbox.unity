@@ -31701,7 +31701,7 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 1
+    m_Type: 0
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 0.42
@@ -31807,11 +31807,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b459c83577b7a3a42ab9c95cae421741, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.52
+      value: 3.62
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b459c83577b7a3a42ab9c95cae421741, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.7
+      value: 0.4
       objectReference: {fileID: 0}
     - target: {fileID: -8679921383154817045, guid: b459c83577b7a3a42ab9c95cae421741, type: 3}
       propertyPath: m_LocalRotation.w
@@ -35886,6 +35886,10 @@ PrefabInstance:
     - target: {fileID: 92912301393048188, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 106471318623669606, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 106471318623669606, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
@@ -42422,6 +42426,10 @@ PrefabInstance:
     - target: {fileID: 9075724062036850240, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_Layer
       value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 9079521431493054659, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 9079521431493054659, guid: fc596a8c155e9c24d8f37f393839ba04, type: 3}
       propertyPath: m_StaticEditorFlags
