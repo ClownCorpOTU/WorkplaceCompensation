@@ -9,25 +9,11 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] string lobbyScene = "Lobby";
 
     [SerializeField] private GameObject mainMenu;
-    [SerializeField] GameObject notesMenu;
-    [SerializeField] GameObject fakeLoadingScreen;
     [SerializeField] private GameObject tutorialMenu; 
     
-    private void Start()
-    {
-        notesMenu.SetActive(false);
-        fakeLoadingScreen.SetActive(false);
-    }
-
-    private void DisableUI()
-    {
-        notesMenu.SetActive(false);
-        fakeLoadingScreen.SetActive(true);
-    }
 
     public void JustPlay()
     {
-        DisableUI();
         SceneManager.LoadScene(gameplayScene);
     }
 
@@ -45,22 +31,10 @@ public class MainMenuManager : MonoBehaviour
 
     public void GoToLobbyMenu()
     {
-        DisableUI();
         SceneManager.LoadScene(lobbyScene);
     }
 
-    public void OpenNotesMenu()
-    {
-        notesMenu.SetActive(true);
-    }
-    
-    public void CloseNotesMenu()
-    {
-        // These could be the same function but I'm just being quick
-        notesMenu.SetActive(false);
-    }
-
-    public void QuiteGame()
+    public void QuitGame()
     {
         Application.Quit();
     }
