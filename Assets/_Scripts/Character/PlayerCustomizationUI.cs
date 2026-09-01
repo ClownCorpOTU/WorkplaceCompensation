@@ -7,6 +7,7 @@ public class PlayerCustomizationUI : MonoBehaviour
 {
     [SerializeField] private TMP_InputField nameInputField;
     [SerializeField] private Image colorPreviewImage;
+    [SerializeField] private TextMeshProUGUI coinValue;
     
     private string currentName = "JOHN";
     private Color currentColor = Color.white;
@@ -28,20 +29,24 @@ public class PlayerCustomizationUI : MonoBehaviour
             Debug.LogWarning("BannedNames check skipped (File not found or empty).");
             bannedWords = Array.Empty<string>();
         }
+
+        LoadSaveData();
     }
 
-    private void Start()
+    private void LoadSaveData()
     {
-        // Load saved data when the menu opens
-        currentName = PlayerPrefs.GetString("PlayerName", "JOHN");
+        currentName = PlayerPrefs.GetString(Utils.GetKey("PlayerName"), "John");
         nameInputField.text = currentName;
         
-        string savedColor = PlayerPrefs.GetString("PlayerColor", "#FFFFFF");
+        string savedColor = PlayerPrefs.GetString(Utils.GetKey("PlayerColor"), "#FFFFFF");
         if (ColorUtility.TryParseHtmlString(savedColor, out Color color))
         {
             currentColor = color;
             if (colorPreviewImage != null) colorPreviewImage.color = currentColor;
         }
+
+        if (coinValue != null)
+            coinValue.text = LocalEconomyManager.GetCoins().ToString();
     }
 
     public void OnNameEndEdit(string newName)
@@ -74,10 +79,11 @@ public class PlayerCustomizationUI : MonoBehaviour
         hexColor = "#" + ColorUtility.ToHtmlStringRGB(currentColor);
     }
 
+    // Called when user closes the menu
     public void SaveCustomization()
     {
-        PlayerPrefs.SetString("PlayerName", currentName);
-        PlayerPrefs.SetString("PlayerColor", hexColor);
+        PlayerPrefs.SetString(Utils.GetKey("PlayerName"), currentName);
+        PlayerPrefs.SetString(Utils.GetKey("PlayerColor"), hexColor);
         PlayerPrefs.Save();
     }
 }
