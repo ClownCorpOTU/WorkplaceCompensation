@@ -1,5 +1,3 @@
-using System;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -24,9 +22,10 @@ public class MainMenuManager : MonoBehaviour
 
     public void ShowTutorialMenu(string levelName)
     {
-        tutorialMenu.SetActive(true);
-        mainMenu.SetActive(false);
-        TutorialManager.Instance.SetLevel(levelName);
+        if (tutorialMenu != null) tutorialMenu.SetActive(true);
+        if (mainMenu != null) mainMenu.SetActive(false);
+        
+        if (TutorialManager.Instance != null) TutorialManager.Instance.SetLevel(levelName);
     }
 
     public void GoToLobbyMenu()
