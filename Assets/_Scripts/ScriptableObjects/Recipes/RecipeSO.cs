@@ -5,8 +5,8 @@ using UnityEngine;
 public class RecipeSO : ScriptableObject
 {
     [Tooltip("Boxes required for this recipe (order doesn't matter)")]
-    public List<VialType> Ingredients;
+    public List<ObjectType> Ingredients;
     
     [Tooltip("What box this recipe produces if successful")]
-    public VialType[] Results;
+    public ObjectType[] Results;
 }

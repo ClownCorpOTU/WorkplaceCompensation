@@ -34,7 +34,7 @@ public class NetworkOutputReceiver : NetworkBehaviour
     {
         if (!Object.HasStateAuthority) return;
 
-        if (other.TryGetComponent(out Vial vial) && vial.Type == VialType.OutputBox)
+        if (other.TryGetComponent(out Vial vial) && vial.Type == ObjectType.OutputBox)
         {
             // Reset all states before starting new sequence
             flyDelayTimer = TickTimer.None;
