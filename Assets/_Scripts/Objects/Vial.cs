@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class Vial : NetworkBehaviour
 {
-    [Networked] public VialType Type { get; set; }
+    [Networked] public ObjectType Type { get; set; }
+    [Networked] public VialColor Color { get; set; }
     [HideInInspector] public PlayerRef LastHeldBy { get; private set; }
     
-    public void Initialize(VialType type)
+    public void Initialize(ObjectType type)
     {
         if (Object.HasStateAuthority) Type = type;
     }

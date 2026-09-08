@@ -11,28 +11,32 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private Vial trashPrefab;
     [SerializeField] private Transform vialSpawnPoint;
     [SerializeField] private float spawnDelay = 0.5f;
-
-    [Header("Lighting parameters")] [SerializeField]
-    private Renderer light1;
-
-    [SerializeField] private Renderer light2;
-    [SerializeField] private Material redMat, greenMat;
-    [SerializeField] private float greenDuration = 2f; // not used for now but kept for later
-
-    [Header("Juice")] [SerializeField] private GameObject fireworksPrefab;
+    
+    [Header("Juice")]
+    [SerializeField] private GameObject fireworksPrefab;
     [SerializeField] private Transform fireworkSpawnPoint;
     [SerializeField] private float fxDespawnDelay = 15;
+    
+    [Header("Humming Effect")]
+    [SerializeField] private Renderer machineRenderer;
+    [SerializeField] private string fresnelParamName = "_FresnelPower";
+    [SerializeField] private float minHumPower = 0.1f;
+    [SerializeField] private float maxHumPower = 0.5f;
+    [SerializeField] private float humSpeed = 15f; 
 
     private List<RecipeSO> recipes;
-    private List<VialType> currentInputs = new();
-    private Queue<VialType> pendingResults = new(); // queue for multiple results
+    private List<ObjectType> currentInputs = new();
+    private Queue<ObjectType> pendingResults = new(); // queue for multiple results
     private NetworkGameManager networkGameManager;
-    private int vialCount;
+    
+    private float originalFresnelPower;
+    private Material machineMaterial;
+    private float targetHumPower;
 
     // --- Network timers ---
     [Networked] private TickTimer spawnDelayTimer { get; set; }
-    [Networked] private bool lightsAreGreen { get; set; } // track current light state
-
+    [Networked] private NetworkBool isProcessing { get; set; }
+    
     private AudioManager audioManager;
     private bool hasAddedBoxBefore;
 
@@ -42,15 +46,28 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         recipes = recipeContainerSO.Recipes;
         audioManager = FindFirstObjectByType<AudioManager>();
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
-
-        if (Object.HasStateAuthority) RPC_ResetLights();
+        
+        // Initialize the humming material
+        if (machineRenderer != null)
+        {
+            machineMaterial = machineRenderer.material; 
+            if (machineMaterial.HasFloat(fresnelParamName))
+            {
+                originalFresnelPower = machineMaterial.GetFloat(fresnelParamName);
+                targetHumPower = originalFresnelPower;
+            }
+            else
+            {
+                Debug.LogWarning($"Material doesn't have parameter: {fresnelParamName}");
+            }
+        }
     }
 
     private void AddBox(Vial vial)
     {
         if (!Object.HasStateAuthority) return;
 
-        if (vial.Type is not (VialType.InputCrate or VialType.VIPCrate))
+        if (vial.Type is not ObjectType.InputCrystal)
         {
             Utils.DebugLog($"Invalid vial type: {vial.Type}");
             return;
@@ -59,14 +76,12 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         currentInputs.Add(vial.Type);
         Utils.DebugLog($"Added vial: {vial.Type}");
 
-        OnBoxAdded(vial.Type);
+        //OnBoxAdded(vial.Type);
         
         // --- Give the correct player a score ---
         if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
         {
-            var scoreToAdd = vial.Type == VialType.VIPCrate ? 2 : 1;
-            
-            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, scoreToAdd);
+            networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
             RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
         }
 
@@ -103,7 +118,6 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         var matchingRecipe = recipes.FirstOrDefault(r =>
             r.Ingredients.OrderBy(i => i).SequenceEqual(sortedInput));
         
-
         // If we found a recipe, queue its results
         if (matchingRecipe != null)
         {
@@ -113,52 +127,28 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         else
         {
             // No recipe matched — spawn a trash bag instead
-            pendingResults.Enqueue(VialType.TrashBag);
+            pendingResults.Enqueue(ObjectType.TrashBag);
         }
 
         currentInputs.Clear();
-
-        // Keep both lights green while results are being processed
-        if (Object.HasStateAuthority) RPC_SetLightsGreen();
+        isProcessing = true;
 
         // Start timer for the first result
         if (!spawnDelayTimer.IsRunning)
             spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
     }
 
-    private void SpawnResult(VialType resultType)
+    private void SpawnResult(ObjectType resultType)
     {
-        Vial newVial;
-
-        if (resultType == VialType.TrashBag)
-            newVial = Runner.Spawn(trashPrefab, vialSpawnPoint.position, Quaternion.identity);
-        else
-            newVial = Runner.Spawn(vialPrefab, vialSpawnPoint.position, Quaternion.identity);
+        Vial newVial = Runner.Spawn(resultType == ObjectType.TrashBag ? trashPrefab : vialPrefab, vialSpawnPoint.position, Quaternion.identity);
 
         newVial.Initialize(resultType);
-        vialCount++;
-        
         RPC_PlayFireworks();
     }
 
-    private void OnBoxAdded(VialType vialType)
+    private void OnBoxAdded(ObjectType objectType)
     {
         if (!Object.HasStateAuthority) return;
-        
-        // --- Turn on correct light based on input count ---
-        if (vialType == VialType.VIPCrate) RPC_SetLightsGreen();
-        
-        else
-        {
-            if (currentInputs.Count == 1)
-            {
-                RPC_SetLightGreen(true, false);
-            }
-            else if (currentInputs.Count == 2)
-            {
-                RPC_SetLightGreen(true, true);
-            }
-        }
     }
 
     public override void FixedUpdateNetwork()
@@ -178,14 +168,39 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
             }
             else
             {
-                // --- All vials have spawned ---
-                RPC_ResetLights();
-
-                // Send an RPC so all players play fireworks
+                isProcessing = false;
                 RPC_PlayFireworks();
+                spawnDelayTimer = TickTimer.None; 
             }
         }
     }
+    
+    public override void Render()
+    {
+        if (machineMaterial == null) return;
+
+        if (isProcessing) 
+        {
+            if (Mathf.Abs(machineMaterial.GetFloat(fresnelParamName) - targetHumPower) < 0.05f)
+            {
+                targetHumPower = UnityEngine.Random.Range(minHumPower, maxHumPower);
+            }
+
+            float currentPower = machineMaterial.GetFloat(fresnelParamName);
+            float newPower = Mathf.Lerp(currentPower, targetHumPower, Time.deltaTime * humSpeed);
+            machineMaterial.SetFloat(fresnelParamName, newPower);
+        }
+        else
+        {
+            float currentPower = machineMaterial.GetFloat(fresnelParamName);
+            if (Mathf.Abs(currentPower - originalFresnelPower) > 0.001f)
+            {
+                float newPower = Mathf.Lerp(currentPower, originalFresnelPower, Time.deltaTime * (humSpeed / 2f));
+                machineMaterial.SetFloat(fresnelParamName, newPower);
+            }
+        }
+    }
+
     
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
@@ -198,32 +213,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         }
     }
 
-    // --- Light helpers ---
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_SetLightGreen(bool light1Green=false, bool light2Green=false)
-    {
-        if (light1Green) light1.material = greenMat;
-        if (light2Green) light2.material = greenMat;
-    }
     
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_SetLightsGreen()
-    {
-        lightsAreGreen = true;
-        light1.material = greenMat;
-        light2.material = greenMat;
-    }
-
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_ResetLights()
-    {
-        lightsAreGreen = false;
-        light1.material = redMat;
-        light2.material = redMat;
-        vialCount = 0;
-    }
-
     // --- Firework RPCs ---
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_PlayFireworks()
@@ -244,6 +234,8 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
         if (audioManager != null) audioManager.Play(audioName, position);
     }
 
+    
+    
     // --- Trigger interface ---
     public void OnChildTriggerEnter(Collider other, TriggerType tType=TriggerType.Left)
     {
@@ -251,7 +243,7 @@ public class NetworkProcessor : NetworkBehaviour, ITriggerReceiver
 
         print("Triggered");
 
-        if (other.TryGetComponent(out Vial vial) && vial.Type is (VialType.InputCrate or VialType.VIPCrate))
+        if (other.TryGetComponent(out Vial vial) && vial.Type is ObjectType.InputCrystal)
             AddBox(vial);
     }
 

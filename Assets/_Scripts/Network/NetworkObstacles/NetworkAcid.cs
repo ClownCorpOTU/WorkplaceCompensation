@@ -27,7 +27,7 @@ public class NetworkAcid : NetworkBehaviour
         Vector3 contactPoint = other.ClosestPoint(transform.position);
         AudioManager.instance.Play("AcidMelt", contactPoint);
 
-        if (other.TryGetComponent(out Vial vial) && vial.Type == VialType.TrashBag)
+        if (other.TryGetComponent(out Vial vial) && vial.Type == ObjectType.TrashBag)
         {
             networkGameManager.AddScore(vial.LastHeldBy, scoreToAdd);
             RPC_TriggerTutorialEvent(vial.LastHeldBy, (int)GameEvent.VialsMixed);
