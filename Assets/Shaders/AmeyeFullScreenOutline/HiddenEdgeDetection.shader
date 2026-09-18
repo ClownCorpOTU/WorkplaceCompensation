@@ -1,4 +1,4 @@
-Shader "Hidden/Edge Detection"
+Shader "Outline/Edge Detection"
 {
     Properties
     {
@@ -95,12 +95,12 @@ Shader "Hidden/Edge Detection"
 
             half4 frag(Varyings IN) : SV_TARGET
             {
+                
                 // Screen-space coordinates which we will use to sample.
                 float2 uv = IN.texcoord;
                 float2 texel_size = float2(1.0 / _ScreenParams.x, 1.0 / _ScreenParams.y);
 
                 // 1. Get linear depth
-                uv = ApplyWobble(uv);
                 float rawDepth = SampleSceneDepth(uv);
                 float linear01Depth = Linear01Depth(rawDepth, _ZBufferParams);
 
@@ -109,6 +109,8 @@ Shader "Hidden/Edge Detection"
                 float distanceMultiplier = pow(1.0 - linear01Depth, _DepthFalloff * 100.0);
                 float scaledThickness = _OutlineThickness * distanceMultiplier;
                 scaledThickness = max(scaledThickness, _MinThickness);
+                
+                uv = ApplyWobble(uv);
 
                 // 3. Apply to UV offsets
                 float2 uvs[4];
@@ -148,29 +150,6 @@ Shader "Hidden/Edge Detection"
                 float finalEdge = edge * alphaMultiplier;
 
                 return finalEdge * _OutlineColor;
-
-                /*
-                // Apply edge detection kernel on the samples to compute edges.
-                float edge_depth = RobertsCross(depth_samples);
-                float edge_normal = RobertsCross(normal_samples);
-                float edge_luminance = RobertsCross(luminance_samples);
-                
-                // Threshold the edges (discontinuity must be above certain threshold to be counted as an edge). The sensitivities are hardcoded here.
-                float depth_threshold = 1 / 200.0f;
-                edge_depth = edge_depth > depth_threshold ? 1 : 0;
-                
-                float normal_threshold = 1 / 4.0f;
-                edge_normal = edge_normal > normal_threshold ? 1 : 0;
-                
-                float luminance_threshold = 1 / 0.5f;
-                edge_luminance = edge_luminance > luminance_threshold ? 1 : 0;
-                
-                // Combine the edges from depth/normals/luminance using the max operator.
-                float edge = max(edge_depth, max(edge_normal, edge_luminance));
-                
-                // Color the edge with a custom color.
-                return edge * _OutlineColor;
-                */
             }
             ENDHLSL
         }

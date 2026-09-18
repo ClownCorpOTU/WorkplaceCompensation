@@ -66,4 +66,10 @@ public partial class NetworkPlayer
         main.startSize = Mathf.Lerp(startSizeRange.x, startSizeRange.y, clampedSpeed / 15f);
         //main.startSpeed = Mathf.Lerp(startSpeedRange.x, startSpeedRange.y, clampedSpeed / 15f);
     }
+
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    public void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        GameEventManager.TriggerEvent((GameEvent)eventEnumInt);
+    }
 }

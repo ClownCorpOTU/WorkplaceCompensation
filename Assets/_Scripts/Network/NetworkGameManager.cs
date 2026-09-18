@@ -29,12 +29,14 @@ public class NetworkGameManager : NetworkBehaviour
     
     [Networked] private TickTimer GameTimer { get; set; }
     [Networked] private bool IsGameOver { get; set; }
-    [Networked] private float remainingTime { get; set; }
+    private float remainingTime { get; set; }
 
     public float RemainingTime => remainingTime;
 
+    public Dictionary<PlayerRef, NetworkPlayer> NetworkPlayers = new();
     private Dictionary<PlayerRef, int> playerScores = new();
     private int lastPlayerCount = 0;
+    private float prevSeconds = 99999f;
     
     
     #region Spawning and Setup
@@ -58,11 +60,20 @@ public class NetworkGameManager : NetworkBehaviour
     
     private NetworkPlayer FindPlayerByRef(PlayerRef playerRef)
     {
-        foreach (var player in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
+        // Try the dictionary first
+        if (NetworkPlayers.TryGetValue(playerRef, out var player)) 
+            return player;
+    
+        // Fallback: search the scene for the active NetworkPlayer
+        foreach (var p in FindObjectsByType<NetworkPlayer>(FindObjectsSortMode.None))
         {
-            if (player.Object.InputAuthority == playerRef)
-                return player;
+            if (p.Object != null && p.Object.InputAuthority == playerRef)
+            {
+                NetworkPlayers[playerRef] = p; // Cache it for next time
+                return p;
+            }
         }
+    
         return null;
     }
     
@@ -87,16 +98,21 @@ public class NetworkGameManager : NetworkBehaviour
         if (!GameTimer.IsRunning || IsGameOver) return;
         
         // Refresh leaderboard if someone joins or leaves
-        if (Object.HasStateAuthority && Runner.ActivePlayers.Count() != lastPlayerCount)
+        if (Object.HasStateAuthority && NetworkPlayers.Count != lastPlayerCount)
         {
-            lastPlayerCount = Runner.ActivePlayers.Count();
+            lastPlayerCount = NetworkPlayers.Count;
             UpdateLeaderboardData();
         }
 
-        if (GameTimer.Expired(Runner))
+        if (Object.HasStateAuthority && GameTimer.Expired(Runner))
         {
             IsGameOver = true;
-            RPC_OnGameOver();
+            
+            // Calculate rankings and strings on the authority
+            string finalScoreString = BuildFinalScoreString(out List<KeyValuePair<PlayerRef, int>> sortedScores);
+
+            // Broadcast once to everyone with the needed data
+            RPC_OnGameOver(finalScoreString);
         }
     }
 
@@ -104,7 +120,9 @@ public class NetworkGameManager : NetworkBehaviour
     {
         int minutes = Mathf.FloorToInt(remainingTime / 60f);
         int seconds = Mathf.FloorToInt(remainingTime % 60f);
-        timerText.text = $"{minutes:00}:{seconds:00}";
+        
+        if (prevSeconds != seconds) timerText.text = $"{minutes:00}:{seconds:00}";
+        prevSeconds = seconds;
         
         timerClockFill.fillAmount = remainingTime / (gameRuntime*60f);
         timerClockHand.transform.localRotation = Quaternion.Euler(0, 0, Mathf.Lerp(360, 0, remainingTime / (gameRuntime*60f)));
@@ -132,6 +150,7 @@ public class NetworkGameManager : NetworkBehaviour
         UpdateLeaderboardData();
     }
 
+    // Called whenever someone scores, or someone joins/leaves
     private void UpdateLeaderboardData()
     {
         // Sort EVERYONE to find everyone's true rank
@@ -153,8 +172,67 @@ public class NetworkGameManager : NetworkBehaviour
             RPC_SyncPlayerRank(player, actualRank, topRefs, topScores);
         }
     }
+    
+    // Called by an RPC that gets fired by the UpdateLeaderboardData() function
+    private void UpdateLeaderboardText(PlayerRef[] topRefs, int[] topScores)
+    {
+        if (leaderboardText == null) return;
+        
+        PlayerRef localPlayer = Runner.LocalPlayer;
 
-    private void ShowPlayerScores()
+        // Single player edge case
+        if (Runner.ActivePlayers.Count() <= 1)
+        {
+            leaderboardText.text = "<size=60%>WAITING FOR\nCHALLENGERS</size>";
+            return;
+        }
+
+        List<string> displayEntries = new List<string>();
+        
+        // Who do we show?
+        for (int i = 0; i < topRefs.Length; i++)
+        {
+            // Skip MYSELF - We only want to see others in this box
+            if (topRefs[i] == localPlayer) continue;
+            
+            // Format player string
+            displayEntries.Add($"<size=60%>{GetPlayerDisplayName(topRefs[i], 4)}:</size> {topScores[i]}");
+            
+            // We only have room for 2 "others"
+            if (displayEntries.Count >=2) break;
+        }
+        
+        // Final display
+        leaderboardText.text = string.Join("\n", displayEntries);
+    }
+    
+    // Helper function for the leaderboard
+    private string GetPlayerDisplayName(PlayerRef playerRef, int maxChars = 0)
+    {
+        NetworkPlayer player = FindPlayerByRef(playerRef);
+        string playerName = null;
+
+        if (player != null)
+            playerName = player.CustomizationData.PlayerName.ToString();
+
+        // Fallback if name is empty or player object is not found yet
+        if (string.IsNullOrWhiteSpace(playerName))
+        {
+            int pNum = (playerRef.RawEncoded % 1000) - 1;
+            playerName = $"Player {pNum}";
+        }
+
+        // Safely clamp length if maxChars is specified
+        if (maxChars > 0 && playerName.Length > maxChars)
+        {
+            playerName = playerName.Substring(0, maxChars);
+        }
+
+        return playerName;
+    }
+
+    // Runs on the host at the end of the game
+    private string BuildFinalScoreString(out List<KeyValuePair<PlayerRef, int>> sortedScores)
     {
         // Build a complete list of all players with their scores (default 0 if not in dictionary)
         var allScores = new List<KeyValuePair<PlayerRef, int>>();
@@ -165,7 +243,7 @@ public class NetworkGameManager : NetworkBehaviour
         }
 
         // Sort descending by score
-        var sortedScores = allScores
+        sortedScores = allScores
             .OrderByDescending(kvp => kvp.Value)
             .ToList();
 
@@ -175,26 +253,37 @@ public class NetworkGameManager : NetworkBehaviour
         int rank = 1;
         foreach (var kvp in sortedScores)
         {
-            int playerNumber = kvp.Key.RawEncoded % 1000;
             int score = kvp.Value;
 
-            string colorTag = rank switch
-            {
-                1 => "#FFD700", // Gold
-                2 => "#FFA500", // Orange
-                3 => "#CD7F32", // Bronze
-                _ => "#FFFFFF"  // White for others
-            };
+            string colorTag;
 
-            sb.AppendLine($"<color={colorTag}>Player {playerNumber-1}: {score}</color>");
+            switch (rank)
+            {
+                case 1:
+                    colorTag = "#FFD700"; // Gold
+                    RPC_RewardCoins(kvp.Key, 100);
+                    break;
+                case 2:
+                    colorTag = "#FFA500"; // Orange
+                    RPC_RewardCoins(kvp.Key, 75);
+                    break;
+                case 3:
+                    colorTag = "#CD7F32"; // Bronze
+                    RPC_RewardCoins(kvp.Key, 50);
+                    break;
+                default:
+                    colorTag = "#FFFFFF"; // White for others
+                    break;
+            }
+
+            sb.AppendLine($"<color={colorTag}>{GetPlayerDisplayName(kvp.Key)}: {score}</color>");
             rank++;
         }
 
-        // Send an RPC to clients to set final score
-        string finalLeaderboard = sb.ToString();
-        RPC_DisplayFinalScore(finalLeaderboard);
+        return sb.ToString();
     }
-
+    
+    
     #endregion
 
     #region RPCs
@@ -223,54 +312,30 @@ public class NetworkGameManager : NetworkBehaviour
         UpdateLeaderboardText(topRefs, topScores);
     }
     
-    private void UpdateLeaderboardText(PlayerRef[] topRefs, int[] topScores)
+    // Called when we are building the final score string
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)] 
+    private void RPC_RewardCoins(PlayerRef targetPlayer, int coinsAwarded)
     {
-        if (leaderboardText == null) return;
-        
-        PlayerRef localPlayer = Runner.LocalPlayer;
+        if (Runner.LocalPlayer != targetPlayer) return;
 
-        // Single player edge case
-        if (Runner.ActivePlayers.Count() <= 1)
-        {
-            leaderboardText.text = "<size=60%>WAITING FOR\nCHALLENGERS</size>";
-            return;
-        }
-
-        List<string> displayEntries = new List<string>();
+        // This code only runs on the specific player's machine who won the coins
+        LocalEconomyManager.AddCoins(coinsAwarded);
         
-        // Who do we show?
-        for (int i = 0; i < topRefs.Length; i++)
-        {
-            // Skip MYSELF - We only want to see others in this box
-            if (topRefs[i] == localPlayer) continue;
-            
-            // Format player string
-            int pNum = (topRefs[i].RawEncoded % 1000) - 1;
-            displayEntries.Add($"<size=80%>P{pNum}:</size> {topScores[i]}");
-            
-            // We only have room for 2 "others"
-            if (displayEntries.Count >=2) break;
-        }
-        
-        // Final display
-        leaderboardText.text = string.Join("\n", displayEntries);
+        // Optional: Trigger a cool UI animation here showing "+100 Coins!"
     }
     
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_OnGameOver()
+    private void RPC_OnGameOver(string finalScores)
     {
         gameOverPanel.SetActive(true);
-        ShowPlayerScores();
-        NetworkPlayer.Local.RemovePlayerInputAuthority();
+        finalScoreText.text = finalScores;
+        Debug.Log(LocalEconomyManager.GetCoins());
+        
+        if (NetworkPlayer.Local != null)
+            NetworkPlayer.Local.RemovePlayerInputAuthority();
+        
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
-    }
-    
-    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
-    private void RPC_DisplayFinalScore(string scoresText)
-    {
-        // This runs on all clients (and host)
-        finalScoreText.text = scoresText;
     }
     
     #endregion

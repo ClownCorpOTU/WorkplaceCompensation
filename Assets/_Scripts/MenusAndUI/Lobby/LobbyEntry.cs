@@ -3,7 +3,6 @@ using TMPro;
 using UnityEngine.UI;
 using Fusion;
 using System;
-using Unity.VisualScripting;
 
 public class LobbyEntry : MonoBehaviour
 {

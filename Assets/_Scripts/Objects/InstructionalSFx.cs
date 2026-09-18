@@ -18,6 +18,9 @@ public class InstructionalSFx : MonoBehaviour
 
     private void Update()
     {
+        if (button == null || button.Object == null || !button.Object.IsValid)
+            return;
+        
         // Would be better if this function only runs when the button state changes instead of every update
         
         if (button.IsButtonPressed)

@@ -28,6 +28,9 @@ public class NetworkDoor : NetworkBehaviour, ILever
 
     public void OnLeverToggled(bool state)
     {
+        if (lever == null || lever.Object == null || !lever.Object.IsValid)
+            return;
+        
         if (!Object.HasStateAuthority) return;
 
         targetY = state ? closedPositionY : openPositionY;;

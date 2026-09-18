@@ -25,6 +25,11 @@ Material:
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords:
+  - _ADDITIONAL_LIGHTS
+  - _ADDITIONAL_LIGHT_SHADOWS
+  - _CLUSTER_LIGHT_LOOP
+  - _LIGHT_LAYERS
+  - _SHADOWS_SHADOWMASK
   - _SPECULAR_ON
   m_InvalidKeywords: []
   m_LightmapFlags: 4
@@ -127,6 +132,8 @@ Material:
     m_Floats:
     - LIGHTMAP_SHADOW_MIXING: 0
     - SHADOWS_SHADOWMASK: 0
+    - _ADDITIONAL_LIGHTS: 1
+    - _ADDITIONAL_LIGHT_SHADOWS: 1
     - _AddPrecomputedVelocity: 0
     - _AlphaClip: 0
     - _AlphaClipThreshold: 0.5
@@ -134,6 +141,7 @@ Material:
     - _Blend: 0
     - _BlendModePreserveSpecular: 1
     - _BumpScale: 1
+    - _CLUSTER_LIGHT_LOOP: 1
     - _CastShadows: 1
     - _ChromaKey: 0
     - _ClearCoatMask: 0
@@ -152,6 +160,7 @@ Material:
     - _GlossyReflections: 1
     - _HalfToneIntensity: 0.3
     - _LIGHTMAP_SHADOW_MIXING: 0
+    - _LIGHT_LAYERS: 1
     - _LitThreshold: 0.8
     - _Metallic: 0
     - _Mode: 0
@@ -165,6 +174,7 @@ Material:
     - _RimLightPower: 10
     - _Rotation: 45
     - _Rotation2: -45
+    - _SHADOWS_SHADOWMASK: 1
     - _SPECULAR: 1
     - _ShadingMultiplier: 0.1
     - _Smoothness: 0.3

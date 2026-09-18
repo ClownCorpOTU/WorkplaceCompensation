@@ -31,8 +31,8 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [SerializeField] private GameObject rightVial;
 
     private List<RecipeSO> recipes;
-    private List<VialType> currentInputs = new();
-    private Queue<VialType> pendingResults = new();
+    private List<ObjectType> currentInputs = new();
+    private Queue<ObjectType> pendingResults = new();
     private NetworkGameManager networkGameManager;
     private int vialCount;
     private Vector3 originalPos;
@@ -42,6 +42,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     [Networked] private bool lightsAreGreen { get; set; }
 
     private AudioManager audioManager;
+    private bool hasAddedVialBefore;
 
     public override void Spawned()
     {
@@ -56,7 +57,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     private void AddBox(Vial vial)
     {
         if (!Object.HasStateAuthority) return;
-        if (vial.Type != VialType.OutputVial) return;
+        if (vial.Type != ObjectType.OutputVial) return;
 
         currentInputs.Add(vial.Type);
         
@@ -64,6 +65,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         if (vial.TryGetComponent(out GrabbedByTracker grabbedByTracker))
         {
             networkGameManager.AddScore(grabbedByTracker.LastHeldBy, 1);
+            RPC_TriggerTutorialEvent(grabbedByTracker.LastHeldBy, (int)GameEvent.VialsMixed);
         }
 
         Runner.Despawn(vial.Object);
@@ -99,7 +101,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
         }
         else
         {
-            pendingResults.Enqueue(VialType.TrashBag);
+            pendingResults.Enqueue(ObjectType.TrashBag);
         }
 
         currentInputs.Clear();
@@ -110,9 +112,9 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
             spawnDelayTimer = TickTimer.CreateFromSeconds(Runner, spawnDelay);
     }
 
-    private void SpawnResult(VialType resultType)
+    private void SpawnResult(ObjectType resultType)
     {
-        Vial newVial = (resultType == VialType.TrashBag)
+        Vial newVial = (resultType == ObjectType.TrashBag)
             ? Runner.Spawn(trashPrefab, vialSpawnPoint.position, Quaternion.identity)
             : Runner.Spawn(vialPrefab, vialSpawnPoint.position, Quaternion.identity);
 
@@ -146,6 +148,15 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     }
 
     // --- RPC Helpers ---
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
+    private void RPC_TriggerTutorialEvent([RpcTarget] PlayerRef player, int eventEnumInt)
+    {
+        if (!hasAddedVialBefore)
+        {
+            GameEventManager.TriggerEvent((GameEvent)eventEnumInt);
+            hasAddedVialBefore = true;
+        }
+    }
 
     [Rpc(RpcSources.StateAuthority, RpcTargets.All)]
     private void RPC_SetLightsGreen()
@@ -208,7 +219,7 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
     {
         if (!Object.HasStateAuthority) return;
         if (!other.TryGetComponent(out Vial vial)) return;
-        if (vial.Type != VialType.OutputVial) return;
+        if (vial.Type != ObjectType.OutputVial) return;
 
         int countBeforeAdd = currentInputs.Count;
         AddBox(vial);
@@ -216,7 +227,6 @@ public class NetworkMixer : NetworkBehaviour, ITriggerReceiver
 
         if (countBeforeAdd >= 1)
         {
-            print("Here!");
             RPC_SetSingleLightAndVial(true, true);
             RPC_SetSingleLightAndVial(false, true);
         }

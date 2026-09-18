@@ -49,14 +49,6 @@ public class AudioManager : MonoBehaviour
         s.source.pitch = s.pitch;
         s.source.loop = s.loop;
         s.source.spatialBlend = 0f; // Force 2D
-
-        if (s.hasVariations && s.variations != null)
-        {
-            foreach (var v in s.variations)
-            {
-                Populate2DSounds(v);
-            }
-        }
     }
 
     private void CreateNewPoolObject()
@@ -70,45 +62,49 @@ public class AudioManager : MonoBehaviour
 
     public void Play(string name, Vector3? position = null) {
         Sound s = Array.Find(sounds, sound => sound.name == name);
+        
         if (s == null) {
             Debug.LogWarning("Sound: " + name + " not found!");
             return;
         }
         
-        // Determine which sound object to actually play (the base or a variation)
-        Sound soundToPlay = s;
+        // Determine which AudioClip to actually play (the base clip or a variation clip)
+        AudioClip clipToPlay = s.clip;
         if (s.hasVariations && s.variations.Length > 0)
         {
             int rand = Random.Range(0, s.variations.Length);
-            soundToPlay = s.variations[rand];
+            clipToPlay = s.variations[rand]; // Pick a random AudioClip!
         }
 
+        
         // ================================
         // 2D SOUND — avoid double play
         // ================================
         if (!s.is3D)
         {
             // Check if this specific variation is already playing
-            if (soundToPlay.source.isPlaying) return;
-
-            soundToPlay.source.Play();
+            if (s.source.isPlaying) return;
+            
+            s.source.clip = clipToPlay; // Swap to the chosen variation clip
+            s.source.Play();
             return;
         }
 
+        
         // ================================
         // 3D SOUND — avoid double spawning; includes object pooling
         // ================================
         if (s.usePooling)
         {
-            PlayPooled3DSound(soundToPlay, position ?? Vector3.zero, s.name);
+            PlayPooled3DSound(s, clipToPlay, position ?? Vector3.zero, s.name);
         }
         else
         {
-            PlayStandard3DSound(soundToPlay, position ?? Vector3.zero, s.name);
+            PlayStandard3DSound(s, clipToPlay, position ?? Vector3.zero, s.name);
         }
     }
 
-    private void PlayPooled3DSound(Sound s, Vector3 position, string soundName)
+    private void PlayPooled3DSound(Sound s, AudioClip clipToPlay, Vector3 position, string soundName)
     {
         if (!s.allowOverlap && active3DSounds.Contains(soundName)) return;
         
@@ -119,7 +115,7 @@ public class AudioManager : MonoBehaviour
         source.transform.position = position;
         
         // Apply settings
-        source.clip = s.clip;
+        source.clip = clipToPlay;
         source.outputAudioMixerGroup = s.audioMixerGroup;
         source.volume = s.volume;
         source.pitch = s.pitch;
@@ -129,7 +125,7 @@ public class AudioManager : MonoBehaviour
         source.Play();
         active3DSounds.Add(soundName);
 
-        StartCoroutine(ReturnToPool(source, s.clip.length, soundName));
+        StartCoroutine(ReturnToPool(source, clipToPlay.length, soundName));
     }
 
     private IEnumerator ReturnToPool(AudioSource source, float clipLength, string soundName)
@@ -140,7 +136,7 @@ public class AudioManager : MonoBehaviour
         active3DSounds.Remove(soundName);
     }
 
-    private void PlayStandard3DSound(Sound s, Vector3 position, string soundName)
+    private void PlayStandard3DSound(Sound s, AudioClip clipToPlay, Vector3 position, string soundName)
     {
         if (!s.allowOverlap && active3DSounds.Contains(soundName)) return;
         active3DSounds.Add(soundName);
@@ -150,7 +146,7 @@ public class AudioManager : MonoBehaviour
         AudioSource tempSource = tempGO.AddComponent<AudioSource>();
         
         // Copy settings from the chosen soundToPlay (variation or base)
-        tempSource.clip = s.clip;
+        tempSource.clip = clipToPlay;
         tempSource.outputAudioMixerGroup = s.audioMixerGroup;
         tempSource.volume = s.volume;
         tempSource.pitch = s.pitch;
@@ -160,7 +156,7 @@ public class AudioManager : MonoBehaviour
         tempSource.Play();
 
         // Cleanup
-        float clipLength = s.clip.length;
+        float clipLength = clipToPlay.length;
         Destroy(tempGO, clipLength);
         StartCoroutine(RemoveAfterDelay(s.name, clipLength));
     }

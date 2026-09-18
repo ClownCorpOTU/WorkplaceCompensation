@@ -60,7 +60,7 @@ public class EdgeDetection : ScriptableRendererFeature
     public class EdgeDetectionSettings
     {
         public RenderPassEvent renderPassEvent = RenderPassEvent.AfterRenderingTransparents;
-        [Range(0, 15)] public int outlineThickness = 3;
+        [Range(0, 5)] public float outlineThickness = 1;
         public Color outlineColor = Color.black;
         
         // Camera depth
@@ -101,7 +101,7 @@ public class EdgeDetection : ScriptableRendererFeature
         
         if (edgeDetectionMaterial == null)
         {
-            edgeDetectionMaterial = CoreUtils.CreateEngineMaterial(Shader.Find("Hidden/Edge Detection"));
+            edgeDetectionMaterial = CoreUtils.CreateEngineMaterial(Shader.Find("Outline/Edge Detection"));
             if (edgeDetectionMaterial == null)
             {
                 Debug.LogWarning("Not all required materials could be created. Edge Detection will not render.");

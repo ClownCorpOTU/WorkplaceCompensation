@@ -34,8 +34,12 @@ Material:
         m_Texture: {fileID: 2800000, guid: a7094d3f4d49d8f4ca68b765e3f1c424, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _NormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _RampTexture:
-        m_Texture: {fileID: 2800000, guid: a1a4108227a8a8b4f9067f80f37c33ec, type: 3}
+        m_Texture: {fileID: 2800000, guid: 36e6a342ab0eb1941b7887113ba930f4, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _SampleTexture2D_0926863c21ee40ab89edef43b294e8bb_Texture_1_Texture2D:
@@ -102,11 +106,12 @@ Material:
     - _LIGHTMAP_SHADOW_MIXING: 0
     - _LightPosterizationSteps: 4
     - _LitThreshold: 0.4
+    - _NormalStrength: 0
     - _PatternDensity: 13
     - _PatternDensityFar: 10
     - _QueueControl: 0
     - _QueueOffset: 0
-    - _RimLightPower: 10
+    - _RimLightPower: 5
     - _Rotation: 45
     - _Rotation2: -45
     - _SPECULAR: 1

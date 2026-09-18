@@ -20,7 +20,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     
     // Player number is networked so it can be synced across all clients
     [Networked, OnChangedRender(nameof(OnPlayerIdentityChanged))] public PlayerRef PlayerRefValue { get; set; }
-    [Networked, OnChangedRender(nameof(OnCustomizationChanged))] public PlayerCustomizationData CustomizationData { get; set; }
+    [Networked, OnChangedRender(nameof(OnPlayerCustomizationChanged))] public PlayerCustomizationData CustomizationData { get; set; }
+    [Networked, OnChangedRender(nameof(OnEquippedCustomizationChanged)), Capacity(3)] public NetworkArray<int> EquippedItemIDs { get; }
 
     [Header("References")] 
     [SerializeField] private Vector3 spawnPoint;
@@ -46,6 +47,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkPlayerRespawn playerRespawn;
     private NetworkPlayerCamera playerCamera;
     private NetworkPlayerGrab playerGrab;
+    private PlayerCustomizationVisuals playerCustomizationVisuals;
     
     // References
     private Rigidbody rb;
@@ -69,6 +71,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     private NetworkInputData networkInputData;
     private bool isReviveButtonPressed = false;
     private bool isGrabButtonPressed, isLeftGrabButtonPressed, isRightGrabButtonPressed, isLiftButtonPressed = false;
+    private bool isUseItemButtonPressed = false;
+    private byte localSelectedSlot = 0;
     
     // States
     private bool isGrabbingActive = false;
@@ -85,11 +89,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
     #endregion
     
     #region Setup
-    private void Awake()
-    {
-        //GetReferences();
-        //InitializeSubSystems();
-    }
 
     private void GetReferences()
     {
@@ -102,6 +101,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         audioManager = FindFirstObjectByType<AudioManager>();
         themeSong = FindFirstObjectByType<ThemeSong>();
         dissolvingController = GetComponent<DissolvingController>();
+        playerCustomizationVisuals = GetComponent<PlayerCustomizationVisuals>();
         
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>(); 
     }
@@ -163,8 +163,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         networkGameManager = FindFirstObjectByType<NetworkGameManager>();
         localPlayerUIManager = FindFirstObjectByType<LocalPlayerUIManager>();
         ragdollChanges = GetChangeDetector(ChangeDetector.Source.SimulationState);
-        transform.name = $"Player_{Object.Id}";
 
+        if (Object.HasStateAuthority)
+        {
+            if (!networkGameManager.NetworkPlayers.ContainsKey(Object.InputAuthority))
+                networkGameManager.NetworkPlayers.Add(Object.InputAuthority, this);
+        }
 
         if (Object.HasInputAuthority)
         {
@@ -195,11 +199,16 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             }
             
             // Load from PlayerPrefs and tell the host
-            string localName = PlayerPrefs.GetString("PlayerName", "JOHN");
-            string localHexColor = PlayerPrefs.GetString("PlayerColor", "#FFFFFF");
+            string localName = PlayerPrefs.GetString(Utils.GetKey("PlayerName"), "JOHN");
+            string localHexColor = PlayerPrefs.GetString(Utils.GetKey("PlayerColor"), "#FFFFFF");
             ColorUtility.TryParseHtmlString(localHexColor, out Color localColor);
             
             RPC_SetCustomization(localName, localColor);
+            transform.name = $"Player_{localName}";
+            
+            // Load our equipped items and tell the host
+            int[] mySavedItems = LocalPlayerInventoryManager.LoadInventory().EquippedItemIDs;
+            RPC_SyncEquippedItems(mySavedItems);
             
             // Enable InputReader for local player
             if (inputReader != null) inputReader.enabled = true;
@@ -214,7 +223,8 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             if (staminaBarParentObj != null) staminaBarParentObj.SetActive(false);
         }
         
-        OnCustomizationChanged();
+        OnPlayerCustomizationChanged();
+        OnEquippedCustomizationChanged();
     }
 
     public void AssignPlayerIdentity(PlayerRef playerRef)
@@ -224,7 +234,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     private void OnPlayerIdentityChanged()
     {
-        OnCustomizationChanged();
+        OnPlayerCustomizationChanged();
     }
     
     private void UpdatePlayerNumberUI()
@@ -252,7 +262,7 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
-    private void OnCustomizationChanged()
+    private void OnPlayerCustomizationChanged()
     {
         if (playerNumberText == null) return;
 
@@ -267,9 +277,22 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         bodyMeshRenderer.material.SetColor("_RimLightColor", rimColor);
     }
 
+    private void OnEquippedCustomizationChanged()
+    {
+        if (playerCustomizationVisuals == null) return;
+        
+        // Copy the networked array into a standard C# array
+        int[] ids = new int[3];
+        for (int i = 0; i < 3; i++)
+            ids[i] = EquippedItemIDs[i];
+        
+        // Update the visuals
+        playerCustomizationVisuals.UpdateVisuals(ids);
+    }
+
     public void RemovePlayerInputAuthority()
     {
-        Object.RemoveInputAuthority();
+        Local.Object.RemoveInputAuthority();
     }
     
     #endregion
@@ -293,6 +316,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             isLeftGrabButtonPressed = inputReader.IsLeftGrabButtonPressed;
             isRightGrabButtonPressed = inputReader.IsRightGrabButtonPressed;
             isLiftButtonPressed = inputReader.IsLiftButtonPressed;
+            isUseItemButtonPressed = isUseItemButtonPressed || inputReader.IsUseItemPressed;
+            
+            if (inputReader.IsSelectItem1Pressed) localSelectedSlot = 0;
+            else if (inputReader.IsSelectItem2Pressed) localSelectedSlot = 1;
+            else if (inputReader.IsSelectItem3Pressed) localSelectedSlot = 2;
+            else if (inputReader.IsSelectItem4Pressed) localSelectedSlot = 3;
         }
         else
         {
@@ -304,13 +333,17 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
             isLeftGrabButtonPressed = false;
             isRightGrabButtonPressed = false;
             isLiftButtonPressed = false;
+            isUseItemButtonPressed = false;
         }
     }
 
     public override void FixedUpdateNetwork()
     {
         float localForwardVelocity = 0f;
-        GetInput(out networkInputData);
+
+        // Check if input was sucessfully retrieved this tick
+        if (GetInput(out NetworkInputData currentInput))
+            networkInputData = currentInput;
 
         // Set local flags based on network input
         isGrabbingActive = networkInputData.IsGrabPressed;
@@ -418,9 +451,6 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             if (string.IsNullOrEmpty(newName)) 
                 newName = "JOHN";
-
-            if (newName.Length > 4) 
-                newName = newName.Substring(0, 4);
             
             CustomizationData = new PlayerCustomizationData()
             {
@@ -432,6 +462,15 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         {
             // If ANYTHING goes wrong, it prints the exact reason instead of crashing!
             Debug.LogError("Error in Customization RPC: " + e.Message);
+        }
+    }
+
+    [Rpc(RpcSources.InputAuthority, RpcTargets.StateAuthority)]
+    public void RPC_SyncEquippedItems(int[] myEquippedItems)
+    {
+        for (int i = 0; i < myEquippedItems.Length; i++)
+        {
+            EquippedItemIDs.Set(i, myEquippedItems[i]);
         }
     }
 
@@ -454,6 +493,12 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
 
     public override void Despawned(NetworkRunner runner, bool hasState)
     {
+        if (Object.HasStateAuthority && networkGameManager != null)
+        {
+            networkGameManager.NetworkPlayers.Remove(Object.InputAuthority);
+        }
+
+        
         if (Object.HasInputAuthority)
         {
             // Unsubscribe from the pause function
@@ -479,9 +524,14 @@ public partial class NetworkPlayer : NetworkBehaviour, IPlayerLeft
         if (isRightGrabButtonPressed) data.IsRightGrabPressed = true;
         if (isLiftButtonPressed) data.IsLiftPressed = true;
         
+        if (isUseItemButtonPressed) data.IsUseItemPressed = true;
+        data.SelectedSlotIndex = localSelectedSlot;
+
+        
         // Clear local flags since they've been sent to the host (We don't need to reset our grab buttons as they are a continuous press)
         isJumpButtonPressed = false;
-        isReviveButtonPressed = false;
+        //isReviveButtonPressed = false; // Not sure if this should be cleared anymore since I switched it to a hold
+        isUseItemButtonPressed = false;
         
         // Compute camera-relative world direction only on the local client (passing data by ref since struct value is changed)
         playerCamera.ComputeCameraRelativeWorldDirection(Object.HasInputAuthority, ref data);
