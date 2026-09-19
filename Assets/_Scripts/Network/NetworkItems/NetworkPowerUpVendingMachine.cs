@@ -6,6 +6,7 @@ public class NetworkPowerUpVendingMachine : NetworkBehaviour
     [SerializeField] private GameObject[] pickupPrefabs;
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private float spawnCooldown = 60f;
+    [SerializeField] private FillVisualizer fillVisualizer;
     
     [Networked] private TickTimer spawnTimer { get; set; }
 
@@ -42,6 +43,24 @@ public class NetworkPowerUpVendingMachine : NetworkBehaviour
             RPC_Play("VendingMachinePowerUpSpawn",  spawnPoint.position);
             
             spawnTimer = TickTimer.CreateFromSeconds(Runner, spawnCooldown);
+        }
+    }
+    
+    public override void Render()
+    {
+        if (fillVisualizer == null) return;
+
+        float? remainingTime = spawnTimer.RemainingTime(Runner);
+        if (remainingTime.HasValue)
+        {
+            // 0 at the start of the cooldown, approaches 1 as it gets closer to spawning
+            float percentComplete = 1f - (remainingTime.Value / spawnCooldown);
+            fillVisualizer.UpdateVisuals(percentComplete);
+        }
+        else
+        {
+            // If the timer is expired/inactive, reset it to empty
+            fillVisualizer.UpdateVisuals(0f);
         }
     }
     

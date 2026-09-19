@@ -138,7 +138,7 @@ public class NetworkPlayerGrab : MonoBehaviour
         }
         
         // Gameplay tutorial step for grabbing vials for the first time
-        if (!hasGrabbedVialBefore && closestRb.TryGetComponent(out Vial vial) && vial.Type == VialType.OutputVial)
+        if (!hasGrabbedVialBefore && closestRb.TryGetComponent(out Vial vial) && vial.Type == ObjectType.OutputVial)
         {
             networkPlayer.RPC_TriggerTutorialEvent(networkPlayer.PlayerRefValue, (int)GameEvent.VialsGrabbed);
             hasGrabbedVialBefore = true;
