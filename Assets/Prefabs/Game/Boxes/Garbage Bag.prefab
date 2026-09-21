@@ -91,6 +91,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 417955166fc3f5040becec3d0c533fd3, type: 3}
       insertIndex: -1
       addedObject: {fileID: 3228029269942770234}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 417955166fc3f5040becec3d0c533fd3, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6690413309357289700}
   m_SourcePrefab: {fileID: 100100000, guid: 417955166fc3f5040becec3d0c533fd3, type: 3}
 --- !u!1 &7547462096640612144 stripped
 GameObject:
@@ -166,6 +169,7 @@ MonoBehaviour:
   NetworkedBehaviours:
   - {fileID: 2046165319045015952}
   - {fileID: 9017009847148644083}
+  - {fileID: 6690413309357289700}
   ForceRemoteRenderTimeframe: 0
 --- !u!114 &9017009847148644083
 MonoBehaviour:
@@ -201,3 +205,15 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.33792454
   m_Center: {x: -0.0008817613, y: 0.00026285645, z: 0.3210443}
+--- !u!114 &6690413309357289700
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7547462096640612144}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 78962b515ffa69d4caff867690227f07, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GrabbedByTracker

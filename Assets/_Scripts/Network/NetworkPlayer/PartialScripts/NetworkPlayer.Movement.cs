@@ -8,28 +8,87 @@ public partial class NetworkPlayer
     [SerializeField] private float acceleration = 30f;
     [SerializeField] private float rotationAngle = 300f;
     [SerializeField] private float jumpForce = 20f;
-    
+    [SerializeField] private float jumpHeight = 1.5f;
+    [SerializeField] private float jumpCooldownAmount = 0.4f;
+    [SerializeField] private float jumpStaminaReduction = 3f;
+    [SerializeField, Range(0, 1)] private float jumpStaminaDecreaseMultiplierWhileHolding = 0.6f; 
+
+    [Header("Audio Settings")] 
+    [SerializeField] private float footstepInterval = 0.2f;
+
     private Vector2 moveInputVector = Vector2.zero;
-    public Vector2 MoveInputVector => moveInputVector;
     private bool isJumpButtonPressed = false;
-    private TickTimer jumpBuffer;
+    private bool hasMovedBefore;
+
+    private float footstepTimer;
     
+    [Networked] private float currentSpeedMultiplier { get; set; }
     
-    private void HandleMovement(float localForwardVelocity)
+    [Networked] private TickTimer jumpCooldown { get; set; }
+    [Networked] private TickTimer speedBoostCountdown { get; set; }
+    [Networked, OnChangedRender(nameof(OnJumpTriggered))] private int jumpCount { get; set; }
+    
+
+    public void ApplySpeedBoostEffect(float boost, float duration)
     {
+        if (Object.HasStateAuthority)
+        {
+            if (currentSpeedMultiplier == 0f) currentSpeedMultiplier = 1f;
+            
+            // Add extra speed on top of whatever player already has
+            // (boost - 1f) turns a 1.5x boost into a flat +0.5 addition
+            currentSpeedMultiplier += (boost - 1f);
+            speedBoostCountdown = TickTimer.CreateFromSeconds(Runner, duration);
+        }
+    }
+    
+    private void HandleMovement()
+    {
+        if (currentSpeedMultiplier == 0f) currentSpeedMultiplier = 1f; // At spawn it's set to 0, but we want to move
+
+        if (speedBoostCountdown.Expired(Runner))
+        {
+            currentSpeedMultiplier = 1f;
+            speedBoostCountdown = TickTimer.None;
+        }
+        
         float inputMagnitude = networkInputData.RawInput.magnitude;
         Vector3 moveDir = networkInputData.MoveDirection;
+        
+        float actualMaxSpeed = maxSpeed * currentSpeedMultiplier;
+        float actualAcceleration = acceleration * currentSpeedMultiplier;
 
         if (moveDir.sqrMagnitude > 0.001f)
         {
             ApplyRotation(moveDir);
             
             // Apply movement (host handles physics)
-            if (localForwardVelocity < maxSpeed)
+            if (NetworkedMovementSpeed < actualMaxSpeed)
             {
-                rb.AddForce(moveDir * (inputMagnitude * acceleration), ForceMode.Acceleration);
-                audioManager.Play("Walk");
+                rb.AddForce(moveDir * (inputMagnitude * actualAcceleration), ForceMode.Acceleration);
+                if (!hasMovedBefore && Object.HasInputAuthority)
+                {
+                    GameEventManager.TriggerEvent(GameEvent.PlayerMoved);
+                    hasMovedBefore = true;
+                }
+
+                if (IsGrounded)
+                {
+                    //RPC_Play("Walk", transform.position);
+
+                    footstepTimer -= Runner.DeltaTime;
+
+                    if (footstepTimer <= 0f)
+                    {
+                        RPC_PlayWalkSound("Walk", transform.position);
+                        footstepTimer = footstepInterval;
+                    }
+                }
             }
+        }
+        else
+        {
+            footstepTimer = 0f;
         }
         
         HandleJump();
@@ -50,16 +109,51 @@ public partial class NetworkPlayer
 
     private void HandleJump()
     {
-        if (networkInputData.IsJumpPressed)
-            jumpBuffer = TickTimer.CreateFromSeconds(Runner, 0.15f); // 150ms coyote time
+        if (!Object.HasStateAuthority) return;
 
-        if (isGrounded && jumpBuffer.IsRunning)
+        if (networkInputData.IsJumpPressed && IsGrounded && jumpCooldown.ExpiredOrNotRunning(Runner))
         {
-            jumpBuffer = TickTimer.None;
-            
-            animatedModel.Play("Isis_Jump");
-            Vector3 launchDir = (networkInputData.MoveDirection + Vector3.up).normalized;
-            rb.AddForce(launchDir * jumpForce, ForceMode.Impulse);
+            if (CurrentStamina >= 3f) ExecuteJump();
         }
+    }
+
+    private void ExecuteJump()
+    {
+        var staminaToReduce = 0f;
+        if (IsLeftHandGrabbingActive || IsRightHandGrabbingActive || IsGrabbingActive)
+            staminaToReduce = jumpStaminaReduction * jumpStaminaDecreaseMultiplierWhileHolding;
+        else
+            staminaToReduce = jumpStaminaReduction;
+        
+        CurrentStamina -= staminaToReduce;
+        
+        jumpCooldown = TickTimer.CreateFromSeconds(Runner, jumpCooldownAmount);
+        jumpCount++;
+
+        Vector3 jumpDir = (networkInputData.MoveDirection + Vector3.up).normalized;
+        rb.AddForce(jumpDir * jumpForce, ForceMode.Impulse);
+
+        IsGrounded = false;
+        lastActivityTime = Runner.SimulationTime;
+    }
+
+    private void OnJumpTriggered()
+    {
+        audioManager.Play("Jump", transform.position);
+    }
+    
+    [Rpc(RpcSources.All, RpcTargets.StateAuthority, TickAligned = false)]
+    private void RPC_PlayWalkSound(string audioName, Vector3 position)
+    {
+        if (Object.HasStateAuthority)
+            if (audioManager != null) audioManager.Play(audioName, position);
+        else
+            RPC_Play("Walk", transform.position);
+    }
+    
+    [Rpc(RpcSources.StateAuthority, RpcTargets.All, TickAligned = false)]
+    private void RPC_Play(string audioName, Vector3 position)
+    {
+        if (audioManager != null) audioManager.Play(audioName, position);
     }
 }

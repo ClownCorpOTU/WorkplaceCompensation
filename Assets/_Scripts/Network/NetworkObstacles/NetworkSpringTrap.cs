@@ -12,10 +12,13 @@ public class NetworkSpringTrap : NetworkBehaviour
     private Vector3 ogPos;
     private Vector3 ogRot;
     private TickTimer resetDelay;
+    private AudioManager audioManager;
 
     private void Start()
     {
         rb = GetComponent<Rigidbody>();
+        audioManager = FindFirstObjectByType<AudioManager>();
+        
         ogPos = transform.position;
         ogRot = transform.eulerAngles;
     }
@@ -30,7 +33,10 @@ public class NetworkSpringTrap : NetworkBehaviour
             otherRB.AddForce(launchDirection * launchForce, ForceMode.Impulse);
 
         // Small bounce for trap
-        rb.AddForce(launchDirection * 25f, ForceMode.Impulse);
+        rb.AddForce(launchDirection * 15f, ForceMode.Impulse);
+        
+        // Play sound
+        audioManager.Play("SpringTrap", transform.position);
 
         // Begin reset countdown
         resetDelay = TickTimer.CreateFromSeconds(Runner, resetDelaySeconds);

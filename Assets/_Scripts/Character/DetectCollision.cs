@@ -23,6 +23,7 @@ public class DetectCollision : MonoBehaviour
     {
         if (!networkPlayer.HasStateAuthority) return;
         if (!networkPlayer.IsActiveRagdoll) return;
+        
         if (!collision.gameObject.CompareTag("CauseDamage")) return;
         if (collision.collider.transform.root == networkPlayer.transform) return;
         

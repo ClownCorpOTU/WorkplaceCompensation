@@ -47,6 +47,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameRuntime: 5
   timerText: {fileID: 0}
+  timerClockFill: {fileID: 0}
+  timerClockHand: {fileID: 0}
+  gameOverPanel: {fileID: 0}
+  ScoreText: {fileID: 0}
+  leaderboardText: {fileID: 0}
+  finalScoreText: {fileID: 0}
+  rankNumberText: {fileID: 0}
+  localRankMedalImage: {fileID: 0}
+  firstPlaceSprite: {fileID: 21300000, guid: f7116cead84e6e5428863755264c5a69, type: 3}
+  secondPlaceSprite: {fileID: 21300000, guid: 25a83087ff99b0145895aac6dce475e7, type: 3}
+  thirdPlaceSprite: {fileID: 21300000, guid: c2995a839c10d83449e6de02b9c23752, type: 3}
+  noPlaceSprite: {fileID: 21300000, guid: e329a867c56ce5c42ba3f14a7f00fdcf, type: 3}
 --- !u!114 &7473883243006559284
 MonoBehaviour:
   m_ObjectHideFlags: 0

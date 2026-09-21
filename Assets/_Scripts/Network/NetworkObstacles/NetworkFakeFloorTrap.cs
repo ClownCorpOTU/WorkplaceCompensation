@@ -11,7 +11,7 @@ public class NetworkFakeFloorTrap : NetworkBehaviour, ITriggerReceiver
     private float targetY;
 
     
-    public void OnChildTriggerEnter(Collider other)
+    public void OnChildTriggerEnter(Collider other, TriggerType tType=TriggerType.Left)
     {
         if (other.CompareTag("Player")) hasBeenTriggered = true;
     }
@@ -29,7 +29,7 @@ public class NetworkFakeFloorTrap : NetworkBehaviour, ITriggerReceiver
         acidRB.MovePosition(worldTarget);
     }
 
-    public void OnChildTriggerExit(Collider other)
+    public void OnChildTriggerExit(Collider other, TriggerType tType=TriggerType.Left)
     {
         // Do nothing
     }
