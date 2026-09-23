@@ -2442,6 +2442,7 @@ GameObject:
   - component: {fileID: 742374250}
   - component: {fileID: 742374249}
   - component: {fileID: 742374251}
+  - component: {fileID: 742374252}
   m_Layer: 0
   m_Name: MainMenuManager
   m_TagString: Untagged
@@ -2461,6 +2462,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a035b7f40ffd5b042895ce80e910bd07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::MainMenuManager
+  lobbyManager: {fileID: 0}
   gameplayScene: Test_MarsCanyon
   lobbyScene: Lobby
   mainMenu: {fileID: 134563595}
@@ -2497,6 +2499,26 @@ MonoBehaviour:
   lobbyMenuManager: {fileID: 0}
   lobbyMenuBuildIndex: -2147483648
   mainMenuBuildIndex: -2147483648
+--- !u!114 &742374252
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742374248}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 027912b336e24154ca0e4dad6f56d645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LobbyRoomManager
+  networkRunnerHandler: {fileID: 0}
+  steamManager: {fileID: 0}
+  tutorialServerName: Server_Tutorial_Lobby_List
+  tutorialLobbyName: 
+  tutorialSceneName: Test_MarsCanyon
+  tutorialMaxPlayerCap: 16
+  serverName: Server_Testing_Lobby_List
+  lobbyMaxPlayerCap: 16
 --- !u!1 &792910073
 GameObject:
   m_ObjectHideFlags: 0
@@ -3979,7 +4001,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 742374249}
         m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: PlayLevel
+        m_MethodName: OnPlayLevel
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -5902,7 +5924,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 742374249}
         m_TargetAssemblyTypeName: MainMenuManager, Assembly-CSharp
-        m_MethodName: PlayLevel
+        m_MethodName: OnPlayLevel
         m_Mode: 5
         m_Arguments:
           m_ObjectArgument: {fileID: 0}

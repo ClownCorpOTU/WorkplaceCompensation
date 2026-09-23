@@ -49,20 +49,19 @@ public class NetworkRunnerHandler : MonoBehaviour
 
     private void Start()
     {
-        if (!doStartSessionOnScenePlay)
+        if (doStartSessionOnScenePlay)
         {
             OnJoinLobbyList(MainLobbyListName);
-            return;
         }
 
-        if (networkRunner != null && networkRunner.IsRunning || networkRunner.IsCloudReady)
+        if (networkRunner == null && !networkRunner.IsRunning || !networkRunner.IsCloudReady)
         {
             return;
         }
 
         string sessionName = $"DirectLoad{SceneManager.GetActiveScene().name}";
 
-        if (SceneManager.GetActiveScene().name != "MainMenu")
+        if (!SceneManager.GetActiveScene().name.Contains("MainMenu"))
         {
             GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
 
@@ -166,7 +165,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             else if (networkRunner.IsRunning || networkRunner.IsCloudReady)
             {
                 UnityEngine.Debug.LogWarning("Runner is already busy. Ignoring JoinLobby request.");
-            return;
+                return;
             }
         }
         else
@@ -181,7 +180,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     /// <summary>
     /// Task to create the lobby list and/or join it.
     /// </summary>
-    /// <param name="lobbyListID">TThe name of the lobby list you want to join (EU, NA, SEA, etc.)</param>
+    /// <param name="lobbyListID">The name of the lobby list you want to join (EU, NA, SEA, etc.)</param>
     /// <returns></returns>
     private async Task JoinLobby(string lobbyListID)
     {
@@ -238,9 +237,9 @@ public class NetworkRunnerHandler : MonoBehaviour
     /// <param name="sessionName">Name of the lobby.</param>
     /// <param name="lobbyCap">Max number of players allowed in.</param>
     /// <param name="scenePath">Path to the map scene.</param>
-    public async void CreateGame(string sessionName, int lobbyCap, string scenePath)
+    public async void CreateGame(string sessionName, int lobbyCap, int levelIndex)
     {
-        int buildIndex = SceneUtility.GetBuildIndexByScenePath(scenePath);
+        int buildIndex = levelIndex;//SceneUtility.GetBuildIndexByScenePath(SceneManager.GetSceneByName(levelName).path);
 
         if (buildIndex == -1) 
         {

@@ -127,7 +127,7 @@ public class LobbyMenuManager : MonoBehaviour
 
         string lobbyName = lobbyNameInput.text;
         
-        networkRunnerHandler.CreateGame(lobbyName, maxLobbySize, SelectMap());
+        //networkRunnerHandler.CreateGame(lobbyName, maxLobbySize, SceneManager.GetSceneByName(SelectMap()));
 
         newLobbyPopUp.SetActive(false); // Hide Popup.
     }

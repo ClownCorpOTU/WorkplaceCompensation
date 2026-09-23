@@ -105,7 +105,7 @@ public class TutorialManager : MonoBehaviour
 
             if (mapScenePath != "" && mapScenePath.Contains(chosenLevel))
             {
-                networkRunnerHandler.CreateGame(chosenLevel, 8, mapScenePath);
+                //networkRunnerHandler.CreateGame(chosenLevel, 8,  SceneManager.GetSceneByName(mapScenePath));
                 return;
             }
             

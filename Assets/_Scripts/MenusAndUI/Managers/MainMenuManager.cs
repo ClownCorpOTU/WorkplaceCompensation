@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 
 public class MainMenuManager : MonoBehaviour
 {
+    [SerializeField] LobbyRoomManager lobbyManager;
     [SerializeField] string gameplayScene = "FallExpo_FinalReview";
     [SerializeField] string lobbyScene = "Lobby";
 
@@ -10,14 +11,22 @@ public class MainMenuManager : MonoBehaviour
     [SerializeField] private GameObject tutorialMenu; 
     
 
-    public void JustPlay()
+    public void Awake()
     {
-        SceneManager.LoadScene(gameplayScene);
+        if (lobbyManager == null)
+        {
+            lobbyManager = FindFirstObjectByType<LobbyRoomManager>();
+        }
     }
 
-    public void PlayLevel(string levelName)
+    public void OnPlayClicked()
     {
-        SceneManager.LoadScene(levelName);
+        lobbyManager.CreateTutorialRoom();
+    }
+
+    public void OnPlayLevel(string levelName)
+    {
+        lobbyManager.CreateNewRoom(levelName);
     }
 
     public void ShowTutorialMenu(string levelName)
