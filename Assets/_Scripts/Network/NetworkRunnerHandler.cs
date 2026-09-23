@@ -81,7 +81,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     }
 
     protected virtual async Task InitializeNetworkRunner(GameMode gameMode, string sessionName, int lobbyCap,
-        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, int codeLen = 6)
+        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, int codeLen = 6, string ownerName = "Player 1")
     {
         NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
 
@@ -136,7 +136,8 @@ public class NetworkRunnerHandler : MonoBehaviour
             SessionProperties = new Dictionary<string, SessionProperty>()
             {
                 {"DisplayName", sessionName},
-                {"JoinCode", joinCode}
+                {"JoinCode", joinCode},
+                {"Owner", ownerName}
             }
         });
     }
