@@ -26,6 +26,10 @@ public class LobbyRoomManager : MonoBehaviour
     [SerializeField] public string serverName {get; private set;} = "Server_Testing_Lobby_List";
     [SerializeField] int lobbyMaxPlayerCap = 16;
 
+    [Header("Matchmaking Settings")]
+    [Tooltip("If true, clicking a map will attempt to join an existing lobby for that map instead of creating a new one.")]
+    [SerializeField] bool autoJoinExistingMapLobby = true;
+
     public void Awake()
     {
         if (networkRunnerHandler == null)
@@ -61,26 +65,28 @@ public class LobbyRoomManager : MonoBehaviour
     /// <param name="levelName">Name of the scene.</param>
     public void CreateNewRoom(string levelName)
     {
+        if (autoJoinExistingMapLobby && networkRunnerHandler.sessionList != null)
+        {
+            foreach (var session in networkRunnerHandler.sessionList)
+            {
+                // 2. Ensure the room is open and not full
+                if (session.IsOpen && session.PlayerCount < session.MaxPlayers)
+                {
+                    // 3. Check if the map name matches the button clicked
+                    if (session.Properties.TryGetValue("MapName", out var sessionMapName) && (string)sessionMapName == levelName)
+                    {
+                        Debug.Log($"Found existing room for {levelName}. Joining as client.");
+                        networkRunnerHandler.JoinGame(session);
+                        return; // Exit the method early so we don't host a new room
+                    }
+                }
+            }
+        }
+
         networkRunnerHandler.OnJoinLobbyList(serverName);
 
         string lobbyName = $"Test_{levelName}";
-
-        networkRunnerHandler.CreateGame(lobbyName, lobbyMaxPlayerCap, GetBuildIndexByName(levelName), levelName);
-    }
-
-    public void JoinSelectedRoom()
-    {
-        
-    }
-
-    public void JoinRoomByCode(string code)
-    {
-        
-    }
-
-    public void DeleteSelectedRoom()
-    {
-        
+        networkRunnerHandler.CreateGame(lobbyName, lobbyMaxPlayerCap, GetBuildIndexByName(levelName), levelName, serverName);
     }
 
     // HELPERS

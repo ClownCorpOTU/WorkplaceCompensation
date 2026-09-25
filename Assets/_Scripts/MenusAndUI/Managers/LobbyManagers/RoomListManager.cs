@@ -58,6 +58,11 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
         {
             _networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
         }
+
+        if (_networkRunner == null)
+        {
+            _networkRunner = FindFirstObjectByType<NetworkRunner>();
+        }
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -89,25 +94,28 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
 
         joinCodeInput.onSubmit.AddListener(AsyncJoinRoomByCode);
 
-         _networkRunnerHandler.OnJoinLobbyList(_lobbyRoomManager.serverName);
-
         ConnectToLobbyList();
     }
 
     private async void ConnectToLobbyList()
     {
-        if (_networkRunner == null)
+        if (_networkRunnerHandler != null)
         {
-            _networkRunner = FindFirstObjectByType<NetworkRunner>();
-        }
+            _networkRunnerHandler.OnJoinLobbyList(_lobbyRoomManager.serverName);
 
-         _networkRunner.AddCallbacks(this);
+            if (_networkRunner == null)
+            {
+                _networkRunner = FindFirstObjectByType<NetworkRunner>();
+            }
 
-         var result = await _networkRunner.JoinSessionLobby(SessionLobby.ClientServer, "Server_Testing_Lobby_List");
+            _networkRunner.AddCallbacks(this);
 
-         if (!result.Ok)
-        {
-            Debug.LogError($"Failed to join lobby listing: {result.ErrorMessage}");
+            var result = await _networkRunner.JoinSessionLobby(SessionLobby.ClientServer, "Server_Testing_Lobby_List");
+
+            if (!result.Ok)
+            {
+                Debug.LogError($"Failed to join lobby listing: {result.ErrorMessage}");
+            }
         }
     }
 
@@ -124,6 +132,8 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void RefreshLobbyListing()
     {
+        Debug.Log("Refreshing List...");
+
         _selectedRoomInfo = null;
         joinButton.interactable = false;
 

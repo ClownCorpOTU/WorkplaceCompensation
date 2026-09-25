@@ -54,19 +54,20 @@ public class NetworkRunnerHandler : MonoBehaviour
             OnJoinLobbyList(MainLobbyListName);
         }
 
-        if (networkRunner == null && !networkRunner.IsRunning || !networkRunner.IsCloudReady)
+        if (networkRunner == null && (!networkRunner.IsRunning || !networkRunner.IsCloudReady))
         {
             return;
         }
 
         string sessionName = $"DirectLoad{SceneManager.GetActiveScene().name}";
+        Scene currentScene = SceneManager.GetActiveScene();
 
-        if (!SceneManager.GetActiveScene().name.Contains("MainMenu"))
+        if (!currentScene.name.Contains("MainMenu") && !currentScene.name.Contains("Test"))
         {
             GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
 
             var clientTask = InitializeNetworkRunner(mode, sessionName, defaultSessionPlayerCap, 
-                NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null, SceneManager.GetActiveScene().name);
+                NetAddress.Any(), SceneRef.FromIndex(currentScene.buildIndex), null, currentScene.name);
         }
     }
 
@@ -81,7 +82,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     }
 
     protected virtual async Task InitializeNetworkRunner(GameMode gameMode, string sessionName, int lobbyCap,
-        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, string mapName, bool isTutorial = false, int codeLen = 6)
+        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, string mapName, string customLobbyName = "", bool isTutorial = false, int codeLen = 6)
     {
         NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
 
@@ -122,13 +123,15 @@ public class NetworkRunnerHandler : MonoBehaviour
             uniqueName = sessionName;
         }
 
+        string lobbyToJoin = string.IsNullOrEmpty(customLobbyName) ? MainLobbyListName : customLobbyName;
+
         var result = await networkRunner.StartGame(new StartGameArgs()
         {
             GameMode = gameMode,
             Address = address,
             Scene = scene,
             SessionName = uniqueName,
-            CustomLobbyName = MainLobbyListName,
+            CustomLobbyName = lobbyToJoin,
             SceneManager = sceneManager,
             PlayerCount = lobbyCap,
             IsOpen = true,
@@ -240,7 +243,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     /// <param name="sessionName">Name of the lobby.</param>
     /// <param name="lobbyCap">Max number of players allowed in.</param>
     /// <param name="scenePath">Path to the map scene.</param>
-    public async void CreateGame(string sessionName, int lobbyCap, int levelIndex, string mapName)
+    public async void CreateGame(string sessionName, int lobbyCap, int levelIndex, string mapName, string customLobbyName = "")
     {
         int buildIndex = levelIndex;//SceneUtility.GetBuildIndexByScenePath(SceneManager.GetSceneByName(levelName).path);
 
@@ -251,7 +254,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
 
         await InitializeNetworkRunner(GameMode.Host, sessionName, lobbyCap,
-            NetAddress.Any(), SceneRef.FromIndex(buildIndex), null, mapName);
+            NetAddress.Any(), SceneRef.FromIndex(buildIndex), null, mapName, customLobbyName);
     }
 
     public async void RefreshLobbyList()

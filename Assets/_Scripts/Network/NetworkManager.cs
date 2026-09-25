@@ -15,30 +15,13 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     [Header("Lobbies")]
     [SerializeField] private NetworkRunnerHandler networkRunnerHandler;
-    [SerializeField] private LobbyMenuManager lobbyMenuManager;
-    [SerializeField] private int lobbyMenuBuildIndex = int.MinValue;
-    [SerializeField] private int mainMenuBuildIndex = int.MinValue;
+    [SerializeField] private int mainMenuBuildIndex = 0;
 
     void Awake()
     {
         if (networkRunnerHandler == null)
         {
             networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
-        }
-
-        if (lobbyMenuBuildIndex == int.MinValue)
-        {
-            lobbyMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/Lobby.unity");
-        }
-
-        if (mainMenuBuildIndex == int.MinValue)
-        {
-            mainMenuBuildIndex = SceneUtility.GetBuildIndexByScenePath("Assets/_Scenes/Menus/MainMenu.unity");
-        }
-
-        if (lobbyMenuManager == null && SceneManager.GetActiveScene().buildIndex == lobbyMenuBuildIndex)
-        {
-            lobbyMenuManager = FindAnyObjectByType<LobbyMenuManager>();
         }
     }
 
@@ -135,10 +118,7 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
     public void OnSceneLoadStart(NetworkRunner runner)
     {
-        if (lobbyMenuManager != null)
-        {
-            lobbyMenuManager.gameObject.SetActive(false);
-        }
+        // Empty Callback
     }
     public void OnShutdown(NetworkRunner runner, ShutdownReason shutdownReason)
     {
@@ -164,12 +144,6 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         
-
-        Destroy(runner.gameObject);
-        // if (SceneManager.GetActiveScene().name != "Lobby")
-        // {
-        //     SceneManager.LoadScene(lobbyMenuBuildIndex);
-        // }
         if (SceneManager.GetActiveScene().buildIndex != mainMenuBuildIndex)
         {
             SceneManager.LoadScene(mainMenuBuildIndex);
@@ -181,6 +155,8 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
                 networkRunnerHandler.OnJoinLobbyList(networkRunnerHandler.MainLobbyListName);
             }
         }
+
+        Destroy(runner.gameObject);
     }
 
     public void OnUserSimulationMessage(NetworkRunner runner, SimulationMessagePtr message)
@@ -194,14 +170,5 @@ public class NetworkManager : MonoBehaviour, INetworkRunnerCallbacks
 
         Debug.Log("Session list (NetworkManager) updated: " + sessionList.Count);
 
-        //lobbyMenuManager.ClearLobbyDisplay();
-
-        // if (sessionList.Count != 0)
-        // {
-        //     foreach (SessionInfo session in sessionList)
-        //     {
-        //         lobbyMenuManager.CreateEntry(session);
-        //     }
-        // }
     }
 }

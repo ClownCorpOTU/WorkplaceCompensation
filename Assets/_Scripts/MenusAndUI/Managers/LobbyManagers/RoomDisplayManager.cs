@@ -35,14 +35,7 @@ public class RoomDisplayManager : MonoBehaviour
             mapNameTMPText = GameObject.Find("LevelNameText").GetComponent<TMP_Text>();
         }
     }
-
-    void Start()
-    {
-        roomNameTMPText.text = "";
-        playerCountTMPText.text = "0/0";
-        mapNameTMPText.text = "";
-    }
-
+    
     public void UpdateRoomInfo(SessionInfo roomInfo, RoomListManager lobbyUIManager)
     {
         _roomInfo = roomInfo;
