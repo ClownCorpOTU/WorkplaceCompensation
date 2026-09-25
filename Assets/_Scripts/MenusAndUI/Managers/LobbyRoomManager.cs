@@ -7,11 +7,14 @@ using System.Threading.Tasks;
 using Steamworks;
 using System.Linq.Expressions;
 
+/// <summary>
+/// Handles the communication between the UI of menus and the creation of lobbies/rooms.
+/// </summary>
 public class LobbyRoomManager : MonoBehaviour 
 {
     [Header("Managers")]
     [SerializeField] NetworkRunnerHandler networkRunnerHandler;
-    [SerializeField] SteamManager steamManager;
+    //[SerializeField] SteamManager steamManager;
 
     [Header("Tutorial Lobbies")]
     [SerializeField] string tutorialServerName = "Server_Tutorial_Lobby_List";
@@ -20,7 +23,7 @@ public class LobbyRoomManager : MonoBehaviour
     [SerializeField] int tutorialMaxPlayerCap = 16;
 
     [Header("General Lobby")]
-    [SerializeField] string serverName = "Server_Testing_Lobby_List";
+    [SerializeField] public string serverName {get; private set;} = "Server_Testing_Lobby_List";
     [SerializeField] int lobbyMaxPlayerCap = 16;
 
     public void Awake()
@@ -30,10 +33,10 @@ public class LobbyRoomManager : MonoBehaviour
             networkRunnerHandler = FindFirstObjectByType<NetworkRunnerHandler>();
         }
 
-        if (steamManager == null)
-        {
-            steamManager = FindFirstObjectByType<SteamManager>();
-        }
+        // if (steamManager == null)
+        // {
+        //     steamManager = FindFirstObjectByType<SteamManager>();
+        // }
     }
 
     /// <summary>
@@ -49,7 +52,7 @@ public class LobbyRoomManager : MonoBehaviour
         {
             tutorialSceneName = "Test_MarsCanyon";
         }
-        //networkRunnerHandler.CreateGame(tutorialLobbyName, tutorialMaxPlayerCap, SceneManager.GetSceneByName(tutorialSceneName));
+        //networkRunnerHandler.CreateGame(tutorialLobbyName, tutorialMaxPlayerCap, SceneManager.GetSceneByName(tutorialSceneName), true);
     }
 
     /// <summary>
@@ -62,7 +65,7 @@ public class LobbyRoomManager : MonoBehaviour
 
         string lobbyName = $"Test_{levelName}";
 
-        networkRunnerHandler.CreateGame(lobbyName, lobbyMaxPlayerCap, GetBuildIndexByName(levelName));
+        networkRunnerHandler.CreateGame(lobbyName, lobbyMaxPlayerCap, GetBuildIndexByName(levelName), levelName);
     }
 
     public void JoinSelectedRoom()

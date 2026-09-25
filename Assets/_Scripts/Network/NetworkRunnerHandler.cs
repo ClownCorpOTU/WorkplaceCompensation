@@ -66,7 +66,7 @@ public class NetworkRunnerHandler : MonoBehaviour
             GameMode mode = shouldStartInSinglePlayer ? GameMode.Single : GameMode.AutoHostOrClient;
 
             var clientTask = InitializeNetworkRunner(mode, sessionName, defaultSessionPlayerCap, 
-                NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
+                NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null, SceneManager.GetActiveScene().name);
         }
     }
 
@@ -81,7 +81,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     }
 
     protected virtual async Task InitializeNetworkRunner(GameMode gameMode, string sessionName, int lobbyCap,
-        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, int codeLen = 6, string ownerName = "Player 1")
+        NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, string mapName, bool isTutorial = false, int codeLen = 6)
     {
         NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
 
@@ -136,8 +136,10 @@ public class NetworkRunnerHandler : MonoBehaviour
             SessionProperties = new Dictionary<string, SessionProperty>()
             {
                 {"DisplayName", sessionName},
+                {"MapName", mapName},
                 {"JoinCode", joinCode},
-                {"Owner", ownerName}
+                //{"Owner", ownerName},
+                {"IsTutorial", isTutorial}
             }
         });
     }
@@ -209,7 +211,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     public async void JoinGame (SessionInfo sessionInfo)
     {
         await InitializeNetworkRunner(GameMode.Client, sessionInfo.Name, sessionInfo.MaxPlayers,
-            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null);
+            NetAddress.Any(), SceneRef.FromIndex(SceneManager.GetActiveScene().buildIndex), null, SceneManager.GetActiveScene().name);
     }
 
     /// <summary>
@@ -238,7 +240,7 @@ public class NetworkRunnerHandler : MonoBehaviour
     /// <param name="sessionName">Name of the lobby.</param>
     /// <param name="lobbyCap">Max number of players allowed in.</param>
     /// <param name="scenePath">Path to the map scene.</param>
-    public async void CreateGame(string sessionName, int lobbyCap, int levelIndex)
+    public async void CreateGame(string sessionName, int lobbyCap, int levelIndex, string mapName)
     {
         int buildIndex = levelIndex;//SceneUtility.GetBuildIndexByScenePath(SceneManager.GetSceneByName(levelName).path);
 
@@ -249,7 +251,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         }
 
         await InitializeNetworkRunner(GameMode.Host, sessionName, lobbyCap,
-            NetAddress.Any(), SceneRef.FromIndex(buildIndex), null);
+            NetAddress.Any(), SceneRef.FromIndex(buildIndex), null, mapName);
     }
 
     public async void RefreshLobbyList()
