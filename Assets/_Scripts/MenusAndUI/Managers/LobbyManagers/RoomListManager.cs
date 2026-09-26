@@ -6,6 +6,7 @@ using Fusion;
 using Photon.Realtime;
 using System.Xml.Serialization;
 using Fusion.Sockets;
+using WebSocketSharp;
 
 
 /// <summary>
@@ -87,7 +88,7 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
             joinButton = GameObject.Find("JoinRoomButton").GetComponent<Button>();
         }
 
-        joinButton.interactable = false;
+        //joinButton.interactable = false;
 
         refreshButton.onClick.AddListener(RefreshLobbyListing);
         joinButton.onClick.AddListener(JoinSelectedRoom);
@@ -127,6 +128,12 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
     public void OnSessionListUpdated (NetworkRunner runner, List<SessionInfo> roomInfoList)
     {
         _listOfRoomInfo = roomInfoList;
+
+        if (_networkRunnerHandler != null)
+        {
+            _networkRunnerHandler.sessionList = roomInfoList;
+        }
+
         RefreshLobbyListing();
     }
 
@@ -135,7 +142,7 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
         Debug.Log("Refreshing List...");
 
         _selectedRoomInfo = null;
-        joinButton.interactable = false;
+        //joinButton.interactable = false;
 
         foreach (Transform roomListing in roomListingContainer)
         {
@@ -160,12 +167,23 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
     public void SetSelectedRoom(SessionInfo roomInfo)
     {
         _selectedRoomInfo = roomInfo;
-        joinButton.interactable = true;
+        //joinButton.interactable = true;
     }
 
     private void JoinSelectedRoom()
     {
-        if (_selectedRoomInfo != null && _networkRunnerHandler != null)
+        // Does nothing if there is no selected room and the input text is empty or if the NetworkRunnerHandler is missing
+        if (_selectedRoomInfo == null && joinCodeInput.text.IsNullOrEmpty() || _networkRunnerHandler != null)
+        {
+            return;
+        }
+
+        // Prioritize join codes even if the player selected a room.
+        if (!joinCodeInput.text.IsNullOrEmpty())
+        {
+            JoinRoomByCode();
+        }
+        else if (_selectedRoomInfo != null)
         {
             _networkRunnerHandler.JoinGame(_selectedRoomInfo);
         }
@@ -174,6 +192,8 @@ public class RoomListManager : MonoBehaviour, INetworkRunnerCallbacks
     private void JoinRoomByCode()
     {
         string inputtedCode = joinCodeInput.text;
+
+        joinCodeInput.text = string.Empty; // Clear the input field
 
         if (!string.IsNullOrEmpty(inputtedCode))
         {

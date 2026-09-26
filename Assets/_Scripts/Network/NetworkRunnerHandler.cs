@@ -81,7 +81,7 @@ public class NetworkRunnerHandler : MonoBehaviour
         return sceneManager ?? runner.gameObject.AddComponent<NetworkSceneManagerDefault>();
     }
 
-    protected virtual async Task InitializeNetworkRunner(GameMode gameMode, string sessionName, int lobbyCap,
+    protected virtual async Task<SessionInfo> InitializeNetworkRunner(GameMode gameMode, string sessionName, int lobbyCap,
         NetAddress address, SceneRef scene, Action<NetworkRunner> initialized, string mapName, string customLobbyName = "", bool isTutorial = false, int codeLen = 6)
     {
         NetworkManager networkManager = FindFirstObjectByType<NetworkManager>();
@@ -145,6 +145,13 @@ public class NetworkRunnerHandler : MonoBehaviour
                 {"IsTutorial", isTutorial}
             }
         });
+
+        if (result.Ok && gameMode == GameMode.Host)
+        {
+            return networkRunner.SessionInfo;
+        }
+
+        return null;
     }
 
     /// <summary>
@@ -225,16 +232,19 @@ public class NetworkRunnerHandler : MonoBehaviour
     {
         foreach(SessionInfo session in sessionList)
         {
-            session.Properties.TryGetValue("JoinCode", out var code);
-            if (joinCode == code)
+            if (session.Properties.TryGetValue("JoinCode", out var JoinCode))
             {
-                JoinGame(session);
+                string code = JoinCode.PropertyValue.ToString();
+                if (joinCode == code)
+                {
+                    JoinGame(session);
 
-                return;
+                    return;
+                }
             }
         }
 
-        UnityEngine.Debug.LogError($"No such lobby with join code [{joinCode}] exists.");
+        UnityEngine.Debug.LogError($"No such lobby with join code [ {joinCode} ] exists.");
     }
 
     /// <summary>
@@ -253,21 +263,30 @@ public class NetworkRunnerHandler : MonoBehaviour
             return;
         }
 
-        await InitializeNetworkRunner(GameMode.Host, sessionName, lobbyCap,
+        var newLobby = await InitializeNetworkRunner(GameMode.Host, sessionName, lobbyCap,
             NetAddress.Any(), SceneRef.FromIndex(buildIndex), null, mapName, customLobbyName);
-    }
-
-    public async void RefreshLobbyList()
-    {
-        if (networkRunner != null && networkRunner.LobbyInfo.IsValid)
+        
+        if (newLobby.IsOpen)
         {
-            string currentLobby = networkRunner.LobbyInfo.Name;
-            await networkRunner.Shutdown(false);
-
-            OnJoinLobbyList(currentLobby);
-            UnityEngine.Debug.Log($"Refreshing lobby list [{currentLobby}] by rejoining lobby list.");
+            if (newLobby.Properties.TryGetValue("JoinCode", out var joinCode))
+            {
+                string code = joinCode.PropertyValue.ToString();
+                UnityEngine.Debug.Log($"<color=green>NetworkRunnerHandler:</color> Join Code for this room is [{code}]");
+            }
         }
     }
+
+    // public async void RefreshLobbyList()
+    // {
+    //     if (networkRunner != null && networkRunner.LobbyInfo.IsValid)
+    //     {
+    //         string currentLobby = networkRunner.LobbyInfo.Name;
+    //         await networkRunner.Shutdown(false);
+
+    //         OnJoinLobbyList(currentLobby);
+    //         UnityEngine.Debug.Log($"Refreshing lobby list [{currentLobby}] by rejoining lobby list.");
+    //     }
+    // }
 
     /// <summary>
     /// Create a lobby join code.
