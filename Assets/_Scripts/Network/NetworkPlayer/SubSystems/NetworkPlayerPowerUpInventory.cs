@@ -62,6 +62,7 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
                 itemToUse.ConsumableEffect.ApplyEffect(player);
             }
         }
+        //else if (itemToUse.PowerUpType == PowerUpType.Handheld)
         
         // Remove item from the inventory
         InventorySlots.Set(NetworkSelectedSlot, 0);

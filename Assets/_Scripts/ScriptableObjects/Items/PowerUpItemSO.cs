@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public enum PowerUpType { Consumable, Deployable }
+public enum PowerUpType { Consumable, Deployable, Handheld }
 
 [CreateAssetMenu(fileName = "New PowerUp", menuName = "WorkplaceComp/PowerUpItem", order = 1)]
 public class PowerUpItemSO : ScriptableObject
