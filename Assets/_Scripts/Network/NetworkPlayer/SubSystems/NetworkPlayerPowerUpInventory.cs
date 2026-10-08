@@ -1,4 +1,4 @@
-﻿using Fusion;
+using Fusion;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -46,26 +46,43 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
         }
         
         if (itemToUse == null) return;
-        
-        // Do the effect
-        if (itemToUse.PowerUpType == PowerUpType.Deployable && itemToUse.DeployablePrefab != null)
+
+        switch (itemToUse.PowerUpType)
         {
-            // Spawn the item directly in front of the player
-            Vector3 spawnPos = transform.position + transform.forward * 1.5f;
-            Runner.Spawn(itemToUse.DeployablePrefab, spawnPos, transform.rotation);
-        }
-        else if (itemToUse.PowerUpType == PowerUpType.Consumable)
-        {
-            if (itemToUse.ConsumableEffect != null)
+            // Do the effect
+            case PowerUpType.Deployable when itemToUse.DeployablePrefab != null:
             {
-                NetworkPlayer player = GetComponent<NetworkPlayer>();
-                itemToUse.ConsumableEffect.ApplyEffect(player);
+                // Spawn the item directly in front of the player
+                Vector3 spawnPos = transform.position + transform.forward * 1.5f;
+                Runner.Spawn(itemToUse.DeployablePrefab, spawnPos, transform.rotation);
+            InventorySlots.Set(NetworkSelectedSlot, 0);
+                break;
+            }
+            case PowerUpType.Consumable:
+            {
+                if (itemToUse.ConsumableEffect != null)
+                {
+                    NetworkPlayer player = GetComponent<NetworkPlayer>();
+                    itemToUse.ConsumableEffect.ApplyEffect(player);
+                    InventorySlots.Set(NetworkSelectedSlot, 0);
+                }
+
+                break;
+            }
+            case PowerUpType.Handheld:
+            {
+                if (itemToUse.HandheldEffect != null)
+                {
+                    NetworkPlayer player = GetComponent<NetworkPlayer>();
+                    itemToUse.HandheldEffect.UseHandheldItem(player);
+                }
+
+                break;
             }
         }
-        //else if (itemToUse.PowerUpType == PowerUpType.Handheld)
         
         // Remove item from the inventory
-        InventorySlots.Set(NetworkSelectedSlot, 0);
+        // InventorySlots.Set(NetworkSelectedSlot, 0); -> Not the best for handheld items since they might have their own despawn
     }
 
     private void UpdateVisuals()

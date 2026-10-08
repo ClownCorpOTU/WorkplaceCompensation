@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 
 public enum PowerUpType { Consumable, Deployable, Handheld }
 
@@ -12,6 +12,7 @@ public class PowerUpItemSO : ScriptableObject
     public GameObject HeldPrefab;        // Visual model that appears in players hands
     public GameObject DeployablePrefab;  // Optional object that gets physically placed (like a landmine)
     public ConsumableEffectSO ConsumableEffect;
+    public HandheldEffectSO HandheldEffect;
     
     public Vector3 HeldPos = Vector3.zero;
     public Vector3 HeldRot = Vector3.zero;
