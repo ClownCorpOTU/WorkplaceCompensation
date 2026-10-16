@@ -88,4 +88,10 @@ public class NetworkPlayerCamera : MonoBehaviour
             localCameraInstance = null;
         }
     }
+
+    public void ReturnCameras(out Camera INcam, out CinemachineCamera INcinemachineCamera)
+    {
+        INcam = cam;
+        INcinemachineCamera = cinemachineCamera;
+    }
 }

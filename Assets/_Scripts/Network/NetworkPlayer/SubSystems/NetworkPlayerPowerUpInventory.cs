@@ -55,7 +55,7 @@ public class NetworkPlayerPowerUpInventory : NetworkBehaviour
                 // Spawn the item directly in front of the player
                 Vector3 spawnPos = transform.position + transform.forward * 1.5f;
                 Runner.Spawn(itemToUse.DeployablePrefab, spawnPos, transform.rotation);
-            InventorySlots.Set(NetworkSelectedSlot, 0);
+                InventorySlots.Set(NetworkSelectedSlot, 0);
                 break;
             }
             case PowerUpType.Consumable:

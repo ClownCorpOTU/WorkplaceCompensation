@@ -97,13 +97,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 126d1dbeeb34d514fa716322a549a777, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::NetworkBoxingGloveGun
-  aimingFoV: 50
+  aimingFoV: 60
   zoomSpeed: 12
   gunBody: {fileID: 4801460193833119086}
   glove: {fileID: 7905228855710239337}
   launchPoint: {fileID: 2687452333115102450}
-  launchImpulse: 175
-  maxDistance: 4
+  launchImpulse: 200
+  maxDistance: 3.3
   dropDelay: 0.6
   despawnDelay: 2
 --- !u!1 &6067486340808425338
@@ -122,7 +122,7 @@ GameObject:
   - component: {fileID: 7905228855710239337}
   m_Layer: 0
   m_Name: BoxingGlove
-  m_TagString: Untagged
+  m_TagString: MakeRagdoll
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -259,7 +259,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fa0e72620a35a044ea6bbc3f07f192d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BoxingGloveProjectile
-  punchForce: 25
+  punchForce: 100
   upwardPunchBias: 2
 --- !u!1 &8322068990491861805
 GameObject:

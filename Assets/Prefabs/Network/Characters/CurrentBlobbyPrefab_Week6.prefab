@@ -1716,7 +1716,8 @@ MonoBehaviour:
   SortKey: 1114404454
   ObjectInterest: 1
   Flags: 262145
-  NestedObjects: []
+  NestedObjects:
+  - {fileID: 9157302166484899459}
   NetworkedBehaviours:
   - {fileID: -1693148756473457870}
   - {fileID: 6175336033889365616}
@@ -4058,6 +4059,99 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
+--- !u!1001 &1262924423694413282
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 290047406927722144}
+    m_Modifications:
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 0.004
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -0.00057
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.00061
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -0.00083
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 0.3447311
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.7389678
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.4506276
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.3633482
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: -169.512
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: -59.55301
+      objectReference: {fileID: 0}
+    - target: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 68.762
+      objectReference: {fileID: 0}
+    - target: {fileID: 3840390526178192384, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_Name
+      value: BoxingGloveGun
+      objectReference: {fileID: 0}
+    - target: {fileID: 3840390526178192384, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7967864860329851745, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+      propertyPath: SortKey
+      value: 2315029257
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+--- !u!4 &1943675526736360493 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 828554053260007887, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+  m_PrefabInstance: {fileID: 1262924423694413282}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &9157302166484899459 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7967864860329851745, guid: bd0738b6ac3ec2944bf4c1b200bf095d, type: 3}
+  m_PrefabInstance: {fileID: 1262924423694413282}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: -1552182283, guid: e725a070cec140c4caffb81624c8c787, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Fusion.Runtime.dll::Fusion.NetworkObject
 --- !u!1001 &3135146322030938052
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4554,6 +4648,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4014491226139961311, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4279405631949773251}
+    - targetCorrespondingSourceObject: {fileID: 4014491226139961311, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1943675526736360493}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: -5499386003246648630, guid: f4ec13f7c7a8fca489f3024743821a3d, type: 3}
       insertIndex: -1

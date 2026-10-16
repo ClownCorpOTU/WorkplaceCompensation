@@ -26,14 +26,24 @@ public class BoxingGloveProjectile : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         if (hasHit) return;
+        
+        print("Glove hit: " + collision.gameObject.name);
 
         // Apply knockback to any Rigidbody or ragdoll bone
         Rigidbody hitRb = collision.rigidbody;
         if (hitRb != null && hitRb != rb)
         {
+            print("Glove hit rb: " + hitRb.name);
+            
             Vector3 knockbackDir = (collision.contacts[0].point - transform.position).normalized;
             knockbackDir.y += upwardPunchBias;
             hitRb.AddForce(knockbackDir.normalized * punchForce, ForceMode.Impulse);
+
+            if (hitRb.transform.root.TryGetComponent(out NetworkPlayer player))
+            {
+                print(player.name);
+                player.MakeRagdoll();
+            }
         }
 
         hasHit = true;

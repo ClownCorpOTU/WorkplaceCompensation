@@ -21,7 +21,7 @@ public class NetworkBoxingGloveGun : NetworkBehaviour
     [SerializeField] private float dropDelay = 0.35f;
     [SerializeField] private float despawnDelay = 3.0f;
 
-    private CinemachineCamera cam;
+    private CinemachineCamera cinemachineCam;
     private float defaultFoV;
     private bool isAiming = false;
     private bool hasFired = false;
@@ -29,35 +29,31 @@ public class NetworkBoxingGloveGun : NetworkBehaviour
     
     private void OnEnable()
     {
-        if (cam == null)
-            cam = FindFirstObjectByType<CinemachineCamera>();
+        if (transform.root != NetworkPlayer.Local.transform) return;
+        
+        Camera temp;
+        NetworkPlayer.Local.PlayerCamera.ReturnCameras(out temp, out cinemachineCam);
 
         if (defaultFoV == 0f)
-            defaultFoV = cam.Lens.FieldOfView;
-    }
-    
-    public override void FixedUpdateNetwork()
-    {
-        // Network input code goes here
+            defaultFoV = cinemachineCam.Lens.FieldOfView;
     }
 
-    private void Update()
+    public override void Render()
     {
-        if (cam == null) return;
-        
-        cam.Lens.FieldOfView = Mathf.Lerp(cam.Lens.FieldOfView, aimingFoV, Time.deltaTime * zoomSpeed);
-        
-        if (Input.GetKeyDown(KeyCode.G)) FireGlove();
+        if (cinemachineCam != null)
+            cinemachineCam.Lens.FieldOfView = Mathf.Lerp(cinemachineCam.Lens.FieldOfView, aimingFoV, Time.deltaTime * zoomSpeed);
     }
 
     private void OnDisable()
     {
-        if (cam != null)
-            cam.Lens.FieldOfView = defaultFoV;
+        if (cinemachineCam != null)
+            cinemachineCam.Lens.FieldOfView = defaultFoV;
     }
 
     public void FireGlove()
     {
+        if (!Object.HasInputAuthority) return;
+        
         if (hasFired) return;
         hasFired = true;
 
@@ -77,7 +73,7 @@ public class NetworkBoxingGloveGun : NetworkBehaviour
         joint.linearLimit = limit;
 
         // Add soft spring restitution at the apex
-        SoftJointLimitSpring spring = new SoftJointLimitSpring { spring = 400f, damper = 25f };
+        SoftJointLimitSpring spring = new SoftJointLimitSpring { spring = 150f, damper = 50f };
         joint.linearLimitSpring = spring;
 
         // 2. Fire outward
@@ -104,8 +100,8 @@ public class NetworkBoxingGloveGun : NetworkBehaviour
         }
 
         yield return new WaitForSeconds(despawnDelay);
-
-        if (Object.HasStateAuthority)
+        
+        if (Runner && Object.HasStateAuthority)
             Runner.Despawn(Object);
         else if (Runner == null)
             Destroy(gameObject);
